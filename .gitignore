@@ -1,6 +1,6 @@
 
 # asset files
-/video
+/video/*
 
 # emacs
 *~
