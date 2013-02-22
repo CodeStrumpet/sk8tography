@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # Imports
-import os, sys, argparse, traceback, time, datetime
+import os, subprocess, argparse, traceback, time, datetime
 
 
 
@@ -48,10 +48,18 @@ if not os.path.exists(output_path):
 
 ffprobe_command = "ffprobe -show_frames -of compact=p=0 -f lavfi 'movie=" + input_path + ",select=gt(scene\,.4)'  | awk -F'|' '{print $4}' | awk -F'=' '{print $2}'"
 
-# execute the ffprobe command
-status = os.WEXITSTATUS(os.system(ffprobe_command))
+ffprobe_output_file = open("ffprobe.out", "w+")
 
-print "exit status:  " + status
+ffprobe_status = subprocess.call(ffprobe_command, shell=True, stdout=ffprobe_output_file)
+
+if (ffprobe_status == 0):    
+    print "ffprobe call succeeded"
+else:
+    print "ffprobe call failed w/ status: " + str(ffprobe_status)
+    
+
+# clean up temp files
+os.remove(ffprobe_output_file.name)
 
 
 
