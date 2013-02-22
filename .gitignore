@@ -1,3 +1,11 @@
+
+# asset files
+/video
+
+# emacs
+*~
+
+# node
 lib-cov
 *.seed
 *.log
