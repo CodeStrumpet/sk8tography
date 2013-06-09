@@ -10,7 +10,7 @@ var videoService = (function () {
      
      ls;
 
-     ls = childProcess.exec('ls -l', function (error, stdout, stderr) {
+     ls = childProcess.exec("youtube-dl -o videos/file.mp4 'http://www.youtube.com/watch?v=u5aLtRr3_38'", function (error, stdout, stderr) {
        if (error) {
          console.log(error.stack);
          console.log('Error code: '+error.code);
