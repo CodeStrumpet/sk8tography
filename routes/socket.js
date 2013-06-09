@@ -1,4 +1,38 @@
 
+var videoService = (function () {
+
+  console.log("initing video service");
+
+  var addVideo = function (videoURL) {
+    console.log("adding video with url: " + videoURL);
+
+    var childProcess = require('child_process'),
+     
+     ls;
+
+     ls = childProcess.exec('ls -l', function (error, stdout, stderr) {
+       if (error) {
+         console.log(error.stack);
+         console.log('Error code: '+error.code);
+         console.log('Signal received: '+error.signal);
+       }
+       console.log('Child Process STDOUT: '+stdout);
+       console.log('Child Process STDERR: '+stderr);
+     });
+
+     ls.on('exit', function (code) {
+       console.log('Child process exited with exit code '+code);
+     });
+
+  };
+
+  return {
+      addVideo: addVideo
+  };
+
+}());
+
+
 // export function for listening to the socket
 module.exports = function (socket) {
 
@@ -19,6 +53,14 @@ module.exports = function (socket) {
       status : "success"
     });
   });
+
+  socket.on('addVideo', function (data) {
+
+    videoService.addVideo(data.url);
+
+  });
+
+
 
   // clean up when we are finished with an individual connection
   socket.on('disconnect', function () {

@@ -19,6 +19,11 @@ function AddVideoCtrl($scope, $http, socket) {
   $scope.addNewVideo = function() {
     console.log("adding url: " + $scope.video.url);
 
+
+    socket.emit("addVideo", {
+      url : $scope.video.url
+    });
+/*
     socket.emit('send:message', {
       msg : "this is the message from the client"
     }, function (result) {
@@ -28,7 +33,9 @@ function AddVideoCtrl($scope, $http, socket) {
         console.log("successfully sent message to the server");
       }
     });
+*/
   };
+
 
 }
 
