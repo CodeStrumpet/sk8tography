@@ -7,6 +7,7 @@ var http = require('http'),
   express = require('express'),
   routes = require('./routes'),
   api = require('./routes/api'),
+  socket = require('./routes/socket.js'),
   streamS3 = require('./connect-stream-s3'),
   amazon = require('awssum').load('amazon/amazon');
 
@@ -86,6 +87,11 @@ var randomiseS3ObjectNames = function(req, res, next) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 var app = module.exports = express.createServer();
+
+
+// Hook Socket.io into Express
+var io = require('socket.io').listen(app);
+
 // Configuration
 
 app.configure(function(){
@@ -145,6 +151,10 @@ app.get('*', routes.index);
   var mongolabKey = process.env.MLAB_KEY;
 
   var port = process.env.PORT || 3000;
+
+
+// Socket.io Communication
+io.sockets.on('connection', socket);
 
 app.listen(port, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);

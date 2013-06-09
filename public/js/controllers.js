@@ -6,13 +6,29 @@
 /* Controllers */
 
 
-function AddVideoCtrl($scope, $http) {
+function AddVideoCtrl($scope, $http, socket) {
   console.log("looking at add video");
+
+  // socket listeners
+  socket.on('init', function (data) {
+    console.log("init received:  " + data.msg);
+  });
 
   $scope.video = {};
 
   $scope.addNewVideo = function() {
-    console.log("adding video: " + $scope.video.url);
+    console.log("adding url: " + $scope.video.url);
+
+    socket.emit('send:message', {
+      msg : "this is the message from the client"
+    }, function (result) {
+      console.log("result callback");
+      if (!result) {
+        console.log('There was an error messaging the server');
+      } else {
+        console.log("successfully sent message to the server");
+      }
+    });
   };
 
 }

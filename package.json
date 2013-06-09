@@ -5,6 +5,7 @@
   , "dependencies": {
       "express": "2.5.10"
     , "jade": ">= 0.0.1"
+    , "socket.io": ">= 0.9.6"
     , "mongoose": "x.x.x"
     , "async": "~0.1.xx"
     , "awssum": "~0.12.xx"
