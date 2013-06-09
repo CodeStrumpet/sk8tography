@@ -12,7 +12,9 @@ angular.module('myApp.services', []).
 // socket service (use 'factory' service definition so we can run one-time code before returning service)
 app.factory('socket', function ($rootScope) {
   var socket = io.connect();
+  
   return {
+    
     on: function (eventName, callback) {
       socket.on(eventName, function () {  
         var args = arguments;
@@ -21,15 +23,18 @@ app.factory('socket', function ($rootScope) {
         });
       });
     },
+
     emit: function (eventName, data, callback) {
-      socket.emit(eventName, data, function () {
-        var args = arguments;
+      // add a result callback: OriginalEventName + '_Result' 
+      socket.on(eventName+"_Result", function() {
+      	var args = arguments;
         $rootScope.$apply(function () {
-          if (callback) {
-            callback.apply(socket, args);
-          }
+          callback.apply(socket, args);
         });
-      })
+      });
+
+      // actually emit
+      socket.emit(eventName, data);
     }
   };
 });

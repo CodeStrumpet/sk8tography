@@ -22,7 +22,6 @@ function AddVideoCtrl($scope, $http, socket) {
     socket.emit('send:message', {
       msg : "this is the message from the client"
     }, function (result) {
-      console.log("result callback");
       if (!result) {
         console.log('There was an error messaging the server');
       } else {
@@ -32,7 +31,6 @@ function AddVideoCtrl($scope, $http, socket) {
   };
 
 }
-
 
 
 // =========================================================
