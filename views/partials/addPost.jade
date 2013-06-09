@@ -1,0 +1,16 @@
+h2 Write a new post
+label(for='title') Title: 
+input(ng-model='form.title', name='title')
+h2 Add Image
+
+form(method="post", name="f", action="/single-file", enctype="multipart/form-data")
+  fieldset
+    legend Upload a File
+    input(type="file", name="file")
+  div.actions
+    button.btn.primary(type="submit") Upload
+    button.btn.cancel(type="button") Cancel
+p Body:
+textarea(ng-model='form.text', cols='50', rows='15')
+p
+  button(ng-click='submitPost()') Submit Post
