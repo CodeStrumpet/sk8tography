@@ -25,6 +25,8 @@ app.factory('socket', function ($rootScope) {
     },
 
     emit: function (eventName, data, callback) {
+
+      // TODO only add handler if callback is not null...
       // add a result callback: OriginalEventName + '_Result' 
       socket.on(eventName+"_Result", function() {
       	var args = arguments;

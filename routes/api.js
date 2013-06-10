@@ -4,6 +4,34 @@
 var mongoose = require('mongoose');
 var Track = mongoose.model("Track");
 
+var videoHelper = require('../helpers/video');
+
+
+// PUT
+
+exports.addVideo = function(req, res) {
+
+  var videoURL = req.body.url;
+
+
+  /* TODO
+    - check if video is already in db
+      > if so, return error
+    - if not, add video with status downloading
+    - return video
+  */
+
+
+  res.json(true);
+
+  videoHelper.importVideo(videoURL);
+};
+
+
+
+// ============================================================
+// ============================================================
+
 
 // GET
 
@@ -32,9 +60,8 @@ exports.addPost = function (req, res) {
   res.json(req.body);
 };
 
+
 // PUT
-
-
 
 exports.editPost = function (req, res) {
   //console.log("edit post: " + req.body.title);

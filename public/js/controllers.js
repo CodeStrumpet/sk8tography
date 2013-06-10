@@ -6,7 +6,7 @@
 /* Controllers */
 
 
-function AddVideoCtrl($scope, $http, socket) {
+function AddVideoCtrl($scope, $http, $location, $routeParams, socket) {
   console.log("looking at add video");
 
   // socket listeners
@@ -17,13 +17,22 @@ function AddVideoCtrl($scope, $http, socket) {
   $scope.video = {};
 
   $scope.addNewVideo = function() {
+    
     console.log("adding url: " + $scope.video.url);
 
 
+    $http.put('/api/addVideo', $scope.video).
+      success(function(data) {
+        console.log("add video returned success");
+    });
+
+
+/*
     socket.emit("addVideo", {
       url : $scope.video.url
     });
-/*
+    
+    // testing message sending...
     socket.emit('send:message', {
       msg : "this is the message from the client"
     }, function (result) {
@@ -43,7 +52,13 @@ function AddVideoCtrl($scope, $http, socket) {
 // =========================================================
 // =========================================================
 
-function IndexCtrl($scope, $http) {
+function IndexCtrl($scope, $http, socket) {
+
+  // socket listeners
+  socket.on('init', function (data) {
+    console.log("init received:  " + data.msg);
+  });
+
   $http.get('/api/posts').
     success(function(data, status, headers, config) {
       $scope.posts = data.posts;

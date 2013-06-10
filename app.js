@@ -13,6 +13,8 @@ var http = require('http'),
   amazon = require('awssum').load('amazon/amazon');
 
 
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // set up some middleware that we'll specifically use for certain paths
 //IMPORTANT! YOU MUST PROVIDE THESE PROCESS VARIABLES. Do so with a .env file, with export command (via command line), or config variables from the production server (I like heroku)
@@ -123,8 +125,9 @@ app.get('/partials/:name', routes.partials);
 
 // JSON API
 
-app.get('/api/posts', api.posts);
+app.put('/api/addVideo', api.addVideo);
 
+app.get('/api/posts', api.posts);
 app.get('/api/post/:id', api.post);
 app.post('/api/post', api.addPost);
 app.put('/api/post/:id', api.editPost);

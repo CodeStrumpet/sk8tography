@@ -7,7 +7,7 @@ var videoService = (function () {
     console.log("adding video with url: " + videoURL);
      
     var spawn = require('child_process').spawn,
-    youtubedl = spawn( "youtube-dl", ["-o videos/file.mp4", "http://www.youtube.com/watch?v=u5aLtRr3_38"]);
+    youtubedl = spawn( "youtube-dl", ["-o", "videos/file.mp4", "http://www.youtube.com/watch?v=u5aLtRr3_38"]);
 
     youtubedl.stdout.on('data', function (data) {
       console.log('stdout: ' + data);
@@ -24,6 +24,14 @@ var videoService = (function () {
   };
 
 }());
+
+
+exports.initialize = function() {
+    var l = models.length;
+    for (var i = 0; i < l; i++) {
+        require(models[i])();
+    }
+};
 
 
 // export function for listening to the socket
