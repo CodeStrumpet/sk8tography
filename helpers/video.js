@@ -48,7 +48,6 @@ exports.importVideo = function(video) {
 
       //the whole response has been recieved, so we just print it out here
       response.on('end', function () {
-        
 
         var info = JSON.parse(str);
 
@@ -56,9 +55,16 @@ exports.importVideo = function(video) {
         exports.populateVideoInfo(video, info);
 
         // save video, and if successful kick off download
+        video.save(function (err) {
+          if (err) {
+            // TODO handle error or fail silently
+            return;      
+          }
 
-        // kick off video download
-        //exports.downloadVideo(video);
+          // kick off video download
+          exports.downloadVideo(video);
+          
+        });
       });
     }
 
@@ -87,9 +93,13 @@ exports.downloadVideo = function(video) {
 };
 
 exports.populateVideoInfo = function (video, videoInfo) {
-
-  
-
+  video.sourceTitle = videoInfo.data.title;
+  video.sourceDesc = videoInfo.data.description;
+  video.sourceSquareThumb = videoInfo.data.thumbnail.sqDefault;
+  video.sourceLargeThumb = videoInfo.data.thumbnail.hqDefault;
+  video.sourceDuration = videoInfo.data.duration;
+  video.sourceViewCount = videoInfo.data.viewCount;
+  video.sourceUploader = videoInfo.data.uploader;
 };
 
 exports.videoInfoURL = function (video) {
