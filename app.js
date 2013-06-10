@@ -5,6 +5,7 @@
 
 var http = require('http'),
   express = require('express'),
+  db = require('./models/db.js').initialize(),
   routes = require('./routes'),
   api = require('./routes/api'),
   socket = require('./routes/socket.js'),

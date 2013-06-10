@@ -1,13 +1,8 @@
 /*
  * Serve JSON to our AngularJS client
  */
-
-
 var mongoose = require('mongoose');
-mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/myapp');
-
-var trackSchema = mongoose.Schema({title: 'string', text: 'string'});
-var Track = mongoose.model('Track', trackSchema);
+var Track = mongoose.model("Track");
 
 
 // GET
