@@ -45,7 +45,7 @@ exports.addVideo = function(req, res) {
         url: videoURL, 
         source :consts.VideoSource.YOUTUBE, 
         fileFormat : consts.VideoFileFormat.MP4,
-        status : consts.VideoStatus.UNKNOWN
+        status : consts.VideoStatus.ADDED
       });   
 
       newVideo.save(function (err) {
@@ -60,12 +60,11 @@ exports.addVideo = function(req, res) {
 
         // kick off child process to actually download and import the video
         console.log("kick off import of the video");
+        videoHelper.importVideo(newVideo);
 
       });
     }
   });
-
-  //videoHelper.importVideo(videoURL);
 };
 
 
