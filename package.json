@@ -1,17 +1,18 @@
 {
-    "name": "hobotracks"
-  , "version": "0.0.1"
-  , "private": true
-  , "dependencies": {
-      "express": "2.5.10"
-    , "jade": ">= 0.0.1"
-    , "socket.io": ">= 0.9.6"
-    , "mongoose": "x.x.x"
-    , "async": "~0.1.xx"
-    , "awssum": "~0.12.xx"
+  "name": "hobotracks",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": "2.5.10",
+    "jade": ">= 0.0.1",
+    "socket.io": ">= 0.9.6",
+    "mongoose": "x.x.x",
+    "async": "~0.1.xx",
+    "awssum": "~0.12.xx",
+    "validator": "~1.1.3"
   },
   "engines": {
-  	"node": "0.8.x",
-  	"npm": "1.1.x"
+    "node": "0.8.x",
+    "npm": "1.1.x"
   }
 }

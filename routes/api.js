@@ -15,32 +15,58 @@ var constantsPath = '../public/js/SharedConstants';
 exports.addVideo = function(req, res) {
 
   var videoURL = req.body.url;
+  var respJSON = {};
+
+  // make sure URL is valid
+  var check = require('validator').check;
+  try {
+    check(videoURL).isUrl();
+  } catch (e) {
+    respJSON.error = "invalid URL";
+    res.json(respJSON);
+    return;
+  }
 
   var consts = require(constantsPath).Constantsinople;
 
-  console.log("One possible video status is: " + consts.VideoStatus.AVAILABLE);
+  Video.findOne({url : videoURL}, function(err, video) {
+    
+    if (err) {
+      respJSON.error = "db error";
+      res.json(respJSON);
+    } else if (video) {
+      respJSON.error = "video already exists";
+      res.json(respJSON);
+    } else {
 
-  var testVideo = new Video({url: videoURL, 
-    source :consts.VideoSource.YOUTUBE, 
-    fileFormat : consts.VideoFileFormat.MP4
+      // video didn't exist, so we create it
+
+      var newVideo = new Video({
+        url: videoURL, 
+        source :consts.VideoSource.YOUTUBE, 
+        fileFormat : consts.VideoFileFormat.MP4,
+        status : consts.VideoStatus.UNKNOWN
+      });   
+
+      newVideo.save(function (err) {
+        if (err) {
+          respJSON.error = "db error";
+          res.json(respJSON);
+          return;
+        }
+
+        // send back video to indicate success...
+        res.json(newVideo);
+
+        // kick off child process to actually download and import the video
+        console.log("kick off import of the video");
+
+      });
+    }
   });
 
-  console.log("video filename: " + testVideo.fileName());
-  
-
-  /* TODO
-    - check if video is already in db
-      > if so, return error
-    - if not, add video with status downloading
-    - return video
-  */
-
-
-  res.json(true);
-
-  videoHelper.importVideo(videoURL);
+  //videoHelper.importVideo(videoURL);
 };
-
 
 
 // ============================================================

@@ -22,7 +22,11 @@ function AddVideoCtrl($scope, $http, $location, $routeParams, socket) {
 
     $http.put('/api/addVideo', $scope.video).
       success(function(data) {
-        console.log("add video returned success");
+        if (data.error) {
+          console.log("add video failed: " + data.error);
+        } else {
+          console.log("add video returned success: " + JSON.stringify(data));  
+        }
     });
 
 

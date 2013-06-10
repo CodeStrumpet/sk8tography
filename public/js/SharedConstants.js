@@ -39,3 +39,17 @@ scope.Constantsinople.videoFileFormatString = function(format) {
 scope.Constantsinople.hashCode = function(s){
   return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
 }
+
+
+scope.Constantsinople.errorObj = function(errCode, errMsg) {
+	var err = {
+		code : errCode,
+		msg : errMsg
+	};
+
+	return err;
+};
+
+scope.Constantsinople.ErrorCodes = {
+	UNKNOWN : 0
+};
