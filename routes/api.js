@@ -3,6 +3,7 @@
  */
 var mongoose = require('mongoose');
 var Track = mongoose.model("Track");
+var Video = mongoose.model("Video");
 
 var videoHelper = require('../helpers/video');
 
@@ -18,6 +19,14 @@ exports.addVideo = function(req, res) {
   var consts = require(constantsPath).Constantsinople;
 
   console.log("One possible video status is: " + consts.VideoStatus.AVAILABLE);
+
+  var testVideo = new Video({url: videoURL, 
+    source :consts.VideoSource.YOUTUBE, 
+    fileFormat : consts.VideoFileFormat.MP4
+  });
+
+  console.log("video filename: " + testVideo.fileName());
+  
 
   /* TODO
     - check if video is already in db
