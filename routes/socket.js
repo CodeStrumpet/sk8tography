@@ -5,24 +5,17 @@ var videoService = (function () {
 
   var addVideo = function (videoURL) {
     console.log("adding video with url: " + videoURL);
-
-    var childProcess = require('child_process'),
      
-     ls;
+    var spawn = require('child_process').spawn,
+    youtubedl = spawn( "youtube-dl", ["-o videos/file.mp4", "http://www.youtube.com/watch?v=u5aLtRr3_38"]);
 
-     ls = childProcess.exec("youtube-dl -o videos/file.mp4 'http://www.youtube.com/watch?v=u5aLtRr3_38'", function (error, stdout, stderr) {
-       if (error) {
-         console.log(error.stack);
-         console.log('Error code: '+error.code);
-         console.log('Signal received: '+error.signal);
-       }
-       console.log('Child Process STDOUT: '+stdout);
-       console.log('Child Process STDERR: '+stderr);
-     });
+    youtubedl.stdout.on('data', function (data) {
+      console.log('stdout: ' + data);
+    });
 
-     ls.on('exit', function (code) {
-       console.log('Child process exited with exit code '+code);
-     });
+    youtubedl.stderr.on('data', function (data) {
+      console.log('stderr: ' + data);
+    });
 
   };
 
