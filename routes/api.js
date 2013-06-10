@@ -6,6 +6,8 @@ var Track = mongoose.model("Track");
 
 var videoHelper = require('../helpers/video');
 
+var constantsPath = '../public/js/SharedConstants';
+
 
 // PUT
 
@@ -13,6 +15,9 @@ exports.addVideo = function(req, res) {
 
   var videoURL = req.body.url;
 
+  var consts = require(constantsPath).Constantsinople;
+
+  console.log("One possible video status is: " + consts.VideoStatus.AVAILABLE);
 
   /* TODO
     - check if video is already in db

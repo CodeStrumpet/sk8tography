@@ -1,8 +1,6 @@
 'use strict';
 
 
-
-
 /* Controllers */
 
 
@@ -20,6 +18,7 @@ function AddVideoCtrl($scope, $http, $location, $routeParams, socket) {
     
     console.log("adding url: " + $scope.video.url);
 
+    console.log("one possible client-side VideoStatus value is: " + window.Constantsinople.VideoStatus.AVAILABLE);
 
     $http.put('/api/addVideo', $scope.video).
       success(function(data) {
