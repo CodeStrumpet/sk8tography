@@ -10,5 +10,5 @@ exports.initialize = function() {
 };
 
 var mongoose = require('mongoose');
-mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/myapp');
+mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/test1');
 

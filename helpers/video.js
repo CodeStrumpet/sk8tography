@@ -3,6 +3,8 @@ var consts = require('../public/js/SharedConstants').Constantsinople;
 
 exports.importVideo = function(video) {
 
+  var importError = false;
+
 	console.log("importing video: " + video.url);
 
   var vidSource = exports.videoSource(video.url);
@@ -20,6 +22,10 @@ exports.importVideo = function(video) {
     if (err) {
       // TODO handle error or fail silently
       return;      
+    }
+
+    if (video.status == consts.VideoStatus.INVALID) {
+      return;
     }
 
     // use source service api to get info about the video
@@ -51,8 +57,15 @@ exports.importVideo = function(video) {
 
         var info = JSON.parse(str);
 
-        // add our new info to video
-        exports.populateVideoInfo(video, info);
+         
+        // try add our new info to video
+        if (exports.populateVideoInfo(video, info)) {
+          video.status = consts.VideoStatus.DOWNLOADING;
+        } else {
+          console.log("import error");
+          importError = true;
+          video.status = consts.VideoStatus.INVALID;
+        }          
 
         // save video, and if successful kick off download
         video.save(function (err) {
@@ -61,9 +74,11 @@ exports.importVideo = function(video) {
             return;      
           }
 
-          // kick off video download
-          exports.downloadVideo(video);
-          
+          if (!importError) {
+            // kick off video download
+            exports.downloadVideo(video);
+          }
+
         });
       });
     }
@@ -76,30 +91,61 @@ exports.importVideo = function(video) {
 exports.downloadVideo = function(video) {
 
 	var spawn = require('child_process').spawn,
-
-    youtubedl = spawn( "youtube-dl", ["-o", "videos/file.mp4", video.url]);
+    youtubedl = spawn( "youtube-dl", ["-o", "videos/" + video.fileName(), video.url]);
 
   youtubedl.stdout.on('data', function (data) {
-    console.log('stdout: ' + data);
+    var buff = new Buffer(data);
+    console.log("more data: " + buff.toString('utf8'));
   });
 
   youtubedl.stderr.on('data', function (data) {
-    console.log('stderr: ' + data);
+    console.log('stdout: ' + data);
   });
 
   youtubedl.on('exit', function (code) {
     console.log('Child process exited with exit code ' + code);
+
+    if (code == 0) {
+      video.status = consts.VideoStatus.IMPORTING;
+    } else {
+      video.status = consts.VideoStatus.INVALID;
+    }
+
+    // save video, and if successful kick off download
+    video.save(function (err) {
+      if (err) {
+        // TODO handle error or fail silently
+        return;      
+      }
+
+      if (video.status == consts.VideoStatus.IMPORTING) {
+        console.log("would kick of ffmprobe here...");
+        // kick of ffmprobe...
+
+      }
+
+    });
+
   });
+
 };
 
 exports.populateVideoInfo = function (video, videoInfo) {
-  video.sourceTitle = videoInfo.data.title;
-  video.sourceDesc = videoInfo.data.description;
-  video.sourceSquareThumb = videoInfo.data.thumbnail.sqDefault;
-  video.sourceLargeThumb = videoInfo.data.thumbnail.hqDefault;
-  video.sourceDuration = videoInfo.data.duration;
-  video.sourceViewCount = videoInfo.data.viewCount;
-  video.sourceUploader = videoInfo.data.uploader;
+
+  if (typeof videoInfo.data != 'undefined') {
+    video.sourceTitle = videoInfo.data.title;
+    video.sourceDesc = videoInfo.data.description;
+    video.sourceSquareThumb = videoInfo.data.thumbnail.sqDefault;
+    video.sourceLargeThumb = videoInfo.data.thumbnail.hqDefault;
+    video.sourceDuration = videoInfo.data.duration;
+    video.sourceViewCount = videoInfo.data.viewCount;
+    video.sourceUploader = videoInfo.data.uploader;
+
+    return true;
+
+  } 
+
+  return false;
 };
 
 exports.videoInfoURL = function (video) {

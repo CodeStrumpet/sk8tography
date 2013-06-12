@@ -151,15 +151,15 @@ app.post('/multiple-files', randomiseS3ObjectNames, s3StreamMiddleware, function
 app.get('*', routes.index);
 
 // Start server
-  var awsKey = process.env.S3_KEY;
-  var mongolabKey = process.env.MLAB_KEY;
+var awsKey = process.env.S3_KEY;
+var mongolabKey = process.env.MLAB_KEY;
 
-  var port = process.env.PORT || 3000;
-
+var port = process.env.PORT || 3000;
+var ipaddr = process.env.IP;
 
 // Socket.io Communication
 io.sockets.on('connection', socket);
 
-app.listen(port, function(){
+app.listen(port, ipaddr, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 });
