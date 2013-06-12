@@ -1,4 +1,21 @@
 p There are {{videos.length}} videos
-div(ng-repeat='video in videos')
-  h3 {{video.sourceTitle}}
-  div {{video.url}}
+
+table.table.videosTable
+  thead
+    tr
+      th.thumbColumn image
+      th.infoColumn info
+      th.extraInfoColumn extra info
+      th.urlColumn url
+  tbody
+    tr(ng-repeat='video in videos')
+
+      td
+        img(ng-src="{{video.sourceSquareThumb}}")
+      td
+        h3 {{video.sourceTitle}}
+        p {{video.sourceDesc}}
+      td
+        p {{video.sourceDuration}}
+      td
+        p {{video.url}}
