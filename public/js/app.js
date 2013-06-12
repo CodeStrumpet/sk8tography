@@ -8,6 +8,10 @@ var app = angular.module('myApp', ['myApp.filters', 'myApp.services', 'myApp.dir
         templateUrl: 'partials/index',
         controller: IndexCtrl
       }).
+      when('/videos', {
+        templateUrl: 'partials/videos',
+        controller: VideosCtrl
+      }).
       when('/addVideo', {
         templateUrl: 'partials/addVideo',
         controller: AddVideoCtrl

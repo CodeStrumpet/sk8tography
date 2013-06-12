@@ -52,6 +52,20 @@ function AddVideoCtrl($scope, $http, $location, $routeParams, socket) {
 }
 
 
+function VideosCtrl($scope, $http, socket) {
+
+  // socket listeners
+  socket.on('init', function (data) {
+    console.log("init received:  " + data.msg);
+  });
+
+  $http.get('/api/videos').
+    success(function(data, status, headers, config) {
+      $scope.videos = data.videos;
+    });
+}
+
+
 // =========================================================
 // =========================================================
 

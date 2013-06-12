@@ -68,6 +68,26 @@ exports.addVideo = function(req, res) {
 };
 
 
+// GET
+
+exports.videos = function (req, res) {
+
+  var vidsCallback = function (err, videos) {
+    res.json({
+      videos : videos
+    });
+  };
+
+
+  Video
+  .find()
+  .limit(20)
+  .sort('-updated')
+  .exec(vidsCallback);
+  
+};
+
+
 // ============================================================
 // ============================================================
 
