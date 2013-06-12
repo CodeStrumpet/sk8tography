@@ -8,17 +8,18 @@ module.exports = function() {
 
     
     var videoSchema = new Schema({
-      url: 'String',
-      status: 'Number',
-      source: 'Number',
-      fileFormat: 'Number',
-      sourceTitle: 'String',
-      sourceDesc: 'String',
-      sourceSquareThumb: "String",
-      sourceLargeThumb: "String",
-      sourceDuration: "Number",
-      sourceViewCount: "Number",
-      sourceUploader: "String"
+      url: String,
+      status: Number,
+      source: Number,
+      fileFormat: Number,
+      sourceTitle: String,
+      sourceDesc: String,
+      sourceSquareThumb: String,
+      sourceLargeThumb: String,
+      sourceDuration: Number,
+      sourceViewCount: Number,
+      sourceUploader: String,
+      updated: { type: Date, default: Date.now }
     });
 
 
