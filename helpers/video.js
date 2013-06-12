@@ -3,87 +3,98 @@ var consts = require('../public/js/SharedConstants').Constantsinople;
 
 exports.importVideo = function(video) {
 
-  var importError = false;
+  require('async').series({
 
-	console.log("importing video: " + video.url);
+    getVideoSource : function(callback) {
+      var err = null;
+      var vidSource = exports.videoSource(video.url);
+      video.source = vidSource;
 
-  var vidSource = exports.videoSource(video.url);
+      // set video status based on source
+      if (vidSource == consts.VideoSource.UNKNOWN) {
+        video.status = consts.VideoStatus.INVALID;
+      } else {
+        video.status = consts.VideoStatus.ACQUIRING_INFO;
+      }
 
-  video.source = vidSource;
+      video.save(function (saveErr) {
+        if (saveErr) {
+          err = "error saving video";
+        }        
 
-  if (vidSource == consts.VideoSource.UNKNOWN) {
-    console.log("Invalid video");
-    video.status = consts.VideoStatus.INVALID;
-  } else {
-    video.status = consts.VideoStatus.ACQUIRING_INFO;
-  }
+        if (video.status == consts.VideoStatus.INVALID) {
+          err = "invalid video";
+        }
 
-  video.save(function (err) {
-    if (err) {
-      // TODO handle error or fail silently
-      return;      
-    }
+        callback(err, null);
+      });    
+    },
 
-    if (video.status == consts.VideoStatus.INVALID) {
-      return;
-    }
+    getVideoInfo : function(callback) {
+      var err = null;
 
-    // use source service api to get info about the video
-    var infoURL = exports.videoInfoURL(video);
+      // use source service api to get info about the video
+      var infoURL = exports.videoInfoURL(video);
 
-    if (infoURL == null) {
-      // TODO handle error or fail silently
-      return;
-    }
+      if (infoURL == null) {
+        err = "could not construct info url";
+      }
 
-    // get info for video
-    var http = require('http');
-    var parsedURL = require('url').parse(infoURL);
-    var options = {
-      host: parsedURL.host,
-      path: parsedURL.path
-    };
+      // get info for video
+      var http = require('http');
+      var parsedURL = require('url').parse(infoURL);
+      var options = {
+        host: parsedURL.host,
+        path: parsedURL.path
+      };
 
-    callback = function(response) {
-      var str = '';
+      http.request(options, function(response) {
+        var str = '';
 
-      //another chunk of data has been recieved, so append it to `str`
-      response.on('data', function (chunk) {
-        str += chunk;
-      });
-
-      //the whole response has been recieved, so we just print it out here
-      response.on('end', function () {
-
-        var info = JSON.parse(str);
-
-         
-        // try add our new info to video
-        if (exports.populateVideoInfo(video, info)) {
-          video.status = consts.VideoStatus.DOWNLOADING;
-        } else {
-          console.log("import error");
-          importError = true;
-          video.status = consts.VideoStatus.INVALID;
-        }          
-
-        // save video, and if successful kick off download
-        video.save(function (err) {
-          if (err) {
-            // TODO handle error or fail silently
-            return;      
-          }
-
-          if (!importError) {
-            // kick off video download
-            exports.downloadVideo(video);
-          }
-
+        //another chunk of data has been recieved, so append it to `str`
+        response.on('data', function (chunk) {
+          str += chunk;
         });
-      });
-    }
 
-    http.request(options, callback).end();
+        //the whole response has been recieved, so we just print it out here
+        response.on('end', function () {
+
+          var info = JSON.parse(str);
+           
+          // try add our new info to video
+          if (exports.populateVideoInfo(video, info)) {
+            video.status = consts.VideoStatus.DOWNLOADING;
+          } else {
+            err = "import error";
+            video.status = consts.VideoStatus.INVALID;
+          }
+
+          video.save(function (saveErr) {
+            if (saveErr) {
+              err = "error saving video";
+            }
+
+            callback(err, null);
+          });
+        });
+      }).end();
+      
+    },
+
+    downloadVideo : function(callback) {
+      exports.downloadVideo(video);
+
+      callback(null, null);
+    }
+  },
+
+  // final callback
+  function(err, results) {
+    if (err) {
+      console.log("Err:  " + err);
+    } else {
+      console.log("Video should be downloading");
+    }
 
   });
 };
