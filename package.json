@@ -1,5 +1,5 @@
 {
-  "name": "hobotracks",
+  "name": "sk8tography",
   "version": "0.0.1",
   "private": true,
   "dependencies": {
@@ -7,7 +7,7 @@
     "jade": ">= 0.0.1",
     "socket.io": ">= 0.9.6",
     "mongoose": "x.x.x",
-    "async": "~0.1.xx",
+    "async": "~0.1.22",
     "awssum": "~0.12.xx",
     "validator": "~1.1.3"
   },

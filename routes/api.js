@@ -15,32 +15,36 @@ var constantsPath = '../public/js/SharedConstants';
 exports.addVideo = function(req, res) {
 
   var videoURL = req.body.url;
-  var respJSON = {};
-
-  // make sure URL is valid
-  var check = require('validator').check;
-  try {
-    check(videoURL).isUrl();
-  } catch (e) {
-    respJSON.error = "invalid URL";
-    res.json(respJSON);
-    return;
-  }
 
   var consts = require(constantsPath).Constantsinople;
 
-  Video.findOne({url : videoURL}, function(err, video) {
-    
-    if (err) {
-      respJSON.error = "db error";
-      res.json(respJSON);
-    } else if (video) {
-      respJSON.error = "video already exists";
-      res.json(respJSON);
-    } else {
+  require('async').series({
+    validateURL : function(callback) {
+      
+      var check = require('validator').check;
+      var err = null;
+      try {
+        check(videoURL).isUrl();
+      } catch (e) {
+        err = "invalid URL";
+      }
+      callback(err, null); 
+    },
 
-      // video didn't exist, so we create it
+    findExisting : function(callback) {
+      var err = null;
+      Video.findOne({url : videoURL}, function(fetchErr, video) {
+        if (fetchErr) {
+          err = "db error";
+        } else if (video) {
+          err = "video already exists";
+        }
+        callback(err, null);
+      });    
+    },
 
+    newVideo : function(callback) {
+      var err = null;
       var newVideo = new Video({
         url: videoURL, 
         source :consts.VideoSource.YOUTUBE, 
@@ -48,21 +52,29 @@ exports.addVideo = function(req, res) {
         status : consts.VideoStatus.ADDED
       });   
 
-      newVideo.save(function (err) {
-        if (err) {
-          respJSON.error = "db error";
-          res.json(respJSON);
-          return;
+      newVideo.save(function (saveErr) {
+        if (saveErr) {
+          err = "error saving video";
         }
 
-        // send back video to indicate success...
-        res.json(newVideo);
-
-        // kick off child process to actually download and import the video
-        console.log("kick off import of the video");
-        videoHelper.importVideo(newVideo);
-
+        callback(err, newVideo);
       });
+    }
+  },
+
+  // send result back to client
+  function(err, results) {
+    if (err) {
+      console.log("error: " + err);
+      res.json({
+        error: err
+      });
+    } else {
+      res.json(results.newVideo);
+
+      // kick off child process to actually download and import the video
+      console.log("kick off import of the video");
+      videoHelper.importVideo(results.newVideo);
     }
   });
 };
@@ -84,7 +96,7 @@ exports.videos = function (req, res) {
   .limit(20)
   .sort('-updated')
   .exec(vidsCallback);
-  
+
 };
 
 
