@@ -8,7 +8,7 @@ scope.Constantsinople.VideoStatus = {
 	ADDED : 1,
 	ACQUIRING_INFO : 2,
 	DOWNLOADING : 3,
-	IMPORTING : 4,
+	PROCESSING : 4,
 	COMPLETE : 5
 };
 

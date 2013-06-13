@@ -78,13 +78,16 @@ exports.importVideo = function(video) {
           });
         });
       }).end();
-      
+
     },
 
     downloadVideo : function(callback) {
-      exports.downloadVideo(video);
+      exports.downloadVideo(video, callback);
+    },
 
-      callback(null, null);
+    processVideo : function(callback) {
+      console.log("Processing video...");
+      exports.processVideo(video, callback);
     }
   },
 
@@ -93,14 +96,14 @@ exports.importVideo = function(video) {
     if (err) {
       console.log("Err:  " + err);
     } else {
-      console.log("Video should be downloading");
+      console.log("Finished video import");
     }
 
   });
 };
 
-exports.downloadVideo = function(video) {
-
+exports.downloadVideo = function(video, callback) {
+  var err = null;
 	var spawn = require('child_process').spawn,
     youtubedl = spawn( "youtube-dl", ["-o", "videos/" + video.fileName(), video.url]);
 
@@ -114,31 +117,61 @@ exports.downloadVideo = function(video) {
   });
 
   youtubedl.on('exit', function (code) {
+
     console.log('Child process exited with exit code ' + code);
 
     if (code == 0) {
-      video.status = consts.VideoStatus.IMPORTING;
+      video.status = consts.VideoStatus.PROCESSING;
     } else {
       video.status = consts.VideoStatus.INVALID;
     }
 
     // save video, and if successful kick off download
-    video.save(function (err) {
-      if (err) {
-        // TODO handle error or fail silently
-        return;      
+    video.save(function (saveErr) {
+      if (saveErr) {
+        err = "error saving";
       }
 
-      if (video.status == consts.VideoStatus.IMPORTING) {
-        console.log("would kick of ffmprobe here...");
-        // kick of ffmprobe...
-
+      if (video.status == consts.VideoStatus.INVALID) {
+        err = "Video is invalid";
       }
 
+      // call callback function that was passed in
+      callback(err, null);
     });
+  });
+};
 
+exports.processVideo = function(video, callback) {
+
+  try {
+    var err = null;
+    console.log(__dirname);
+  var spawn = require('child_process').spawn,
+    shotsplitter = spawn(__dirname + "/../children/shotsplitter.py", ["-input", __dirname + "/../videos/" + video.fileName(), "-output", __dirname + "/../videos"]);
+
+  shotsplitter.stdout.on('data', function (data) {
+    var buff = new Buffer(data);
+    console.log("more data: " + buff.toString('utf8'));
   });
 
+  shotsplitter.stderr.on('data', function (data) {
+    console.log('stdout: ' + data);
+    err = data;
+  });
+
+  shotsplitter.on('exit', function (code) {
+
+    console.log('Child process exited with exit code ' + code);
+
+    callback(err, null);
+  });
+
+  } catch (e) {
+    console.log(e);
+  }
+
+  
 };
 
 exports.populateVideoInfo = function (video, videoInfo) {
@@ -182,23 +215,4 @@ exports.videoSource = function (url) {
     return consts.VideoSource.UNKNOWN;
   }
 };
-
-
-
-/*
-  var spawn = require('child_process').spawn,
-      longCommand = spawn( "sleep", ["4"]);
-
-  longCommand.stdout.on('data', function (data) {
-    console.log('stdout: ' + data);
-  });
-
-  longCommand.stderr.on('data', function (data) {
-    console.log('stderr: ' + data);
-  });
-
-  longCommand.on('exit', function (code) {
-    console.log('Child process exited with exit code ' + code);
-  });
-	*/
 
