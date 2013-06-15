@@ -126,6 +126,7 @@ app.get('/partials/:name', routes.partials);
 // JSON API
 
 app.put('/api/addVideo', api.addVideo);
+app.put('/api/processVideo', api.processVideo);
 app.get('/api/videos', api.videos);
 
 // ========================================

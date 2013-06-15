@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # Imports
-import os, subprocess, argparse, traceback, time, datetime
+import os, subprocess, argparse, traceback, time, datetime, json
 
 
 
@@ -41,7 +41,6 @@ if not os.path.exists(output_path):
 
 
 
-
 # *****************************************************
 # Output shot boundary timestamps
 # *****************************************************
@@ -69,16 +68,22 @@ ffprobe_output_file.close()
 os.remove(file_to_delete)
 
 
-
 # *****************************************************
 # Iterate through boundary timestamps and create clips
 # *****************************************************
 
+# create array to push info for each clip
+output_info = []
+
 num_timestamps = len(timestamps)
 for index, timestamp in enumerate(timestamps):
+
+    clip_info = {}
         
     # get start_time and end_time for the clip
     start_time = float(timestamp)
+
+
     if (index + 1 < num_timestamps):
         duration = float(timestamps[index+1]) - start_time
     else:
@@ -91,6 +96,16 @@ for index, timestamp in enumerate(timestamps):
         duration_arg = " -t " + str(duration)        
         
     output_name = output_path + "/" + input_base_name + "_" + str(index) + input_ext
+
+    clip_info['start'] = start_time
+    clip_info['duration'] = duration
+    clip_info['name'] = input_base_name + "_" + str(index) + input_ext
+    output_info.append(clip_info)
+
     split_command = "ffmpeg -ss " + str(start_time) + " -i " + input_path + " -vcodec copy -acodec copy" + duration_arg + " " + output_name
     
     split_status = subprocess.call(split_command, shell=True)
+
+
+output_string = json.dumps(output_info)
+print output_string

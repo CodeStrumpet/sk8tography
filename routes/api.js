@@ -12,6 +12,56 @@ var constantsPath = '../public/js/SharedConstants';
 
 // PUT
 
+exports.processVideo = function(req, res) {
+
+  var videoId = req.body.videoId;
+
+  require('async').series({
+
+    checkVideoId : function(callback) {
+      var err = null;
+      if (videoId == null) {
+        err = "invalid video id";
+      }
+      callback(err, null);
+    },
+
+    findVideo : function(callback) {
+      var vidCallback = function (err, video) {
+
+        if (err) {
+          callback(err, null);
+        } else {
+          callback(null, video);
+        }
+      };
+
+      Video
+      .findById(videoId)
+      .exec(vidCallback);
+    }
+  },
+
+  function(err, results) {
+    if (err) {
+      res.json({
+        error: err
+      });
+    } else {
+      res.json({
+        video: results.findVideo
+      });
+
+      var processCallback = function(err, result) {
+        console.log("process video callback");
+      };
+
+      videoHelper.processVideo(results.findVideo, processCallback);
+    }
+  });
+};
+
+
 exports.addVideo = function(req, res) {
 
   var videoURL = req.body.url;

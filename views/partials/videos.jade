@@ -17,5 +17,6 @@ table.table.videosTable
         p {{video.sourceDesc}}
       td
         p {{video.sourceDuration}}
+        input(type="button", value="Process", ng-click="processVideo($index)")
       td
         p {{video.url}}

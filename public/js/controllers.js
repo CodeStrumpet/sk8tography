@@ -63,6 +63,19 @@ function VideosCtrl($scope, $http, socket) {
     success(function(data, status, headers, config) {
       $scope.videos = data.videos;
     });
+
+  $scope.processVideo = function(index) {
+    var video = $scope.videos[index];
+
+    $http.put('/api/processVideo', {videoId : video._id}).
+      success(function(data) {
+        if (data.error) {
+          console.log("process video failed: " + data.error);
+        } else {
+          console.log("process video returned success: " + JSON.stringify(data));  
+        }
+    });
+  };
 }
 
 
