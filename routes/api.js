@@ -29,7 +29,7 @@ exports.processVideo = function(req, res) {
     findVideo : function(callback) {
       var vidCallback = function (err, video) {
 
-        if (err) {
+        if (err) {          
           callback(err, null);
         } else {
           callback(null, video);
@@ -42,7 +42,7 @@ exports.processVideo = function(req, res) {
     },
 
     deleteExistingClips : function(callback) {
-
+      callback(null, null);
     }
   },
 
