@@ -196,10 +196,27 @@ exports.videoInfoURL = function (video) {
   ////https://gdata.youtube.com/feeds/api/videos/s0Nbkxy7E48?v=2&alt=json
   var infoURL = null;
   if (video.source == consts.VideoSource.YOUTUBE) {
-    infoURL = "http://gdata.youtube.com/feeds/api/videos/" + video.sourceId() + "?v=2&alt=jsonc";
+    infoURL = "http://gdata.youtube.com/feeds/api/videos/" + video._id + "?v=2&alt=jsonc";
   }
 
   return infoURL;
+};
+
+exports.videoSourceId = function(url) {
+
+  var source = exports.videoSource(url);
+
+  var urlParse = require('url');
+  var parsedURL = urlParse.parse(url, true);
+  
+  if (source == consts.VideoSource.YOUTUBE) {
+    return parsedURL.query.v;
+  } else if (source == consts.VideoSource.VIMEO) {
+    var pathArray = parsedURL.pathName.split('/');
+    return pathArray[0];
+  } else {
+    return null;
+  }
 }
 
 

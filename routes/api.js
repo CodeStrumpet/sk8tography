@@ -39,6 +39,10 @@ exports.processVideo = function(req, res) {
       Video
       .findById(videoId)
       .exec(vidCallback);
+    },
+
+    deleteExistingClips : function(callback) {
+
     }
   },
 
@@ -95,15 +99,26 @@ exports.addVideo = function(req, res) {
 
     newVideo : function(callback) {
       var err = null;
+      var sourceId = videoHelper.videoSourceId(videoURL);
+
+      // only accept videos with valid sourceId
+      if (sourceId == null) {
+        err = "invalid url (source id not found)";
+        callback(err, null);
+        return;
+      }
+
       var newVideo = new Video({
+        _id: sourceId,
         url: videoURL, 
-        source :consts.VideoSource.YOUTUBE, 
+        source :videoHelper.videoSource(videoURL),
         fileFormat : consts.VideoFileFormat.MP4,
         status : consts.VideoStatus.ADDED
       });   
 
       newVideo.save(function (saveErr) {
         if (saveErr) {
+          console.log("saveErr: " + saveErr);
           err = "error saving video";
         }
 

@@ -3,6 +3,14 @@ var scope = typeof exports != 'undefined' ? exports : window;
 
 scope.Constantsinople = {};
 
+scope.Constantsinople.ClipStatus = {
+	ADDED : 0,
+	TAGGED : 1,
+	REMOVED : 2
+};
+
+// Video
+
 scope.Constantsinople.VideoStatus = {	
 	INVALID : 0,
 	ADDED : 1,
