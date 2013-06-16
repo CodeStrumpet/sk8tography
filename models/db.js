@@ -1,6 +1,6 @@
 
 
-var models = ['./track.js', './video.js'];
+var models = ['./track.js', './video.js', './clip.js'];
 
 exports.initialize = function() {
     var l = models.length;

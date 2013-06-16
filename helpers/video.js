@@ -85,7 +85,7 @@ exports.importVideo = function(video) {
 
       // check if we have the file in the video cache... (for debugging)
       fs = require('fs');
-      var cachePath = "./children/shotsplitter.py";
+      var cachePath = "./videos/" + video.fileName();
       if (fs.existsSync(cachePath)) {
         // copy the video from the cache
         exports.copyVideoFromCache(video, callback);
@@ -204,9 +204,19 @@ exports.processVideo = function(video, callback) {
   shotsplitter.on('exit', function (code) {
 
     if (code == 0 && buffer != null) {
-      
+
+      var result = JSON.parse(buffer.toString('utf8'));
+
+
+      // catch error passed back in valid json
+      if (result.error || !result.timestamps) {
+        err = result.error;
+        callback(err, null);
+        return;
+      }
+
       // call separate create clips function
-      exports.createClips(video, callback, JSON.parse(buffer.toString('utf8')));
+      exports.createClips(video, callback, result);
       return;
 
     } else {
@@ -220,7 +230,54 @@ exports.processVideo = function(video, callback) {
 
 exports.createClips = function(video, callback, timestamps) {
   console.log("creating clips for timestamps: " + JSON.stringify(timestamps));
-  callback(null, null);
+
+
+  var mongoose = require('mongoose');
+  var Clip = mongoose.model("Clip");
+  var fs = require('fs');
+
+  var index = 0;
+
+  var saveClips = [];
+
+
+
+  timestamps.timestamps.forEach(function(clipInfo) {    
+
+    console.log("create clip: " + clipInfo.name);
+
+    // make sure video file exists
+    var clipPath = "./videos/" + clipInfo.name;
+
+    if (!fs.existsSync(clipPath)) {
+      console.log("clip file not on fs: " + clipInfo.name);
+      return;
+    }
+
+    var clip = new Clip({
+      videoId : video._id,
+      index : index,
+      fileFormat : video.fileFormat,
+      startTime : clipInfo.start,
+      duration : clipInfo.duration
+    });
+
+    // add save function to array so we can execute saves in parallel
+    saveClips.push((function(doc) {
+      return function(callback) {
+        doc.save(callback);
+      };
+    })(clip));
+
+    index++;
+  });
+
+  require('async').parallel(saveClips, function(err, results) {
+    console.log(err);
+    console.log(results);
+
+    callback(err, results);
+  });
 };
 
 exports.populateVideoInfo = function (video, videoInfo) {

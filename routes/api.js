@@ -57,7 +57,11 @@ exports.processVideo = function(req, res) {
       });
 
       var processCallback = function(err, result) {
-        console.log("process video callback");
+        if (err) {
+          console.log("process video err: " + err);  
+        } else {
+          console.log("process video succeeded");
+        }        
       };
 
       videoHelper.processVideo(results.findVideo, processCallback);

@@ -8,11 +8,13 @@ module.exports = function() {
 
     
     var clipSchema = new Schema({
-      videoId: String,
-      index: Number,
-      updated: { type: Date, default: Date.now },
-      status: { type: Number, default: consts.ClipStatus.ADDED,
-      fileFormat: Number }
+        videoId: String,
+        index: Number,
+        updated: { type: Date, default: Date.now },
+        status: { type: Number, default: consts.ClipStatus.ADDED },
+        fileFormat: Number,
+        startTime: Number,
+        duration: Number
     });
 
 
@@ -24,3 +26,6 @@ module.exports = function() {
 
       return viddyName;
     };
+
+    mongoose.model("Clip", clipSchema);
+};
