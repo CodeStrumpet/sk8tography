@@ -8,7 +8,7 @@ module.exports = function() {
 
     
     var clipSchema = new Schema({
-      videoId: Schema.Types.ObjectId,
+      videoId: String,
       index: Number,
       updated: { type: Date, default: Date.now },
       status: { type: Number, default: consts.ClipStatus.ADDED,

@@ -19,6 +19,12 @@ args = parser.parse_args()
 
 
 # *****************************************************
+# Create variable for response
+# *****************************************************
+response = {}
+
+
+# *****************************************************
 # FS Path management
 # *****************************************************
 
@@ -58,9 +64,11 @@ ffprobe_status = subprocess.call(ffprobe_command, shell=True, stdout=ffprobe_out
 if (ffprobe_status == 0): 
     ffprobe_output_file.seek(0)
     timestamps = ffprobe_output_file.readlines()
-    print "ffprobe call succeeded.  number of timestamps: " + str(len(timestamps))
+    response["num_timestamps"] = len(timestamps)
+    #print "ffprobe call succeeded.  number of timestamps: " + str(len(timestamps))
 else:
-    print "ffprobe call failed w/ status: " + str(ffprobe_status)
+    response["error"] = "ffprobe call failed w/ status: " + str(ffprobe_status)
+    #print "ffprobe call failed w/ status: " + str(ffprobe_status)
     
 # clean up temp files
 file_to_delete = ffprobe_output_file.name
@@ -105,7 +113,9 @@ for index, timestamp in enumerate(timestamps):
     split_command = "ffmpeg -ss " + str(start_time) + " -i " + input_path + " -vcodec copy -acodec copy" + duration_arg + " " + output_name
     
     split_status = subprocess.call(split_command, shell=True)
+    clip_info['split_status'] = split_status
 
+response["timestamps"] = output_info
 
-output_string = json.dumps(output_info)
+output_string = json.dumps(response)
 print output_string

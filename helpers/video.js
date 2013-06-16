@@ -184,34 +184,43 @@ exports.copyVideoFromCache = function(video, callback) {
 
 exports.processVideo = function(video, callback) {
 
-  try {
-    var err = null;
-    console.log(__dirname);
+  
+  var err = null;
+  var buffer = null;
+  console.log(__dirname);
   var spawn = require('child_process').spawn,
     shotsplitter = spawn(__dirname + "/../children/shotsplitter.py", ["-input", __dirname + "/../videos/" + video.fileName(), "-output", __dirname + "/../videos"]);
 
   shotsplitter.stdout.on('data', function (data) {
-    var buff = new Buffer(data);
-    console.log("more data: " + buff.toString('utf8'));
+    buffer = new Buffer(data);
+    //console.log("data returned: " + buffer.toString('utf8'));
   });
 
   shotsplitter.stderr.on('data', function (data) {
-    console.log('stdout: ' + data);
-    err = data;
+    //console.log('stdout: ' + data);
+    //err = data;
   });
 
   shotsplitter.on('exit', function (code) {
 
-    console.log('Child process exited with exit code ' + code);
+    if (code == 0 && buffer != null) {
+      
+      // call separate create clips function
+      exports.createClips(video, callback, JSON.parse(buffer.toString('utf8')));
+      return;
+
+    } else {
+      err = "shotsplitter failed with code: " + code;
+    }
 
     callback(err, null);
   });
-
-  } catch (e) {
-    console.log(e);
-  }
-
   
+};
+
+exports.createClips = function(video, callback, timestamps) {
+  console.log("creating clips for timestamps: " + JSON.stringify(timestamps));
+  callback(null, null);
 };
 
 exports.populateVideoInfo = function (video, videoInfo) {
