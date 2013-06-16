@@ -82,7 +82,17 @@ exports.importVideo = function(video) {
     },
 
     downloadVideo : function(callback) {
-      exports.downloadVideo(video, callback);
+
+      // check if we have the file in the video cache... (for debugging)
+      fs = require('fs');
+      var cachePath = "./children/shotsplitter.py";
+      if (fs.existsSync(cachePath)) {
+        // copy the video from the cache
+        exports.copyVideoFromCache(video, callback);
+      } else {
+        // get the video from the web
+        exports.downloadVideo(video, callback);  
+      }      
     },
 
     processVideo : function(callback) {
@@ -140,6 +150,36 @@ exports.downloadVideo = function(video, callback) {
       callback(err, null);
     });
   });
+};
+
+exports.copyVideoFromCache = function(video, callback) {
+
+  console.log("copying video from cache");
+
+  var source = "./videocache/" + video.fileName();
+  var target = "./videos/" + video.fileName();
+
+  var cbCalled = false;
+
+  var rd = fs.createReadStream(source);
+  rd.on("error", function(err) {
+    done(err);
+  });
+  var wr = fs.createWriteStream(target);
+  wr.on("error", function(err) {
+    done(err);
+  });
+  wr.on("close", function(ex) {
+    done(null);
+  });
+  rd.pipe(wr);
+
+  function done(err) {
+    if (!cbCalled) {
+      callback(err, null);
+      cbCalled = true;
+    }
+  }
 };
 
 exports.processVideo = function(video, callback) {
