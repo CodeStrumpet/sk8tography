@@ -53,3 +53,24 @@ table th, table td {
 .urlColumn {
   width : 25%;
 }
+
+/* tag clips */
+
+.container-fluid > .sidebar {
+    position: relative;
+    top: 0;
+    left:auto;
+    width: 240px;
+}
+
+.left {
+    float:left;
+}
+
+.right {
+    float:right;
+}
+
+.container-fluid > .content {
+    margin: 0 260px;
+}

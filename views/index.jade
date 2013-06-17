@@ -15,14 +15,21 @@ block body
         a(href='/videos') Videos
       li
         a(href='/addVideo') Add a video
+      li
+        a(href='/tagClips') Tag Clips
 
     div(ng-view)
 
+  script(src='http://www.youtube.com/iframe_api')
+  script(src='http://s.ytimg.com/yts/jsbin/www-widgetapi-vflr_hAhz.js')
   script(src='js/lib/angular/angular.js')
+  script(src='js/jquery-1.9.1.js')
+  script(src='js/jquery-ui.js')
   script(src='/socket.io/socket.io.js')
   script(src='js/SharedConstants.js')
   script(src='js/app.js')  
   script(src='js/services.js')
   script(src='js/controllers.js')
+  script(src='js/tagClipsCtrl.js')
   script(src='js/filters.js')
   script(src='js/directives.js')
