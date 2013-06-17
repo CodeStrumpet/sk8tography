@@ -7,8 +7,6 @@ var Skater = mongoose.model("Skater");
 var consts = require('../public/js/SharedConstants').Constantsinople;
 
 module.exports = function() {
-
-
     
     var clipSchema = new Schema({
         videoId: String,
@@ -19,7 +17,8 @@ module.exports = function() {
         startTime: Number,
         duration: Number,
         tricks : [Trick],
-        skaterRef : Schema.ObjectId
+        skaterRef : Schema.ObjectId,
+        spotRef : Schema.ObjectId
     });
 
 
