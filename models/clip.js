@@ -1,6 +1,9 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+var Trick = mongoose.model("Trick");
+var Skater = mongoose.model("Skater");
+
 var consts = require('../public/js/SharedConstants').Constantsinople;
 
 module.exports = function() {
@@ -14,7 +17,9 @@ module.exports = function() {
         status: { type: Number, default: consts.ClipStatus.ADDED },
         fileFormat: Number,
         startTime: Number,
-        duration: Number
+        duration: Number,
+        tricks : [Trick],
+        skaterRef : Schema.ObjectId
     });
 
 
