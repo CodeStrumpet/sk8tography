@@ -41,6 +41,7 @@ angular.module('myApp.directives', []).
 	};
 })
 .directive('loadScrubBar', function() {
+	console.log("loadScrubBar");
 	return function($scope, element, attrs) {
 		// setup seekbar
         $scope.slider = $( "#scrubbar" ).slider({
