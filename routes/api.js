@@ -4,6 +4,7 @@
 var mongoose = require('mongoose');
 var Track = mongoose.model("Track");
 var Video = mongoose.model("Video");
+var Clip = mongoose.model("Clip");
 
 var videoHelper = require('../helpers/video');
 
@@ -167,6 +168,24 @@ exports.videos = function (req, res) {
   .exec(vidsCallback);
 
 };
+
+exports.clips = function (req, res) {
+
+  var clipsCallback = function (err, clips) {
+    res.json({
+      clips : clips
+    });
+  };
+
+  Clip
+  .find()
+  .limit(20)
+  .sort('-updated')
+  .exec(clipsCallback);
+
+};
+
+
 
 
 // ============================================================

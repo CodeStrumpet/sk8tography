@@ -9,6 +9,13 @@ angular.module('myApp.directives', []).
       elm.text(version);
     };
   }])
+  .directive('clipsLoaded', function() {  // this directive is a hack to get an event when the clips have loaded
+		return function($scope, element, attrs) {
+			if (!$scope.clipsAvailable) {
+				$scope.clipsBecameAvailable();
+			}
+		}
+	})
   .directive('loadYoutubePlayer', function() {
 	return function($scope, element, attrs) {
 

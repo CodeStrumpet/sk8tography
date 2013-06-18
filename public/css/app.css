@@ -77,8 +77,12 @@ table th, table td {
 
 
 /**************************************************
-  Youtube test page styles 
+  Video console & tag clips page styles
 ***************************************************/
+
+.activeclip {
+  background-color: gray;
+}
 
 .controls {
   margin: 20px 0px 20px 0px; 

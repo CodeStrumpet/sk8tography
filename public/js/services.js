@@ -6,7 +6,16 @@
 // Demonstrate how to register services
 // In this case it is a simple value service.
 angular.module('myApp.services', []).
-  value('version', '0.1');
+  value('version', '0.1')
+
+.service( 'YoutubeService', [ '$rootScope', function( $rootScope ) {
+  return {
+    playerIsReady : false,
+    cueClip: function(clip) {
+      $rootScope.$broadcast('YoutubeService.cueClip', clip);
+    }
+   };
+ }]);
 
 
 // socket service (use 'factory' service definition so we can run one-time code before returning service)

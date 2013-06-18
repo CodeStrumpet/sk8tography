@@ -1,9 +1,17 @@
 'use strict'
 
-function YoutubeCtrl($scope, $http) {
+function YoutubeCtrl($scope, $http, YoutubeService) {
 
   // setup vars
   $scope.playPauseButtonName = "Play";
+
+
+  var autoplay = false;
+
+
+  $scope.$on( 'YoutubeService.cueClip', function( event, clip ) {
+    $scope.cueClip(clip);
+  });
 
 
   $scope.cueClip = function(clip) {
@@ -68,7 +76,8 @@ function YoutubeCtrl($scope, $http) {
 
 	// this function is passed to the video player and will be called when the player is ready
   $scope.onPlayerReady = function (event) {
-    $scope.playerIsReady = true;
+    console.log("player is ready");
+    YoutubeService.playerIsReady = true;
 
   	//event.target.playVideo();
   };
@@ -83,7 +92,7 @@ function YoutubeCtrl($scope, $http) {
           case YT.PlayerState.ENDED:
                 stateName = "ENDED";
                 autoplay = false;
-                $scope.cueCurrentVideo();
+                $scope.cueClip($scope.currClip);
                 break;
           case YT.PlayerState.PLAYING:
                 stateName = "PLAYING";
@@ -97,10 +106,13 @@ function YoutubeCtrl($scope, $http) {
                 stateName = "BUFFERING";
                 break;
           case YT.PlayerState.CUED:
+                $scope.player.seekTo($scope.currClip.startTime, true);
                 stateName = "CUED";
                 if (autoplay) {
                       $scope.playVideo();
                       autoplay = false;                              
+                } else {
+                  $scope.pauseVideo();
                 }                                                 
                 break;
           default:
