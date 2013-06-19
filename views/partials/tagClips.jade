@@ -6,7 +6,8 @@ div.container-fluid
 			h5 Sidebar
 			ul.nav.nav-list
 				li(ng-repeat="clip in clips", ng-class="{activeclip: $index==currClipIndex}", ng-click="setCurrentClip(clip)", clips-loaded)
-					img(ng-src="http://img.youtube.com/vi/{{clip.videoId}}/default.jpg")
+					img(ng-show="!clip.thumbFileName", ng-src="http://img.youtube.com/vi/{{clip.videoId}}/default.jpg")
+					img(ng-show="clip.thumbFileName", ng-src="./images/{{clip.thumbFileName}}")
 					p {{clip.videoId}}
 	div.sidebar.right
 		div.well
@@ -16,3 +17,4 @@ div.container-fluid
 			h1 Content
 			div(ng-controller='YoutubeCtrl')
 				include includes/videoconsole
+				
