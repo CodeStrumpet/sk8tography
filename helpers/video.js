@@ -277,9 +277,6 @@ exports.addThumbnailToClip = function(clip, callback, timemark) {
     time = clip.duration / 2;
   }
 
-  // create the output file name by removing the extension and appending '_thumb'
-  var outputFileName = clip.fileName().slice(0, -4) + '_thumb';
-
   var proc = new ffmpeg({ source: __dirname + '/../videos/' + clip.fileName(), nolog: true })
   // set the size of your thumbnails
   .withSize('?x200')
@@ -287,18 +284,25 @@ exports.addThumbnailToClip = function(clip, callback, timemark) {
   .takeScreenshots({ 
     count: 1, 
     timemarks: [ time.toString()],
-    filename:  outputFileName
-  }, __dirname + '/../videos/', function(err) {
+    filename: '%b_thumb'
+  }, '/', function(err, filenames) {
 
     if (err) {
+      // we don't want to quit if there is an error
       console.log("ignored thumb error: " + err);
-    }
+      callback(null, clip);
+    } else {
+      var outFileName = filenames[0];
+      clip.thumbFileName = outFileName;
 
-    // set clip filename ... 
+      clip.save(function (saveErr) {
+        if (saveErr) {
+          console.log("error saving thumb filename to clip");
+        }        
 
-    // we don't want to quit if there is an error, so we just set the thumb to the parent video thumb    
-    
-    callback(null, clip);
+        callback(null, clip);
+      });
+    }            
   });
 };
 
