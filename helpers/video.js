@@ -185,47 +185,64 @@ exports.copyVideoFromCache = function(video, callback) {
 exports.processVideo = function(video, callback) {
 
   
-  var err = null;
-  var buffer = null;
-  console.log(__dirname);
-  var spawn = require('child_process').spawn,
-    shotsplitter = spawn(__dirname + "/../children/shotsplitter.py", ["-input", __dirname + "/../videos/" + video.fileName(), "-output", __dirname + "/../videos"]);
-
-  shotsplitter.stdout.on('data', function (data) {
-    buffer = new Buffer(data);
-    //console.log("data returned: " + buffer.toString('utf8'));
-  });
-
-  shotsplitter.stderr.on('data', function (data) {
-    //console.log('stdout: ' + data);
-    //err = data;
-  });
-
-  shotsplitter.on('exit', function (code) {
-
-    if (code == 0 && buffer != null) {
-
-      var result = JSON.parse(buffer.toString('utf8'));
+  require('async').waterfall([
 
 
-      // catch error passed back in valid json
-      if (result.error || !result.timestamps) {
-        err = result.error;
-        callback(err, null);
-        return;
-      }
+    function(waterfallCallback) { // analyze and split
+      var err = null;
+      var buffer = null;
+      console.log(__dirname);
+      var spawn = require('child_process').spawn,
+        shotsplitter = spawn(__dirname + "/../children/shotsplitter.py", ["-input", __dirname + "/../videos/" + video.fileName(), "-output", __dirname + "/../videos"]);
 
-      // call separate create clips function
-      exports.createClips(video, callback, result);
-      return;
+      shotsplitter.stdout.on('data', function (data) {
+        buffer = new Buffer(data);
+        //console.log("data returned: " + buffer.toString('utf8'));
+      });
 
-    } else {
-      err = "shotsplitter failed with code: " + code;
+      shotsplitter.stderr.on('data', function (data) {
+        //console.log('stdout: ' + data);
+        //err = data;
+      });
+
+      shotsplitter.on('exit', function (code) {
+
+        if (code == 0 && buffer != null) {
+
+          var result = JSON.parse(buffer.toString('utf8'));
+
+
+          // catch error passed back in valid json
+          if (result.error || !result.timestamps) {
+            err = result.error;
+            callback(err, null);
+            return;
+          }
+
+          // call separate create clips function
+          exports.createClips(video, waterfallCallback, result);
+          return;
+
+        } else {
+          err = "shotsplitter failed with code: " + code;
+        }
+
+        waterfallCallback(err, null);
+      });
+    },
+
+    function(results, waterfallCallback) { // create thumbnails
+      var err = null;
+
+      console.log("create thumbs waterfall method. num results: " + results.length);
+      waterfallCallback(err, results);
+
     }
-
-    callback(err, null);
+  ], 
+  function (err, result) {
+    // call the main callback that was passed into the function
+    callback(err, result);
   });
-  
 };
 
 exports.createClips = function(video, callback, timestamps) {
@@ -274,8 +291,6 @@ exports.createClips = function(video, callback, timestamps) {
 
   require('async').parallel(saveClips, function(err, results) {
     console.log(err);
-    console.log(results);
-
     callback(err, results);
   });
 };
