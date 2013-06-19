@@ -1,5 +1,7 @@
 
 var consts = require('../public/js/SharedConstants').Constantsinople;
+var mongoose = require('mongoose');
+var Clip = mongoose.model("Clip");
 
 exports.importVideo = function(video) {
 
@@ -233,10 +235,31 @@ exports.processVideo = function(video, callback) {
 
     function(results, waterfallCallback) { // create thumbnails
       var err = null;
-
       console.log("create thumbs waterfall method. num results: " + results.length);
-      waterfallCallback(err, results);
 
+      var parallelFunctions = [];
+
+      // add a create thumbnail function for each clip to the parallelFunctions array
+      results.forEach(function(clipArray) {
+
+        parallelFunctions.push(function(parallelCallback) {
+
+          if (clipArray.length >= 1) {
+            var clip = clipArray[0];
+
+            // call the function that creates the thumb
+            exports.addThumbnailToClip(clip, parallelCallback);
+
+          } else {
+            parallelCallback("no clip provided to thumbnail function", null);
+          }
+        });
+      }); 
+
+      // make async parallel call
+      require('async').parallel(parallelFunctions, function(err, parallelResults) {
+        waterfallCallback(err, parallelResults);
+      });
     }
   ], 
   function (err, result) {
@@ -245,12 +268,35 @@ exports.processVideo = function(video, callback) {
   });
 };
 
+exports.addThumbnailToClip = function(clip, callback, timemark) {
+  var ffmpeg = require('fluent-ffmpeg');
+
+  // if no time is passed in, we use the middle of the clip
+  var time = timemark;
+  if (typeof variable ==='undefined') {
+    time = clip.duration / 2;
+  }
+  var proc = new ffmpeg({ source: __dirname + '/../videos/' + clip.fileName(), nolog: true })
+  // set the size of your thumbnails
+  .withSize('?x200')
+  // take 2 screenshots at predefined timemarks
+  .takeScreenshots({ 
+    count: 1, 
+    timemarks: [ time.toString()],
+    filename:  '%b_thumb'
+  }, "/", function(err) {
+    // we don't want to quit if there is an error, so we just set the thumb to the parent video thumb
+
+    if (err) {
+      console.log("ignored thumb error: " + err);
+    }
+    callback(null, clip);
+  });
+};
+
 exports.createClips = function(video, callback, timestamps) {
   console.log("creating clips for timestamps: " + JSON.stringify(timestamps));
 
-
-  var mongoose = require('mongoose');
-  var Clip = mongoose.model("Clip");
   var fs = require('fs');
 
   var index = 0;
