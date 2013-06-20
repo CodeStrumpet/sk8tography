@@ -1,0 +1,22 @@
+p There are {{videoSegments.length}} video segments
+
+table.table.videosTable
+  thead
+    tr
+      th.thumbColumn image
+      th.infoColumn info
+      th.extraInfoColumn extra info
+      th.urlColumn url
+  tbody
+    tr(ng-repeat='videoSegment in videoSegments')
+
+      td
+        img(ng-src="{{videoSegment.sourceSquareThumb}}")
+      td
+        h3 {{videoSegment.sourceTitle}}
+        p {{videoSegment.sourceDesc}}
+      td
+        p {{videoSegment.sourceDuration}}
+        input(type="button", value="Process", ng-click="processVideoSegment($index)")
+      td
+        p {{videoSegment.url}}

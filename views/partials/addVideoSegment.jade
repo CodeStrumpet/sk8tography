@@ -1,0 +1,7 @@
+h3 Add a Video
+
+form
+	label(for='url')
+		| Video Segment URL:
+	input(type='url', ng-model='videoSegment.url', name='url')
+	button(ng-click='addNewVideoSegment()') Add Video Segment

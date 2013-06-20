@@ -3,28 +3,28 @@ var consts = require('../public/js/SharedConstants').Constantsinople;
 var mongoose = require('mongoose');
 var Clip = mongoose.model("Clip");
 
-exports.importVideo = function(video) {
+exports.importVideoSegment = function(videoSegment) {
 
   require('async').series({
 
-    getVideoSource : function(callback) {
+    getSource : function(callback) {
       var err = null;
-      var vidSource = exports.videoSource(video.url);
-      video.source = vidSource;
+      var vidSource = exports.videoSource(videoSegment.url);
+      videoSegment.source = vidSource;
 
-      // set video status based on source
+      // set videoSegment status based on source
       if (vidSource == consts.VideoSource.UNKNOWN) {
-        video.status = consts.VideoStatus.INVALID;
+        videoSegment.status = consts.VideoStatus.INVALID;
       } else {
-        video.status = consts.VideoStatus.ACQUIRING_INFO;
+        videoSegment.status = consts.VideoStatus.ACQUIRING_INFO;
       }
 
-      video.save(function (saveErr) {
+      videoSegment.save(function (saveErr) {
         if (saveErr) {
           err = "error saving video";
         }        
 
-        if (video.status == consts.VideoStatus.INVALID) {
+        if (videoSegment.status == consts.VideoStatus.INVALID) {
           err = "invalid video";
         }
 
@@ -32,11 +32,11 @@ exports.importVideo = function(video) {
       });    
     },
 
-    getVideoInfo : function(callback) {
+    getInfo : function(callback) {
       var err = null;
 
-      // use source service api to get info about the video
-      var infoURL = exports.videoInfoURL(video);
+      // use source service api to get info about the videoSegment
+      var infoURL = exports.videoInfoURL(videoSegment);
 
       if (infoURL == null) {
         err = "could not construct info url";
@@ -64,14 +64,14 @@ exports.importVideo = function(video) {
           var info = JSON.parse(str);
            
           // try add our new info to video
-          if (exports.populateVideoInfo(video, info)) {
-            video.status = consts.VideoStatus.DOWNLOADING;
+          if (exports.populateVideoSegmentInfo(videoSegment, info)) {
+            videoSegment.status = consts.VideoStatus.DOWNLOADING;
           } else {
             err = "import error";
-            video.status = consts.VideoStatus.INVALID;
+            videoSegment.status = consts.VideoStatus.INVALID;
           }
 
-          video.save(function (saveErr) {
+          videoSegment.save(function (saveErr) {
             if (saveErr) {
               err = "error saving video";
             }
@@ -83,23 +83,23 @@ exports.importVideo = function(video) {
 
     },
 
-    downloadVideo : function(callback) {
+    downloadSegment : function(callback) {
 
       // check if we have the file in the video cache... (for debugging)
       fs = require('fs');
-      var cachePath = "./videos/" + video.fileName();
+      var cachePath = "./videos/" + videoSegment.fileName();
       if (fs.existsSync(cachePath)) {
         // copy the video from the cache
-        exports.copyVideoFromCache(video, callback);
+        exports.copyVideoSegmentFromCache(videoSegment, callback);
       } else {
         // get the video from the web
-        exports.downloadVideo(video, callback);  
+        exports.downloadVideoSegment(videoSegment, callback);  
       }      
     },
 
-    processVideo : function(callback) {
+    processSegment : function(callback) {
       console.log("Processing video...");
-      exports.processVideo(video, callback);
+      exports.processVideoSegment(videoSegment, callback);
     }
   },
 
@@ -108,16 +108,16 @@ exports.importVideo = function(video) {
     if (err) {
       console.log("Err:  " + err);
     } else {
-      console.log("Finished video import");
+      console.log("Finished videoSegment import");
     }
 
   });
 };
 
-exports.downloadVideo = function(video, callback) {
+exports.downloadVideoSegment = function(videoSegment, callback) {
   var err = null;
 	var spawn = require('child_process').spawn,
-    youtubedl = spawn( "youtube-dl", ["-o", "videos/" + video.fileName(), video.url]);
+    youtubedl = spawn( "youtube-dl", ["-o", "videos/" + videoSegment.fileName(), videoSegment.url]);
 
   youtubedl.stdout.on('data', function (data) {
     var buff = new Buffer(data);
@@ -133,18 +133,18 @@ exports.downloadVideo = function(video, callback) {
     console.log('Child process exited with exit code ' + code);
 
     if (code == 0) {
-      video.status = consts.VideoStatus.PROCESSING;
+      videoSegment.status = consts.VideoStatus.PROCESSING;
     } else {
-      video.status = consts.VideoStatus.INVALID;
+      videoSegment.status = consts.VideoStatus.INVALID;
     }
 
     // save video, and if successful kick off download
-    video.save(function (saveErr) {
+    videoSegment.save(function (saveErr) {
       if (saveErr) {
         err = "error saving";
       }
 
-      if (video.status == consts.VideoStatus.INVALID) {
+      if (videoSegment.status == consts.VideoStatus.INVALID) {
         err = "Video is invalid";
       }
 
@@ -154,12 +154,12 @@ exports.downloadVideo = function(video, callback) {
   });
 };
 
-exports.copyVideoFromCache = function(video, callback) {
+exports.copyVideoSegmentFromCache = function(videoSegment, callback) {
 
-  console.log("copying video from cache");
+  console.log("copying videoSegment from cache");
 
-  var source = "./videocache/" + video.fileName();
-  var target = "./videos/" + video.fileName();
+  var source = "./videocache/" + videoSegment.fileName();
+  var target = "./videos/" + videoSegment.fileName();
 
   var cbCalled = false;
 
@@ -184,7 +184,7 @@ exports.copyVideoFromCache = function(video, callback) {
   }
 };
 
-exports.processVideo = function(video, callback) {
+exports.processVideoSegment = function(videoSegment, callback) {
 
   
   require('async').waterfall([
@@ -195,7 +195,7 @@ exports.processVideo = function(video, callback) {
       var buffer = null;
       console.log(__dirname);
       var spawn = require('child_process').spawn,
-        shotsplitter = spawn(__dirname + "/../children/shotsplitter.py", ["-input", __dirname + "/../videos/" + video.fileName(), "-output", __dirname + "/../videos"]);
+        shotsplitter = spawn(__dirname + "/../children/shotsplitter.py", ["-input", __dirname + "/../videos/" + videoSegment.fileName(), "-output", __dirname + "/../videos"]);
 
       shotsplitter.stdout.on('data', function (data) {
         buffer = new Buffer(data);
@@ -222,7 +222,7 @@ exports.processVideo = function(video, callback) {
           }
 
           // call separate create clips function
-          exports.createClips(video, waterfallCallback, result);
+          exports.createClips(videoSegment, waterfallCallback, result);
           return;
 
         } else {
@@ -311,7 +311,7 @@ exports.addThumbnailToClip = function(clip, callback, timemark) {
   });
 };
 
-exports.createClips = function(video, callback, timestamps) {
+exports.createClips = function(videoSegment, callback, timestamps) {
   console.log("creating clips for timestamps: " + JSON.stringify(timestamps));
 
   var fs = require('fs');
@@ -335,9 +335,9 @@ exports.createClips = function(video, callback, timestamps) {
     }
 
     var clip = new Clip({
-      videoId : video._id,
+      videoSegmentId : videoSegment._id,
       index : index,
-      fileFormat : video.fileFormat,
+      fileFormat : videoSegment.fileFormat,
       startTime : clipInfo.start,
       duration : clipInfo.duration
     });
@@ -358,16 +358,16 @@ exports.createClips = function(video, callback, timestamps) {
   });
 };
 
-exports.populateVideoInfo = function (video, videoInfo) {
+exports.populateVideoSegmentInfo = function (videoSegment, videoInfo) {
 
   if (typeof videoInfo.data != 'undefined') {
-    video.sourceTitle = videoInfo.data.title;
-    video.sourceDesc = videoInfo.data.description;
-    video.sourceSquareThumb = videoInfo.data.thumbnail.sqDefault;
-    video.sourceLargeThumb = videoInfo.data.thumbnail.hqDefault;
-    video.sourceDuration = videoInfo.data.duration;
-    video.sourceViewCount = videoInfo.data.viewCount;
-    video.sourceUploader = videoInfo.data.uploader;
+    videoSegment.sourceTitle = videoInfo.data.title;
+    videoSegment.sourceDesc = videoInfo.data.description;
+    videoSegment.sourceSquareThumb = videoInfo.data.thumbnail.sqDefault;
+    videoSegment.sourceLargeThumb = videoInfo.data.thumbnail.hqDefault;
+    videoSegment.sourceDuration = videoInfo.data.duration;
+    videoSegment.sourceViewCount = videoInfo.data.viewCount;
+    videoSegment.sourceUploader = videoInfo.data.uploader;
 
     return true;
 
@@ -376,17 +376,17 @@ exports.populateVideoInfo = function (video, videoInfo) {
   return false;
 };
 
-exports.videoInfoURL = function (video) {
+exports.videoInfoURL = function (videoSegment) {
   ////https://gdata.youtube.com/feeds/api/videos/s0Nbkxy7E48?v=2&alt=json
   var infoURL = null;
-  if (video.source == consts.VideoSource.YOUTUBE) {
-    infoURL = "http://gdata.youtube.com/feeds/api/videos/" + video._id + "?v=2&alt=jsonc";
+  if (videoSegment.source == consts.VideoSource.YOUTUBE) {
+    infoURL = "http://gdata.youtube.com/feeds/api/videos/" + videoSegment._id + "?v=2&alt=jsonc";
   }
 
   return infoURL;
 };
 
-exports.videoSourceId = function(url) {
+exports.videoSegmentSourceId = function(url) {
 
   var source = exports.videoSource(url);
 

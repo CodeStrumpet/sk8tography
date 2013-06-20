@@ -4,9 +4,9 @@ div.container-fluid
 			h5 Sidebar
 			ul.nav.nav-list
 				li(ng-repeat="clip in clips", ng-class="{activeclip: $index==currClipIndex}", ng-click="setCurrentClip(clip)", clips-loaded)
-					img(ng-show="!clip.thumbFileName", ng-src="http://img.youtube.com/vi/{{clip.videoId}}/default.jpg")
+					img(ng-show="!clip.thumbFileName", ng-src="http://img.youtube.com/vi/{{clip.videoSegmentId}}/default.jpg")
 					img(ng-show="clip.thumbFileName", ng-src="./images/{{clip.thumbFileName}}")
-					p {{clip.videoId}}
+					p {{clip.videoSegmentId}}
 	div.sidebar.right
 		div.well
 			h5 Sidebar

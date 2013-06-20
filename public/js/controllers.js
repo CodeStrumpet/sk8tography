@@ -4,28 +4,28 @@
 /* Controllers */
 
 
-function AddVideoCtrl($scope, $http, $location, $routeParams, socket) {
-  console.log("looking at add video");
+function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, socket) {
+  console.log("looking at add videoSegment");
 
   // socket listeners
   socket.on('init', function (data) {
     console.log("init received:  " + data.msg);
   });
 
-  $scope.video = {};
+  $scope.videoSegment = {};
 
-  $scope.addNewVideo = function() {
+  $scope.addNewVideoSegment = function() {
     
-    console.log("adding url: " + $scope.video.url);
+    console.log("adding url: " + $scope.videoSegment.url);
 
     console.log("one possible client-side VideoStatus value is: " + window.Constantsinople.VideoStatus.AVAILABLE);
 
-    $http.put('/api/addVideo', $scope.video).
+    $http.put('/api/addVideoSegment', $scope.videoSegment).
       success(function(data) {
         if (data.error) {
-          console.log("add video failed: " + data.error);
+          console.log("add videoSegment failed: " + data.error);
         } else {
-          console.log("add video returned success: " + JSON.stringify(data));  
+          console.log("add videoSegment returned success: " + JSON.stringify(data));  
         }
     });
 
@@ -52,27 +52,27 @@ function AddVideoCtrl($scope, $http, $location, $routeParams, socket) {
 }
 
 
-function VideosCtrl($scope, $http, socket) {
+function VideoSegmentsCtrl($scope, $http, socket) {
 
   // socket listeners
   socket.on('init', function (data) {
     console.log("init received:  " + data.msg);
   });
 
-  $http.get('/api/videos').
+  $http.get('/api/videoSegments').
     success(function(data, status, headers, config) {
-      $scope.videos = data.videos;
+      $scope.videoSegments = data.videoSegments;
     });
 
-  $scope.processVideo = function(index) {
-    var video = $scope.videos[index];
+  $scope.processVideoSegment = function(index) {
+    var videoSegment = $scope.videoSegments[index];
 
-    $http.put('/api/processVideo', {videoId : video._id}).
+    $http.put('/api/processVideoSegment', {videoSegmentId : videoSegment._id}).
       success(function(data) {
         if (data.error) {
-          console.log("process video failed: " + data.error);
+          console.log("process videoSegment failed: " + data.error);
         } else {
-          console.log("process video returned success: " + JSON.stringify(data));  
+          console.log("process videoSegment returned success: " + JSON.stringify(data));  
         }
     });
   };

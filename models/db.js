@@ -1,6 +1,6 @@
 
 
-var models = ['./track.js', './video.js', './skater.js', './trickType.js', 
+var models = ['./track.js', './videoSegment.js', './skater.js', './trickType.js', 
 	'./trick.js', './spot.js', './clip.js'];
 
 exports.initialize = function() {
@@ -11,5 +11,5 @@ exports.initialize = function() {
 };
 
 var mongoose = require('mongoose');
-mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/test1');
+mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/test2');
 

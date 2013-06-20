@@ -9,7 +9,7 @@ var consts = require('../public/js/SharedConstants').Constantsinople;
 module.exports = function() {
     
     var clipSchema = new Schema({
-        videoId: String,
+        videoSegmentId: String,
         index: Number,
         updated: { type: Date, default: Date.now },
         status: { type: Number, default: consts.ClipStatus.ADDED },
@@ -25,7 +25,7 @@ module.exports = function() {
 
     clipSchema.methods.fileName = function() {
 
-      var viddyName = this.videoId;
+      var viddyName = this.videoSegmentId;
 
       viddyName = viddyName + "_" + this.index + "." + consts.videoFileFormatString(this.fileFormat);
 

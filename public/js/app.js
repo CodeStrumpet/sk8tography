@@ -8,13 +8,13 @@ var app = angular.module('myApp', ['myApp.filters', 'myApp.services', 'myApp.dir
         templateUrl: 'partials/index',
         controller: IndexCtrl
       }).
-      when('/videos', {
-        templateUrl: 'partials/videos',
-        controller: VideosCtrl
+      when('/videoSegments', {
+        templateUrl: 'partials/videoSegments',
+        controller: VideoSegmentsCtrl
       }).
-      when('/addVideo', {
-        templateUrl: 'partials/addVideo',
-        controller: AddVideoCtrl
+      when('/addVideoSegment', {
+        templateUrl: 'partials/addVideoSegment',
+        controller: AddVideoSegmentCtrl
       }).
       when('/tagClips', {
         templateUrl: 'partials/tagClips',

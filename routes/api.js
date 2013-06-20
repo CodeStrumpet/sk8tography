@@ -3,7 +3,7 @@
  */
 var mongoose = require('mongoose');
 var Track = mongoose.model("Track");
-var Video = mongoose.model("Video");
+var VideoSegment = mongoose.model("VideoSegment");
 var Clip = mongoose.model("Clip");
 
 var videoHelper = require('../helpers/video');
@@ -13,32 +13,32 @@ var constantsPath = '../public/js/SharedConstants';
 
 // PUT
 
-exports.processVideo = function(req, res) {
+exports.processVideoSegment = function(req, res) {
 
-  var videoId = req.body.videoId;
+  var videoSegmentId = req.body.videoSegmentId;
 
   require('async').series({
 
-    checkVideoId : function(callback) {
+    checkId : function(callback) {
       var err = null;
-      if (videoId == null) {
-        err = "invalid video id";
+      if (videoSegmentId == null) {
+        err = "invalid video segment id";
       }
       callback(err, null);
     },
 
-    findVideo : function(callback) {
-      var vidCallback = function (err, video) {
+    findSegment : function(callback) {
+      var vidCallback = function (err, videoSegment) {
 
         if (err) {          
           callback(err, null);
         } else {
-          callback(null, video);
+          callback(null, videoSegment);
         }
       };
 
-      Video
-      .findById(videoId)
+      VideoSegment
+      .findById(videoSegmentId)
       .exec(vidCallback);
     },
 
@@ -54,7 +54,7 @@ exports.processVideo = function(req, res) {
       });
     } else {
       res.json({
-        video: results.findVideo
+        videoSegment: results.findSegment
       });
 
       var processCallback = function(err, result) {
@@ -65,15 +65,15 @@ exports.processVideo = function(req, res) {
         }        
       };
 
-      videoHelper.processVideo(results.findVideo, processCallback);
+      videoHelper.processVideoSegment(results.findSegment, processCallback);
     }
   });
 };
 
 
-exports.addVideo = function(req, res) {
+exports.addVideoSegment = function(req, res) {
 
-  var videoURL = req.body.url;
+  var videoSegmentURL = req.body.url;
 
   var consts = require(constantsPath).Constantsinople;
 
@@ -83,7 +83,7 @@ exports.addVideo = function(req, res) {
       var check = require('validator').check;
       var err = null;
       try {
-        check(videoURL).isUrl();
+        check(videoSegmentURL).isUrl();
       } catch (e) {
         err = "invalid URL";
       }
@@ -92,42 +92,42 @@ exports.addVideo = function(req, res) {
 
     findExisting : function(callback) {
       var err = null;
-      Video.findOne({url : videoURL}, function(fetchErr, video) {
+      VideoSegment.findOne({url : videoSegmentURL}, function(fetchErr, videoSegment) {
         if (fetchErr) {
           err = "db error";
-        } else if (video) {
-          err = "video already exists";
+        } else if (videoSegment) {
+          err = "video segment already exists";
         }
         callback(err, null);
       });    
     },
 
-    newVideo : function(callback) {
+    newSegment : function(callback) {
       var err = null;
-      var sourceId = videoHelper.videoSourceId(videoURL);
+      var sourceId = videoHelper.videoSegmentSourceId(videoSegmentURL);
 
-      // only accept videos with valid sourceId
+      // only accept video segments with valid sourceId
       if (sourceId == null) {
         err = "invalid url (source id not found)";
         callback(err, null);
         return;
       }
 
-      var newVideo = new Video({
+      var newVideoSegment = new VideoSegment({
         _id: sourceId,
-        url: videoURL, 
-        source :videoHelper.videoSource(videoURL),
+        url: videoSegmentURL, 
+        source :videoHelper.videoSource(videoSegmentURL),
         fileFormat : consts.VideoFileFormat.MP4,
         status : consts.VideoStatus.ADDED
       });   
 
-      newVideo.save(function (saveErr) {
+      newVideoSegment.save(function (saveErr) {
         if (saveErr) {
           console.log("saveErr: " + saveErr);
-          err = "error saving video";
+          err = "error saving videoSegment";
         }
 
-        callback(err, newVideo);
+        callback(err, newVideoSegment);
       });
     }
   },
@@ -140,11 +140,11 @@ exports.addVideo = function(req, res) {
         error: err
       });
     } else {
-      res.json(results.newVideo);
+      res.json(results.newSegment);
 
       // kick off child process to actually download and import the video
-      console.log("kick off import of the video");
-      videoHelper.importVideo(results.newVideo);
+      console.log("kick off import of the video segment");
+      videoHelper.importVideoSegment(results.newSegment);
     }
   });
 };
@@ -152,16 +152,16 @@ exports.addVideo = function(req, res) {
 
 // GET
 
-exports.videos = function (req, res) {
+exports.videoSegments = function (req, res) {
 
-  var vidsCallback = function (err, videos) {
+  var vidsCallback = function (err, videoSegments) {
     res.json({
-      videos : videos
+      videoSegments : videoSegments
     });
   };
 
 
-  Video
+  VideoSegment
   .find()
   .limit(20)
   .sort('-updated')

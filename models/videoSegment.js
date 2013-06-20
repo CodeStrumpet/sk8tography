@@ -7,7 +7,7 @@ module.exports = function() {
 
 
     
-    var videoSchema = new Schema({
+    var videoSegmentSchema = new Schema({
       _id: String,
       url: String,
       status: Number,
@@ -24,7 +24,7 @@ module.exports = function() {
     });
 
 
-    videoSchema.methods.fileName = function() {
+    videoSegmentSchema.methods.fileName = function() {
 
 
       var viddyName = this._id;
@@ -38,5 +38,5 @@ module.exports = function() {
       return viddyName;
     };
 
-    mongoose.model("Video", videoSchema);
+    mongoose.model("VideoSegment", videoSegmentSchema);
 };

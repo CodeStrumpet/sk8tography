@@ -22,7 +22,7 @@ function YoutubeCtrl($scope, $http, YoutubeService) {
     $scope.currClip = clip;
 
     $scope.player.cueVideoById({
-          videoId: clip.videoId,
+          videoId: clip.videoSegmentId,
           startSeconds: clip.startTime,
           endSeconds: clip.startTime + clip.duration,
           suggestedQuality: 'default'
