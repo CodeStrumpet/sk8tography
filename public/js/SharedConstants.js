@@ -3,7 +3,14 @@ var scope = typeof exports != 'undefined' ? exports : window;
 
 scope.Constantsinople = {};
 
-// 
+// Field Names
+
+scope.Constantsinople.fields = {
+	SKATER : "skater",
+	VIDEO_NAME : "videoName",
+	YEAR : "year",
+	COMPANY : "company"
+};
 
 // Clips
 
