@@ -1,5 +1,9 @@
 /* app css stylesheet */
 
+body {
+  padding-top: 70px;
+}
+
 .menu {
   list-style: none;
   border-bottom: 0.1em solid black;
@@ -75,10 +79,25 @@ table th, table td {
     margin: 0 260px;
 }
 
+/**************************************************
+  Navbar
+**************************************************/
+.activeLink {
+  text-decoration: underline;
+}
+
+.navbar-position {
+  position:fixed;
+}
+
 
 /**************************************************
   Video console & tag clips page styles
 ***************************************************/
+
+.content {
+  position: fixed;
+}
 
 .activeclip {
   background-color: gray;

@@ -7,14 +7,17 @@ function YoutubeCtrl($scope, $http, YoutubeService) {
 
 
   var autoplay = false;
+  var savedVolume;
 
 
   $scope.$on( 'YoutubeService.cueClip', function( event, clip ) {
-    $scope.cueClip(clip);
+    $scope.cueClip(clip, true);
   });
 
 
-  $scope.cueClip = function(clip) {
+  $scope.cueClip = function(clip, playImmediately) {
+
+    autoplay = playImmediately;
 
     $scope.currClip = clip;
 
@@ -92,10 +95,12 @@ function YoutubeCtrl($scope, $http, YoutubeService) {
           case YT.PlayerState.ENDED:
                 stateName = "ENDED";
                 autoplay = false;
-                $scope.cueClip($scope.currClip);
+                $scope.player.mute();
+                $scope.cueClip($scope.currClip, false);
                 break;
-          case YT.PlayerState.PLAYING:
+          case YT.PlayerState.PLAYING:                
                 stateName = "PLAYING";
+                $scope.player.unMute();
                 // start monitoring the clip duration                        
                 $scope.checkCurrentTime();
                 break;

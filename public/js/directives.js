@@ -78,8 +78,10 @@ angular.module('myApp.directives', []).
 
           if(regexp.test(newValue)) {
             $li.addClass('active');
+            $li.addClass('activeLink');
           } else {
             $li.removeClass('active');
+            $li.removeClass('activeLink');
           }
 
         });

@@ -1,18 +1,18 @@
 extends layout
 
 block body
-  div.navbar(bs-navbar)
+  div.navbar.navbar-fixed-top(bs-navbar)
     div.navbar-inner
       div.container-fluid
         a.brand(href="/") Sk8tography
         ul.nav
-          li
+          li(data-match-route="/addPost")
             a(href='/addPost') Add a new post
-          li
+          li(data-match-route="/videos")
             a(href='/videos') Videos
-          li
+          li(data-match-route="/addVideo")
             a(href='/addVideo') Add a video
-          li
+          li(data-match-route="/tagClips")
             a(href='/tagClips') Tag Clips
   div(ng-view)
 
