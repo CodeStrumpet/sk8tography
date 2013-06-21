@@ -5,38 +5,36 @@ var consts = require('../public/js/SharedConstants').Constantsinople;
 
 module.exports = function() {
 
-
-    
-    var videoSegmentSchema = new Schema({
-      _id: String,
-      url: String,
-      status: Number,
-      source: Number,
-      fileFormat: Number,
-      sourceTitle: String,
-      sourceDesc: String,
-      sourceSquareThumb: String,
-      sourceLargeThumb: String,
-      sourceDuration: Number,
-      sourceViewCount: Number,
-      sourceUploader: String,
-      updated: { type: Date, default: Date.now }
-    });
-
-
-    videoSegmentSchema.methods.fileName = function() {
+  var videoSegmentSchema = new Schema({
+    _id: String,
+    videoRef: Schema.Types.ObjectId,
+    url: String,
+    status: Number,
+    source: Number,
+    fileFormat: Number,
+    sourceTitle: String,
+    sourceDesc: String,
+    sourceSquareThumb: String,
+    sourceLargeThumb: String,
+    sourceDuration: Number,
+    sourceViewCount: Number,
+    sourceUploader: String,
+    updated: { type: Date, default: Date.now }
+  });
 
 
-      var viddyName = this._id;
+  videoSegmentSchema.methods.fileName = function() {
 
-      if (viddyName == null) {
-        viddyName = consts.hashCode(this.url);
-      }
+    var viddyName = this._id;
 
-      viddyName = viddyName + "." + consts.videoFileFormatString(this.fileFormat);
+    if (viddyName == null) {
+      viddyName = consts.hashCode(this.url);
+    }
 
-      return viddyName;
-    };
+    viddyName = viddyName + "." + consts.videoFileFormatString(this.fileFormat);
 
-    mongoose.model("VideoSegment", videoSegmentSchema);
+    return viddyName;
+  };
+
+  mongoose.model("VideoSegment", videoSegmentSchema);
 };

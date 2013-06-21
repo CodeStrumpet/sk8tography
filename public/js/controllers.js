@@ -5,22 +5,27 @@
 
 
 function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, socket) {
-  console.log("looking at add videoSegment");
-
+  
   // socket listeners
   socket.on('init', function (data) {
     console.log("init received:  " + data.msg);
   });
 
-  $scope.videoSegment = {};
+  $http.get('/api/videoSegments').
+    success(function(data, status, headers, config) {
+      $scope.videoSegments = data.videoSegments;
+  });
+
+
+  $scope.newVideoSegment = {};
 
   $scope.addNewVideoSegment = function() {
     
-    console.log("adding url: " + $scope.videoSegment.url);
+    console.log("adding url: " + $scope.newVideoSegment.url);
 
     console.log("one possible client-side VideoStatus value is: " + window.Constantsinople.VideoStatus.AVAILABLE);
 
-    $http.put('/api/addVideoSegment', $scope.videoSegment).
+    $http.put('/api/addVideoSegment', $scope.newVideoSegment).
       success(function(data) {
         if (data.error) {
           console.log("add videoSegment failed: " + data.error);
@@ -28,27 +33,7 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, socket) {
           console.log("add videoSegment returned success: " + JSON.stringify(data));  
         }
     });
-
-
-/*
-    socket.emit("addVideo", {
-      url : $scope.video.url
-    });
-    
-    // testing message sending...
-    socket.emit('send:message', {
-      msg : "this is the message from the client"
-    }, function (result) {
-      if (!result) {
-        console.log('There was an error messaging the server');
-      } else {
-        console.log("successfully sent message to the server");
-      }
-    });
-*/
   };
-
-
 }
 
 

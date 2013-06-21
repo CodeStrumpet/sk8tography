@@ -1,7 +1,45 @@
-h3 Add a Video
+h3 Add a new Video Segment
 
-form
-	label(for='url')
-		| Video Segment URL:
-	input(type='url', ng-model='videoSegment.url', name='url')
-	button(ng-click='addNewVideoSegment()') Add Video Segment
+div.span12.well
+  form.form-horizontal
+    fieldset
+      legend New Segment
+      div.control.group
+        label.control-label(for="segmentUrl") URL
+        div.controls
+          input.input-xxlarge#segmentUrl(ng-model="newVideoSegment.url", type="url", name="segmentUrl", placeholder="http://www.youtube.com/...")
+          div#videoInfo
+      div.control.group
+        label.control-label(for="parentVideo") Parent Video
+        div.controls
+          input.input-xlarge#parentVideo(type="url", name="parentVideo", placeholder="e.g. Photosynthesis...")
+          p.help-block (optional)
+      div.form-actions
+        div
+          button.btn.btn-primary(ng-click='addNewVideoSegment()') Add Video Segment     
+
+
+
+
+h3 Recently added Segments
+div.span12
+  table.table.videosTable
+    thead
+      tr
+        th.thumbColumn image
+        th.infoColumn info
+        th.extraInfoColumn extra info
+        th.urlColumn url
+    tbody
+      tr(ng-repeat='videoSegment in videoSegments')
+
+        td
+          img(ng-src="{{videoSegment.sourceSquareThumb}}")
+        td
+          h3 {{videoSegment.sourceTitle}}
+          p {{videoSegment.sourceDesc}}
+        td
+          p {{videoSegment.sourceDuration}}
+          input(type="button", value="Process", ng-click="processVideoSegment($index)")
+        td
+          p {{videoSegment.url}}
