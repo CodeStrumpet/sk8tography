@@ -16,9 +16,11 @@ block body
             a(href='/tagClips') Tag Clips
   div(ng-view)
 
-  script(src='js/lib/angular/angular.js')
-  script(src='js/jquery-1.9.1.js')
+  script(src='js/jquery.min.js') 
+  script(src='js/lib/angular/angular.js') 
+  script(src='js/angular-strap.js')  
   script(src='js/jquery-ui.js')
+  script(src='js/bootstrap.min.js')
   script(src='/socket.io/socket.io.js')
   script(src='js/SharedConstants.js')
   script(src='js/app.js')  
@@ -28,5 +30,14 @@ block body
   script(src='js/tagClipsCtrl.js')
   script(src='js/filters.js')
   script(src='js/directives.js')
+
+ 
   script(src='http://www.youtube.com/iframe_api')
   script(src='http://s.ytimg.com/yts/jsbin/www-widgetapi-vflr_hAhz.js')
+
+
+  // in production, switch to cdns...
+  // src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"
+  // src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"
+  // src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.min.js"
+  // src="//cdnjs.cloudflare.com/ajax/libs/angular-strap/0.7.2/angular-strap.min.js"

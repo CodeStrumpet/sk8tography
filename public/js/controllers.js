@@ -16,6 +16,17 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, socket) {
       $scope.videoSegments = data.videoSegments;
   });
 
+  $scope.parentVideoValue = "";
+
+  $scope.parentVideoTypeaheadFn = function(query, callback) {
+
+    callback(["value1", "value2"]);
+    /*
+    $http.get('/stations/autocomplete?term='+query).success(function(stations) {
+      callback(stations); // This will automatically open the popup with retrieved results
+    });
+  */
+  };
 
   $scope.newVideoSegment = {};
 
