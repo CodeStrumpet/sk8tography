@@ -130,6 +130,7 @@ app.put('/api/addVideoSegment', api.addVideoSegment);
 app.put('/api/processVideoSegment', api.processVideoSegment);
 app.get('/api/videoSegments', api.videoSegments);
 app.get('/api/clips', api.clips);
+app.get('/api/videos', api.videos);
 
 // ========================================
 app.get('/api/posts', api.posts);

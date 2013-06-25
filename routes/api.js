@@ -5,6 +5,7 @@ var mongoose = require('mongoose');
 var Track = mongoose.model("Track");
 var VideoSegment = mongoose.model("VideoSegment");
 var Clip = mongoose.model("Clip");
+var Video = mongoose.model("Video");
 
 var videoHelper = require('../helpers/video');
 
@@ -185,7 +186,27 @@ exports.clips = function (req, res) {
 
 };
 
+exports.videos = function (req, res) {
+  var videosCallback = function (err, videos) {
+    res.json({
+      videos : videos
+    });
+  };
 
+  var searchTerms = req.body.query;
+
+  var query = Video.
+  find()
+  .limit(20);
+
+  if (typeof(searchTerms) != 'undefined') {
+    query.where('name').regex('/^' + searchTerms + '/i');
+  } else {
+    query.sort('-updated')
+  }
+  
+  query.exec(videosCallback);  
+};
 
 
 // ============================================================
