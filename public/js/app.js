@@ -41,4 +41,6 @@ var app = angular.module('myApp', ['$strap.directives', 'myApp.filters', 'myApp.
         resolve: {}
       });
     $locationProvider.html5Mode(true);
-  }]);
+  }]).config(function($httpProvider){
+    delete $httpProvider.defaults.headers.common['X-Requested-With'];
+  });;

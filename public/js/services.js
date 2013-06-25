@@ -15,7 +15,33 @@ angular.module('myApp.services', []).
       $rootScope.$broadcast('YoutubeService.cueClip', clip);
     }
    };
- }]);
+ }])
+
+.service('StringHelperService', ['$rootScope', function( $rootScope) {
+  return {
+    urlParams : function(url) {
+      var query = "";
+      var split = url.split('?');
+      if (split.length > 1) {
+        query = split[1];
+      }
+
+      var match,
+        pl     = /\+/g,  // Regex for replacing addition symbol with a space
+        search = /([^&=]+)=?([^&]*)/g,
+        decode = function (s) { 
+          return decodeURIComponent(s.replace(pl, " ")); 
+        };
+
+      var paramsResult = {};
+
+      while (match = search.exec(query))
+        paramsResult[decode(match[1])] = decode(match[2]);
+
+      return paramsResult;
+   }
+  };
+}]);
 
 
 // socket service (use 'factory' service definition so we can run one-time code before returning service)

@@ -4,8 +4,17 @@
 /* Controllers */
 
 
-function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, socket) {
-  
+function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, socket, StringHelperService) {
+
+  // model
+  $scope.newVideoSegment = {
+    valid : false
+  };
+
+  $scope.parentVideoValue = "";
+
+  $scope.additionalInfoVisible = false;
+
   // socket listeners
   socket.on('init', function (data) {
     console.log("init received:  " + data.msg);
@@ -16,7 +25,39 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, socket) {
       $scope.videoSegments = data.videoSegments;
   });
 
-  $scope.parentVideoValue = "";
+  $scope.additionalInfoLabelText = function() {
+    return $scope.additionalInfoVisible ? "\u25BC" : "\u25B6";
+  };
+
+  $scope.segmentUrlUpdated = function() {
+    $scope.newVideoSegment.valid = false;
+    if ($scope.newVideoSegment.url && $scope.newVideoSegment.url.indexOf("youtube.com/watch?v") != -1) {
+      var params = StringHelperService.urlParams($scope.newVideoSegment.url);
+      if (params['v']) {
+        var infoURL = "http://gdata.youtube.com/feeds/api/videos/" + params['v'] + "?v=2&alt=jsonc";
+        $http({
+          url: infoURL,
+          method: "GET"
+        }).success(function(videoInfo, status, headers, config) {
+
+          console.log("video info: " + JSON.stringify(videoInfo));
+
+          $scope.newVideoSegment.valid = true;
+
+          $scope.newVideoSegment.sourceTitle = videoInfo.data.title;
+          $scope.newVideoSegment.sourceDesc = videoInfo.data.description;
+          $scope.newVideoSegment.sourceSquareThumb = videoInfo.data.thumbnail.sqDefault;
+          $scope.newVideoSegment.sourceLargeThumb = videoInfo.data.thumbnail.hqDefault;
+          $scope.newVideoSegment.sourceDuration = videoInfo.data.duration;
+          $scope.newVideoSegment.sourceViewCount = videoInfo.data.viewCount;
+          $scope.newVideoSegment.sourceUploader = videoInfo.data.uploader;
+
+        }).error(function(data, status, headers, config) {
+          console.log("video info request failed: " + status);
+        });
+      }
+    }    
+  };
 
   $scope.parentVideoTypeaheadFn = function(query, callback) {
 
@@ -28,7 +69,7 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, socket) {
   */
   };
 
-  $scope.newVideoSegment = {};
+ 
 
   $scope.addNewVideoSegment = function() {
     

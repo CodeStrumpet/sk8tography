@@ -138,3 +138,16 @@ table th, table td {
 .ui-widget-header{
   background-image:none;background-color:#887e6d;
 }
+
+/**************************************************
+  Videos page
+***************************************************/
+
+.actionable:hover {
+  cursor: hand; 
+  cursor: pointer;
+}
+
+.subform {
+  margin-left: 30;
+}
