@@ -4,7 +4,7 @@
 /* Controllers */
 
 
-function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, StringHelperService, $modal, $dialog) {
+function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, StringHelperService, $dialog) {
 
   // model
   $scope.newVideoSegment = {
@@ -59,6 +59,22 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, StringHelpe
         });
       }
     }    
+  };
+
+   $scope.getVideos = function(videoName) {
+    return ["one value", "second value", "third value"];
+    /*
+    return $http.get('/api/videos', {}).
+      then(function(data) {
+
+        console.log("returned " + data.videos.length + " videos.");
+        var vidNames = [];
+        for (var i = 0; i < data.videos.length; i++) {
+          vidNames.push(data.videos[i].name);
+        }
+        return vidNames;
+    });
+*/
   };
 
   $scope.parentVideoTypeaheadFn = function(query, callback) {
