@@ -23,10 +23,14 @@ form.form-horizontal.well
           div(ng-show='newVideoSegment.valid', data-ng-animate="'fade'")
             label.control-label(for="parentVideo") Parent Video          
             div.controls
-              input.input-xlarge#parentVideo(type="text", name="parentVideo", placeholder="e.g. Photosynthesis...", ng-model="parentVideoValue", bs-typeahead="parentVideoTypeaheadFn")
+              input.input-xlarge#parentVideo(type="text", name="parentVideo", placeholder="e.g. Photosynthesis...", ng-model="parentVideo.name", bs-typeahead="parentVideoTypeaheadFn")
               span
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              button.btn.btn-primary.btn-small(ng-click='addNewVideoSegment()') Add "{{parentVideoValue}}" to the Sk8abase
+              span(ng-show='showAddParentVideoButton()', data-ng-animate="'fade'")
+                "{{parentVideo.name}}" not found.
+              span
+                &nbsp;&nbsp;&nbsp;&nbsp;
+              button.btn.btn-success.btn-small(ng-show='showAddParentVideoButton()', ng-click='someFunction()', data-ng-animate="'fade'") Add new Video to the Sk8abase
               span.help-block (optional)
       fieldset
   div.row

@@ -11,7 +11,10 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, socket, Str
     valid : false
   };
 
-  $scope.parentVideoValue = "";
+  $scope.parentVideo = {
+    valid : false,
+    name : ""
+  };
 
   $scope.additionalInfoVisible = false;
 
@@ -27,6 +30,10 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, socket, Str
 
   $scope.additionalInfoLabelText = function() {
     return $scope.additionalInfoVisible ? "\u25BC" : "\u25B6";
+  };
+
+  $scope.showAddParentVideoButton = function() {
+    return (!$scope.parentVideo.valid) && $scope.parentVideo.name.length > 2;
   };
 
   $scope.segmentUrlUpdated = function() {
