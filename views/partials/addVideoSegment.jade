@@ -1,4 +1,4 @@
-
+// TODO get the inline display:none styles out!                  
 
 form.form-horizontal.well
   h3 Add a new Video Segment
@@ -9,7 +9,7 @@ form.form-horizontal.well
           strong.control-label(for="segmentUrl") URL
           div.controls
             input.input-xxlarge#segmentUrl(ng-model="newVideoSegment.url", type="url", name="segmentUrl", placeholder="http://www.youtube.com/...", ng-change='segmentUrlUpdated()')
-          div#videoInfo.controls(ng-show='newVideoSegment.valid', data-ng-animate="'fade'")
+          div#videoInfo.controls(ng-show='newVideoSegment.valid', data-ng-animate="'fade'", style="display:none")
             table
               tr
                 td.thumbColumn
@@ -18,19 +18,20 @@ form.form-horizontal.well
                   strong {{newVideoSegment.sourceTitle}}                    
                   br
                   small {{newVideoSegment.sourceDesc}}             
+
       fieldset
         div.control-group
-          div(ng-show='newVideoSegment.valid', data-ng-animate="'fade'")
+          div(ng-show='newVideoSegment.valid', data-ng-animate="'fade'", style="display:none")
             label.control-label(for="parentVideo") Parent Video          
             div.controls
               input.input-xlarge#parentVideo(type="text", name="parentVideo", placeholder="e.g. Photosynthesis...", ng-model="parentVideo.name", bs-typeahead="parentVideoTypeaheadFn")
               span
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              span(ng-show='showAddParentVideoButton()', data-ng-animate="'fade'")
+              span(ng-show='showAddParentVideoButton()', data-ng-animate="'fade'", style="display:none")
                 "{{parentVideo.name}}" not found.
               span
                 &nbsp;&nbsp;&nbsp;&nbsp;                
-                button.btn.btn-success.btn-small(ng-show='showAddParentVideoButton()', ng-click='addNewVideo()', data-ng-animate="'fade'") Add new Video to the Sk8abase
+                button.btn.btn-success.btn-small(ng-show='showAddParentVideoButton()', ng-click='addNewVideo()', data-ng-animate="'fade'", style="display:none") Add new Video to the Sk8abase
               span.help-block (optional)
       fieldset
   div.row
@@ -39,8 +40,6 @@ form.form-horizontal.well
         br
         br
         button.btn.btn-primary.btn-large.btn-block(ng-click='addNewVideoSegment()') Add Video Segment     
-
-
 
 h3 Recently added Segments
 div.span12
