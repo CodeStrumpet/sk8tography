@@ -1,7 +1,7 @@
 'use strict';
 
 // Declare app level module which depends on filters, and services
-var app = angular.module('myApp', ['$strap.directives', 'myApp.filters', 'myApp.services', 'myApp.directives']).
+var app = angular.module('myApp', ['$strap.directives', 'ui.bootstrap', 'myApp.filters', 'myApp.services', 'myApp.directives']).
   config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
     $routeProvider.
       when('/', {
@@ -19,6 +19,10 @@ var app = angular.module('myApp', ['$strap.directives', 'myApp.filters', 'myApp.
       when('/tagClips', {
         templateUrl: 'partials/tagClips',
         controller : TagClipsCtrl
+      }).
+      when('/addNewVideo', {
+        templateUrl: 'partials/addNewVideo',
+        controller: AddNewVideoCtrl
       }).
       when('/addPost', {
         templateUrl: 'partials/addPost',

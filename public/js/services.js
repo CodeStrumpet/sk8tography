@@ -45,7 +45,7 @@ angular.module('myApp.services', []).
 
 
 // socket service (use 'factory' service definition so we can run one-time code before returning service)
-app.factory('socket', function ($rootScope) {
+app.factory('SocketConnection', function ($rootScope) {
   var socket = io.connect();
   
   return {
