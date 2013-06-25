@@ -9,7 +9,7 @@ form.form-horizontal.well
           strong.control-label(for="segmentUrl") URL
           div.controls
             input.input-xxlarge#segmentUrl(ng-model="newVideoSegment.url", type="url", name="segmentUrl", placeholder="http://www.youtube.com/...", ng-change='segmentUrlUpdated()')
-          div#videoInfo.controls(ng-show='newVideoSegment.valid')
+          div#videoInfo.controls(ng-show='newVideoSegment.valid', data-ng-animate="'fade'")
             table
               tr
                 td.thumbColumn
@@ -20,7 +20,7 @@ form.form-horizontal.well
                   small {{newVideoSegment.sourceDesc}}             
       fieldset
         div.control-group
-          div(ng-show='newVideoSegment.valid')
+          div(ng-show='newVideoSegment.valid', data-ng-animate="'fade'")
             label.control-label(for="parentVideo") Parent Video          
             div.controls
               input.input-xlarge#parentVideo(type="text", name="parentVideo", placeholder="e.g. Photosynthesis...", ng-model="parentVideoValue", bs-typeahead="parentVideoTypeaheadFn")
