@@ -11,16 +11,16 @@ div
       div.control-group
         label.control-label Year
         div.controls
-          input.input-small(ng-model="video.year", type="number", placeholder="e.g. 2009")
+          input.input-small.year-input(ng-model="video.year", type="number", min="1950", max="2020")
       div.control-group
         label.control-label Info URL
         div.controls
-          input.input-xlarge(ng-model="video.infoUrl", type="url", placeholder="e.g. http://www.skatevideosite.com/skatevideos/alien-workshop-mind-field/online#online")
+          input.input-xxlarge(ng-model="video.infoUrl", type="url", placeholder="e.g. http://www.skatevideosite.com/skatevideos/alien-workshop-mind-field/online#online")
           span.help-block The URL for an info page for this video, (like wikipedia for example).
       div.control-group
         label.control-label Purchase URL
         div.controls
-          input.input-xlarge(ng-model="video.infoUrl", type="url", placeholder="e.g. http://www.alienworkshop.com/#/products/12/48/p_251")
+          input.input-xxlarge(ng-model="video.purchaseUrl", type="url", placeholder="e.g. http://www.alienworkshop.com/#/products/12/48/p_251")
           span.help-block The URL where can you purchase this video (ideally from the company who made it).
       div.control-group
         label.control-label Company
@@ -29,6 +29,10 @@ div
           input.input-large(ng-model="video.company", type="text", placeholder="e.g. Alien Workshop")
           span.help-block Who made the video?
   div.control-group.modal-footer
-    //div.controls
-    button.btn.btn-primary(ng-click="submitNewVideo()") Add Video
-    button.btn.btn-danger(ng-click="cancelNewVideo()") Cancel
+    div.controls(ng-show="!loading")
+      button.btn.btn-primary(ng-click="submitNewVideo()") Add Video
+      button.btn.btn-danger(ng-click="close()") Cancel
+    div(ng-show="loading")
+      i.icon-spinner.icon-spin.icon-large
+
+      span &nbsp;&nbsp;&nbsp; Adding Video...

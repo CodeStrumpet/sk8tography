@@ -72,6 +72,36 @@ exports.processVideoSegment = function(req, res) {
 };
 
 
+
+// POST
+
+
+exports.addVideo = function(req, res) {
+  var videoData = req.body;
+
+  var  newVideo = new Video({
+    name: videoData.name,
+    year: videoData.year,
+    infoUrl: videoData.infoUrl,
+    purchaseUrl: videoData.purchaseUrl
+  });
+
+
+  newVideo.save(function (saveErr) {
+    if (saveErr) {
+      console.log("saveErr: " + saveErr);
+      res.json({
+        error : saveErr
+      });
+    } else {
+      res.json({
+      video : newVideo
+      });
+    }
+  });  
+};
+
+
 exports.addVideoSegment = function(req, res) {
 
   var videoSegmentURL = req.body.url;

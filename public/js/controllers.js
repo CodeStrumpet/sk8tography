@@ -138,7 +138,7 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, StringHelpe
 
     console.log("one possible client-side VideoStatus value is: " + window.Constantsinople.VideoStatus.AVAILABLE);
 
-    $http.put('/api/addVideoSegment', $scope.newVideoSegment).
+    $http.post('/api/addVideoSegment', $scope.newVideoSegment).
       success(function(data) {
         if (data.error) {
           console.log("add videoSegment failed: " + data.error);
@@ -149,7 +149,10 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, StringHelpe
   };
 }
 
-function AddNewVideoCtrl($scope, dialog, dialogModel) {
+
+function AddNewVideoCtrl($scope, $http, dialog, dialogModel) {
+
+  $scope.loading = false;
 
   console.log("resolve passed in: " + JSON.stringify(dialogModel));
 
@@ -158,7 +161,18 @@ function AddNewVideoCtrl($scope, dialog, dialogModel) {
   console.log("video passed in: " + JSON.stringify($scope.parentVideo));
 
   $scope.submitNewVideo = function() {
+    $scope.loading = true;
 
+    $http.post('/api/addVideo', $scope.video).
+      success(function(data) {
+        if (data.error) {
+          console.log("add video failed: " + data.error);
+          dialog.close("Unable to add video");
+        } else {
+          console.log("add video returned success.");
+          dialog.close(data);
+        }
+    });
   };
 
    $scope.close = function(result) {

@@ -160,13 +160,18 @@ table th, table td {
     margin-bottom: 8px;
 }
 
+.year-input {
+  min : 1950;
+  max : 2020;
+}
+
 /**************************************************
   Modals
 **************************************************/
 
 body .modal-form {
-  width: 60%; /* desired relative width */
-  left: 20%; /* (100%-width)/2 */
+  width: 50%; /* desired relative width */
+  left: 25%; /* (100%-width)/2 */
   /* place center */
   margin-left:auto;
   margin-right:auto; 
