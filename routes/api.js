@@ -75,7 +75,6 @@ exports.processVideoSegment = function(req, res) {
 
 // POST
 
-
 exports.addVideo = function(req, res) {
   var videoData = req.body;
 
@@ -105,6 +104,10 @@ exports.addVideo = function(req, res) {
 exports.addVideoSegment = function(req, res) {
 
   var videoSegmentURL = req.body.url;
+  
+  if (req.body.videoRef) {
+    var videoRef =  mongoose.Types.ObjectId(req.body.videoRef);
+  }
 
   var consts = require(constantsPath).Constantsinople;
 
@@ -147,6 +150,7 @@ exports.addVideoSegment = function(req, res) {
       var newVideoSegment = new VideoSegment({
         _id: sourceId,
         url: videoSegmentURL, 
+        videoRef: videoRef,
         source :videoHelper.videoSource(videoSegmentURL),
         fileFormat : consts.VideoFileFormat.MP4,
         status : consts.VideoStatus.ADDED

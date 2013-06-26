@@ -16,6 +16,8 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, StringHelpe
     name : ""
   };
 
+  $scope.videos = {};
+
   $scope.additionalInfoVisible = false;
 
   $http.get('/api/videoSegments').
@@ -32,9 +34,13 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, StringHelpe
   };
 
   $scope.segmentUrlUpdated = function() {
+
     $scope.newVideoSegment.valid = false;
     if ($scope.newVideoSegment.url && $scope.newVideoSegment.url.indexOf("youtube.com/watch?v") != -1) {
       var params = StringHelperService.urlParams($scope.newVideoSegment.url);
+
+      // TODO move this into a service...
+
       if (params['v']) {
         var infoURL = "http://gdata.youtube.com/feeds/api/videos/" + params['v'] + "?v=2&alt=jsonc";
         $http({
@@ -61,49 +67,35 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, StringHelpe
     }    
   };
 
-   $scope.getVideos = function(videoName) {
-    return ["one value", "second value", "third value"];
-    /*
-    return $http.get('/api/videos', {}).
-      then(function(data) {
-
-        console.log("returned " + data.videos.length + " videos.");
-        var vidNames = [];
-        for (var i = 0; i < data.videos.length; i++) {
-          vidNames.push(data.videos[i].name);
-        }
-        return vidNames;
-    });
-*/
-  };
-
   $scope.parentVideoTypeaheadFn = function(query, callback) {
-
-    //callback(["value1", "value2"]);
     
     $http.get('/api/videos', {}).
       success(function(data) {
         console.log("returned " + data.videos.length + " videos.");
+        $scope.videos = {}; // reset videos
+
         var vidNames = [];
         for (var i = 0; i < data.videos.length; i++) {
           vidNames.push(data.videos[i].name);
+          $scope.videos[data.videos[i].name] = data.videos[i]; // add the video to the videos object by name
         }
       callback(vidNames); 
     });
   };
 
-  $scope.addNewVideo = function() {
+  $scope.$on('typeahead-updated', function() {
 
-       // Inlined template for demo
-    var t = '<div class="modal-header">'+
-            '<h3>This is the title</h3>'+
-            '</div>'+
-            '<div class="modal-body">'+
-            '<p>Enter a value to pass to <code>close</code> as the result: <input ng-model="result" /></p>'+
-            '</div>'+
-            '<div class="modal-footer">'+
-            '<button ng-click="close(result)" class="btn btn-primary" >Close</button>'+
-            '</div>';
+    var selectedVideo = $scope.videos[$scope.parentVideo.name];
+
+    if (selectedVideo) {
+
+      console.log('Video selected '+ $scope.selectedVideo._id);  
+      $scope.parentVideo.valid = true;
+      $scope.newVideoSegment.videoRef = selectedVideo._id;      
+    }    
+  });
+
+  $scope.addNewVideo = function() {
 
     $scope.opts = {
       backdrop: true,
@@ -113,12 +105,10 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, StringHelpe
       message: "Now is the time!",
       buttons: [{label:'Yes, I\'m sure', result: 'yes'},{label:'Nope', result: 'no'}],
       templateUrl: 'partials/addNewVideo',
-      /*template:  t, // OR: templateUrl: 'path/to/view.html',*/
       controller: 'AddNewVideoCtrl',
       dialogClass: 'modal modal-form',
       resolve: {
         dialogModel: function() {
-
           return $scope.parentVideo;            
         } 
       }
@@ -127,7 +117,11 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, StringHelpe
     var d = $dialog.dialog($scope.opts);
     d.open().then(function(result){
       if(result) {
-        alert('dialog closed with result: ' + result);
+        if (result.video._id) {
+          console.log('Video added '+ result.video._id);  
+          $scope.parentVideo.valid = true;
+          $scope.newVideoSegment.videoRef = result.video._id;    
+        }
       }
     });
   };
