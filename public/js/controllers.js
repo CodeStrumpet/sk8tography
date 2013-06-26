@@ -115,6 +115,7 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, StringHelpe
       templateUrl: 'partials/addNewVideo',
       /*template:  t, // OR: templateUrl: 'path/to/view.html',*/
       controller: 'AddNewVideoCtrl',
+      dialogClass: 'modal modal-form',
       resolve: {
         dialogModel: function() {
 
