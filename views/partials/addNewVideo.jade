@@ -1,3 +1,34 @@
+// TODO put the placeholders on a rotation...
+
 div
-  p this is the template
-  h1 you best recognize!!
+  h3.modal-header Add a new Video
+  form.form-horizontal.modal-body
+    fieldset
+      div.control-group
+        label.control-label(for="nameInput") Video Name
+        div.controls
+          input.input-xlarge#nameInput(ng-model="video.name", type="text", placeholder="e.g. Mind Field")
+      div.control-group
+        label.control-label Year
+        div.controls
+          input.input-small(ng-model="video.year", type="number", placeholder="e.g. 2009")
+      div.control-group
+        label.control-label Info URL
+        div.controls
+          input.input-xlarge(ng-model="video.infoUrl", type="url", placeholder="e.g. http://www.skatevideosite.com/skatevideos/alien-workshop-mind-field/online#online")
+          span.help-block The URL for an info page for this video, (like wikipedia for example).
+      div.control-group
+        label.control-label Purchase URL
+        div.controls
+          input.input-xlarge(ng-model="video.infoUrl", type="url", placeholder="e.g. http://www.alienworkshop.com/#/products/12/48/p_251")
+          span.help-block The URL where can you purchase this video (ideally from the company who made it).
+      div.control-group
+        label.control-label Company
+        div.controls
+          // !!!! TODO we need multiple brands / companies
+          input.input-large(ng-model="video.company", type="text", placeholder="e.g. Alien Workshop")
+          span.help-block Who made the video?
+      div.control-group.modal-footer
+        div.controls
+          button.btn.btn-primary(ng-click="submitNewVideo()") Add Video
+          button.btn.btn-danger(ng-click="cancelNewVideo()") Cancel

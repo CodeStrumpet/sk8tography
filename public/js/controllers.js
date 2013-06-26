@@ -109,9 +109,18 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, StringHelpe
       backdrop: true,
       keyboard: true,
       backdropClick: true,
+      title : "Add New Video",
+      message: "Now is the time!",
+      buttons: [{label:'Yes, I\'m sure', result: 'yes'},{label:'Nope', result: 'no'}],
       templateUrl: 'partials/addNewVideo',
       /*template:  t, // OR: templateUrl: 'path/to/view.html',*/
-      controller: 'AddNewVideoCtrl'
+      controller: 'AddNewVideoCtrl',
+      resolve: {
+        dialogModel: function() {
+
+          return $scope.parentVideo;            
+        } 
+      }
     };
 
     var d = $dialog.dialog($scope.opts);
@@ -133,14 +142,25 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, StringHelpe
         if (data.error) {
           console.log("add videoSegment failed: " + data.error);
         } else {
-          console.log("add videoSegment returned success: " + JSON.stringify(data));  
+          console.log("add videoSegment returned success.");  
         }
     });
   };
 }
 
-function AddNewVideoCtrl($scope, dialog) {
-   $scope.close = function(result){
+function AddNewVideoCtrl($scope, dialog, dialogModel) {
+
+  console.log("resolve passed in: " + JSON.stringify(dialogModel));
+
+  $scope.video = dialogModel;  // in case this is 'edit' instead of new... (note:  'parentVideo' was passed in through the dialogModel resolve...)
+
+  console.log("video passed in: " + JSON.stringify($scope.parentVideo));
+
+  $scope.submitNewVideo = function() {
+
+  };
+
+   $scope.close = function(result) {
       dialog.close(result);
     };
 }
