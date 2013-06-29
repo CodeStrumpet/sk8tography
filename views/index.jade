@@ -16,6 +16,8 @@ block body
             a(href='/tagClips') Tag Clips
   div(ng-view)
 
+
+  // library & 3rd Party
   script(src='js/jquery.min.js') 
   script(src='js/lib/angular-1.1.5/angular.js') 
   script(src='js/angular-strap.js')  
@@ -23,18 +25,33 @@ block body
   script(src='js/jquery-ui.js')
   script(src='js/bootstrap.min.js')
   script(src='/socket.io/socket.io.js')
+  script(src='http://www.youtube.com/iframe_api')
+  script(src='http://s.ytimg.com/yts/jsbin/www-widgetapi-vflr_hAhz.js')
+
+
+  // constants
   script(src='js/SharedConstants.js')
+
+
+  // angular structure
   script(src='js/app.js')  
   script(src='js/services.js')
-  script(src='js/controllers.js')
-  script(src='js/youtubeCtrl.js')
-  script(src='js/tagClipsCtrl.js')
   script(src='js/filters.js')
   script(src='js/directives.js')
 
- 
-  script(src='http://www.youtube.com/iframe_api')
-  script(src='http://s.ytimg.com/yts/jsbin/www-widgetapi-vflr_hAhz.js')
+
+  // controllers
+  script(src='js/controllers/InputBlockCtrl.js')
+  script(src='js/controllers/AddNewVideoCtrl.js')
+  script(src='js/controllers/AddVideoSegmentCtrl.js')
+  script(src='js/controllers/VideoSegmentsCtrl.js')
+  script(src='js/controllers/IndexCtrl.js')
+  script(src='js/controllers/YoutubeCtrl.js')
+  script(src='js/controllers/TagClipsCtrl.js')
+
+
+  // legacy
+  script(src='js/controllers.js')
 
 
   // in production, switch to cdns...

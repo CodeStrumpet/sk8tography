@@ -36,7 +36,7 @@ form.form-horizontal.well
           div.control-group
             label.control-label() Skater
             div.controls
-              input.input-xlarge(type="text", name="skater", placeholder="Jason Dill", ng-model="skater")
+              input.input-xlarge(type="text", name="skater", placeholder="Jason Dill", ng-model="skater", typeahead="value for value in defaultTypeahed($viewValue)")
               span
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               span(ng-show='showAddParentVideoButton()', data-ng-animate="'fade'", style="display:none")
