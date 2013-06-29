@@ -18,10 +18,9 @@ form.form-horizontal.well
                   strong {{newVideoSegment.sourceTitle}}                    
                   br
                   small {{newVideoSegment.sourceDesc}}             
-
-      fieldset
-        div.control-group
-          div(ng-show='newVideoSegment.valid', data-ng-animate="'fade'", style="display:none")
+      div(ng-show='newVideoSegment.valid', data-ng-animate="'fade'", style="display:none")
+        fieldset
+          div.control-group
             label.control-label(for="parentVideo") Parent Video          
             div.controls
               input.input-xlarge#parentVideo(type="text", name="parentVideo", placeholder="e.g. Photosynthesis...", ng-model="parentVideo.name", bs-typeahead="parentVideoTypeaheadFn")
@@ -32,6 +31,19 @@ form.form-horizontal.well
               span
                 &nbsp;&nbsp;&nbsp;&nbsp;                
                 button.btn.btn-success.btn-small(ng-show='showAddParentVideoButton()', ng-click='addNewVideo()', data-ng-animate="'fade'", style="display:none") Add new Video to the Sk8abase
+              span.help-block (optional)
+        fieldset
+          div.control-group
+            label.control-label() Skater
+            div.controls
+              input.input-xlarge(type="text", name="skater", placeholder="Jason Dill", ng-model="skater")
+              span
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              span(ng-show='showAddParentVideoButton()', data-ng-animate="'fade'", style="display:none")
+                "{{parentVideo.name}}" not found.
+              span
+                &nbsp;&nbsp;&nbsp;&nbsp;                
+                button.btn.btn-success.btn-small(ng-show='showAddParentVideoButton()', ng-click='addNewVideo()', data-ng-animate="'fade'", style="display:none") Add new Skater to the Sk8abase
               span.help-block (optional)
       fieldset
   div.row

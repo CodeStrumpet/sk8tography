@@ -1,0 +1,3 @@
+[submodule "public/js/lib/ui-bootstrap"]
+	path = public/js/lib/ui-bootstrap
+	url = https://github.com/angular-ui/bootstrap.git
