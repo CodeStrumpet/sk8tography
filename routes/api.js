@@ -222,19 +222,26 @@ exports.clips = function (req, res) {
 
 exports.videos = function (req, res) {
   var videosCallback = function (err, videos) {
+    console.log("num videos: " + videos.length);
     res.json({
       videos : videos
     });
   };
 
-  var searchTerms = req.body.query;
+  var searchTerms = req.query.q;
+
+  console.log("searchTerms: " + searchTerms);
 
   var query = Video.
   find()
   .limit(20);
 
+
   if (typeof(searchTerms) != 'undefined') {
-    query.where('name').regex('/^' + searchTerms + '/i');
+    var re = new RegExp('\\b' + searchTerms, 'i');
+
+    query.where('name').regex(re);
+    
   } else {
     query.sort('-updated')
   }

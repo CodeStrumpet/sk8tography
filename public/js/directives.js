@@ -88,4 +88,18 @@ angular.module('myApp.directives', []).
       });
     }
   };
-});
+}).
+  directive('addTypeahead', function () {
+
+    return {
+      controller: ['$scope', '$element', '$attrs', '$transclude', function($scope, $element, $attrs, $transclude) { 
+
+        var inputModel = $scope.inputs[$scope.$index];
+
+        if (inputModel.typeahead) {                    
+          $attrs.$set('typeahead', inputModel.typeahead);
+        }
+      }]
+    };
+  });
+

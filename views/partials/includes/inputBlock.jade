@@ -1,0 +1,14 @@
+form.form-horizontal
+  fieldset(ng-repeat="input in inputs").control-group
+    div
+      label.control-label {{input.name}}
+      div.controls
+        input(ng-model="input.value", 
+              type="{{input.type}}", 
+              index="{{$index}}", 
+              add-typeahead, 
+              typeahead="value for value in defaultTypeahed($viewValue)", 
+              typeahead-on-select='onTypeaheadSelect($index)').input-xlarge
+        span &nbsp;&nbsp;
+        i(ng-show="inputs[$index].selectedObj != null").icon-check-sign
+        span.help-block {{input.helpText}}

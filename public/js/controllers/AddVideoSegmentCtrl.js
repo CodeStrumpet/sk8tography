@@ -23,6 +23,48 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
       $scope.videoSegments = data.videoSegments;
   });
 
+
+  // input1
+  $scope.inputs.push({
+    name : "Parent Video",
+    value : "",
+    type : "text",
+    helpText : "The name of the video this segment is from (if applicable)",
+    typeahead : "value.name for value in getMatches($viewValue, $index)",
+    typeaheadResults : [],
+    selectedObj : null,
+    typeaheadFetch : function(searchText, successFunction) {
+
+      var url = '/api/videos';
+      if (searchText) {
+        url = url + "?q=" + searchText;
+      }
+
+      console.log("url: " + url);
+
+      return $http.get(url, {query : searchText}).then(function(response) {
+        var videos = response.data.videos;
+        return successFunction(videos);
+      });
+    },
+    checkValidity : function() {
+      var valid = false;
+      for (var i = 0; i < this.typeaheadResults.length; i++) {
+        if (this.typeaheadResults[i].name === this.value) {
+          console.log("exact typeahead match!");
+          this.selectedObj = this.typeaheadResults[i];
+          valid = true;
+          break;
+        } 
+      }
+      // reset selectedObj to null if we don't have a match
+      if (!valid) {
+        this.selectedObj = null;
+      }
+    }
+  });
+
+
   $scope.additionalInfoLabelText = function() {
     return $scope.additionalInfoVisible ? "\u25BC" : "\u25B6";
   };
@@ -69,7 +111,7 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
     
     $http.get('/api/videos', {}).
       success(function(data) {
-        console.log("returned " + data.videos.length + " videos.");
+        console.log("returne " + data.videos.length + " videos.");
         $scope.videos = {}; // reset videos
 
         var vidNames = [];
@@ -92,10 +134,6 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
       $scope.newVideoSegment.videoRef = selectedVideo._id;      
     }    
   });
-
-  $scope.defaultTypeahed = function(inputText) {
-    return ["Value1", "Value2", "value3"];
-  };
 
   $scope.addNewVideo = function() {
 
