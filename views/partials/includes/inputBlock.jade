@@ -6,7 +6,7 @@ form.form-horizontal
         input(ng-model="input.value", 
               type="{{input.type}}", 
               index="{{$index}}", 
-              add-typeahead, 
+              structured-input, 
               typeahead="value for value in defaultTypeahed($viewValue)", 
               typeahead-on-select='onTypeaheadSelect($index)').input-xlarge
         span &nbsp;&nbsp;

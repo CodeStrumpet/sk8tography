@@ -132,6 +132,7 @@ app.get('/api/clips', api.clips);
 app.get('/api/videos', api.videos);
 app.post('/api/addVideoSegment', api.addVideoSegment);
 app.post('/api/addVideo', api.addVideo);
+app.post('/api/addSkater', api.addSkater);
 
 // ========================================
 app.get('/api/posts', api.posts);

@@ -89,7 +89,7 @@ angular.module('myApp.directives', []).
     }
   };
 }).
-  directive('addTypeahead', function () {
+  directive('structuredInput', function () {
 
     return {
       controller: ['$scope', '$element', '$attrs', '$transclude', function($scope, $element, $attrs, $transclude) { 
@@ -99,6 +99,15 @@ angular.module('myApp.directives', []).
         if (inputModel.typeahead) {                    
           $attrs.$set('typeahead', inputModel.typeahead);
         }
+
+        // add min and max if necessary
+        if (inputModel.min) {
+          $attrs.$set('min', inputModel.min); 
+        }
+        if (inputModel.max) {
+          $attrs.$set('max', inputModel.max);
+        }
+        
       }]
     };
   });

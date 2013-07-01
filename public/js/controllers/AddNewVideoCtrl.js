@@ -1,19 +1,57 @@
 'use strict';
 
-function AddNewVideoCtrl($scope, $http, dialog, dialogModel) {
+function AddNewVideoCtrl($scope, $http, $injector, dialog, dialogModel) {
+
+  $injector.invoke(InputBlockCtrl, this, {$scope: $scope});
 
   $scope.loading = false;
 
-  $scope.video = {};
+  $scope.nameInput = {
+    name : "Name",
+    value : dialogModel.value,
+    type : "text",
+    helpText : "",
+  };
 
-  $scope.video.name = dialogModel.value;
+  $scope.yearInput = {
+    name : "Year",
+    type : "number",
+    helpText : "",
+    min : 1950,
+    max : 2014
+  };
 
-  console.log(dialogModel);
+  $scope.infoUrlInput = {
+    name : "Info URL",
+    type : "url",
+    helpText : "Wikipedia or other informational link",
+  };
+
+  $scope.purchaseUrlInput = {
+    name : "Purchase URL",
+    type : "url",
+    helpText : "The URL where can you purchase this video (ideally from the company who made it).",
+  };
+
+  // TODO !! Add Companies / Brands...
+
+  $scope.inputs.push($scope.nameInput);
+  $scope.inputs.push($scope.yearInput);
+  $scope.inputs.push($scope.infoUrlInput);
+  $scope.inputs.push($scope.purchaseUrlInput);
+
 
   $scope.submitNewVideo = function() {
     $scope.loading = true;
 
-    $http.post('/api/addVideo', $scope.video).
+    var video = {
+      name : $scope.nameInput.value,
+      year : $scope.yearInput.value,
+      infoUrl : $scope.infoUrlInput.value,
+      purchaseUrl : $scope.purchaseUrlInput.value
+    };
+
+    $http.post('/api/addVideo', video).
       success(function(data) {
         if (data.error) {
           console.log("add video failed: " + data.error);

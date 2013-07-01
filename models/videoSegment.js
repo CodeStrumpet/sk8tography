@@ -19,7 +19,8 @@ module.exports = function() {
     sourceDuration: Number,
     sourceViewCount: Number,
     sourceUploader: String,
-    updated: { type: Date, default: Date.now }
+    updated: { type: Date, default: Date.now },
+    extraInfo : {type: Schema.Types.Mixed, default : {}}
   });
 
 

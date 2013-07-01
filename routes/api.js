@@ -6,70 +6,12 @@ var Track = mongoose.model("Track");
 var VideoSegment = mongoose.model("VideoSegment");
 var Clip = mongoose.model("Clip");
 var Video = mongoose.model("Video");
+var Skater = mongoose.model("Skater");
 
 var videoHelper = require('../helpers/video');
 
 var constantsPath = '../public/js/SharedConstants';
 
-
-// PUT
-
-exports.processVideoSegment = function(req, res) {
-
-  var videoSegmentId = req.body.videoSegmentId;
-
-  require('async').series({
-
-    checkId : function(callback) {
-      var err = null;
-      if (videoSegmentId == null) {
-        err = "invalid video segment id";
-      }
-      callback(err, null);
-    },
-
-    findSegment : function(callback) {
-      var vidCallback = function (err, videoSegment) {
-
-        if (err) {          
-          callback(err, null);
-        } else {
-          callback(null, videoSegment);
-        }
-      };
-
-      VideoSegment
-      .findById(videoSegmentId)
-      .exec(vidCallback);
-    },
-
-    deleteExistingClips : function(callback) {
-      callback(null, null);
-    }
-  },
-
-  function(err, results) {
-    if (err) {
-      res.json({
-        error: err
-      });
-    } else {
-      res.json({
-        videoSegment: results.findSegment
-      });
-
-      var processCallback = function(err, result) {
-        if (err) {
-          console.log("process video err: " + err);  
-        } else {
-          console.log("process video succeeded");
-        }        
-      };
-
-      videoHelper.processVideoSegment(results.findSegment, processCallback);
-    }
-  });
-};
 
 
 
@@ -100,6 +42,29 @@ exports.addVideo = function(req, res) {
   });  
 };
 
+exports.addSkater = function(req, res) {
+  var skaterData = req.body;
+
+  var  newSkater = new Skater({
+    name: skaterData.name,
+    isGoofy : skaterData.isGoofy
+  });
+
+
+  newSkater.save(function (saveErr) {
+    if (saveErr) {
+      console.log("saveErr: " + saveErr);
+      res.json({
+        error : saveErr
+      });
+    } else {
+      res.json({
+        skater : newSkater
+      });
+    }
+  });  
+};
+
 
 exports.addVideoSegment = function(req, res) {
 
@@ -107,6 +72,10 @@ exports.addVideoSegment = function(req, res) {
   
   if (req.body.videoRef) {
     var videoRef =  mongoose.Types.ObjectId(req.body.videoRef);
+  }
+
+  if (req.body.skaterRef) {
+    var skaterRef = mongoose.Types.ObjectId(req.body.skaterRef);
   }
 
   var consts = require(constantsPath).Constantsinople;
@@ -147,6 +116,7 @@ exports.addVideoSegment = function(req, res) {
         return;
       }
 
+
       var newVideoSegment = new VideoSegment({
         _id: sourceId,
         url: videoSegmentURL, 
@@ -155,6 +125,13 @@ exports.addVideoSegment = function(req, res) {
         fileFormat : consts.VideoFileFormat.MP4,
         status : consts.VideoStatus.ADDED
       });   
+
+      // add items to extraInfo if appropriate
+      var extraInfo = newVideoSegment.extraInfo;      
+
+      if (skaterRef) {
+        extraInfo.skaterRef = skaterRef;
+      }
 
       newVideoSegment.save(function (saveErr) {
         if (saveErr) {
@@ -241,7 +218,7 @@ exports.videos = function (req, res) {
     var re = new RegExp('\\b' + searchTerms, 'i');
 
     query.where('name').regex(re);
-    
+
   } else {
     query.sort('-updated')
   }
@@ -249,6 +226,94 @@ exports.videos = function (req, res) {
   query.exec(videosCallback);  
 };
 
+exports.skaters = function (req, res) {
+  var skatersCallback = function (err, skaters) {
+    console.log("num skaters: " + skaters.length);
+    res.json({
+      skaters : skaters
+    });
+  };
+
+  var searchTerms = req.query.q;
+
+  console.log("searchTerms: " + searchTerms);
+
+  var query = Skater.
+  find()
+  .limit(20);
+
+  if (typeof(searchTerms) != 'undefined') {
+    var re = new RegExp('\\b' + searchTerms, 'i');
+
+    query.where('name').regex(re);
+
+  } else {
+    query.sort('-updated')
+  }
+  
+  query.exec(skatersCallback);  
+};
+
+
+
+// PUT
+
+exports.processVideoSegment = function(req, res) {
+
+  var videoSegmentId = req.body.videoSegmentId;
+
+  require('async').series({
+
+    checkId : function(callback) {
+      var err = null;
+      if (videoSegmentId == null) {
+        err = "invalid video segment id";
+      }
+      callback(err, null);
+    },
+
+    findSegment : function(callback) {
+      var vidCallback = function (err, videoSegment) {
+
+        if (err) {          
+          callback(err, null);
+        } else {
+          callback(null, videoSegment);
+        }
+      };
+
+      VideoSegment
+      .findById(videoSegmentId)
+      .exec(vidCallback);
+    },
+
+    deleteExistingClips : function(callback) {
+      callback(null, null);
+    }
+  },
+
+  function(err, results) {
+    if (err) {
+      res.json({
+        error: err
+      });
+    } else {
+      res.json({
+        videoSegment: results.findSegment
+      });
+
+      var processCallback = function(err, result) {
+        if (err) {
+          console.log("process video err: " + err);  
+        } else {
+          console.log("process video succeeded");
+        }        
+      };
+
+      videoHelper.processVideoSegment(results.findSegment, processCallback);
+    }
+  });
+};
 
 // ============================================================
 // ============================================================

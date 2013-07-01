@@ -26,7 +26,7 @@ var InputBlockCtrl = function ($scope, $http, $dialog) {
   };
 
   $scope.showAddEntity = function (index) {
-    return $scope.inputs[index].value.length > 2 && $scope.inputs[index].typeaheadResults.length < 1;
+    return $scope.inputs[index].typeahead && $scope.inputs[index].value.length > 2 && $scope.inputs[index].typeaheadResults.length < 1;
   };
 
   $scope.addNewEntity = function(index) {

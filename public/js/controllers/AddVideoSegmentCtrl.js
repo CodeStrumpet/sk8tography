@@ -147,7 +147,13 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
       $scope.newVideoSegment.videoRef = $scope.parentVideoInput.selectedObj._id;
     }
 
-    console.log("adding video with url: " + $scope.newVideoSegment.url + "  videoRef: " + $scope.newVideoSegment.videoRef);
+        // add _id of skater as skaterRef
+    if ($scope.skaterInput.selectedObj) {
+      $scope.newVideoSegment.skaterRef = $scope.skaterInput.selectedObj._id;
+    }
+
+
+    console.log("adding video with url: " + $scope.newVideoSegment.url + "  videoRef: " + $scope.newVideoSegment.videoRef + "  skaterRef: " + $scope.newVideoSegment.skaterRef);
 
     $http.post('/api/addVideoSegment', $scope.newVideoSegment).
       success(function(data) {

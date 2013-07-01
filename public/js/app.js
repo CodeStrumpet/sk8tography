@@ -24,6 +24,10 @@ var app = angular.module('myApp', ['ui.bootstrap', 'myApp.filters', 'myApp.servi
         templateUrl: 'partials/addNewVideo',
         controller: AddNewVideoCtrl
       }).
+      when('/addNewSkater', {
+        templateUrl: 'partials/addNewSkater',
+        controller: AddNewSkaterCtrl
+      }).
       when('/addPost', {
         templateUrl: 'partials/addPost',
         controller: AddPostCtrl
