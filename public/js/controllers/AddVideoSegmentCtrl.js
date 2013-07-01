@@ -9,10 +9,6 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
     valid : false
   };
 
-  $scope.parentVideo = {
-    valid : false,
-    name : ""
-  };
 
   $scope.videos = {};
 
@@ -24,8 +20,7 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
   });
 
 
-  // input1
-  $scope.inputs.push({
+  $scope.parentVideoInput = {
     name : "Parent Video",
     value : "",
     type : "text",
@@ -65,16 +60,10 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
         this.selectedObj = null;
       }
     }
-  });
-
-
-  $scope.additionalInfoLabelText = function() {
-    return $scope.additionalInfoVisible ? "\u25BC" : "\u25B6";
   };
 
-  $scope.showAddParentVideoButton = function() {
-    return (!$scope.parentVideo.valid) && $scope.parentVideo.name.length > 2;
-  };
+  // input1
+  $scope.inputs.push($scope.parentVideoInput);
 
   $scope.segmentUrlUpdated = function() {
 
@@ -108,39 +97,14 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
     }    
   };
 
-  $scope.parentVideoTypeaheadFn = function(query, callback) {
-    
-    $http.get('/api/videos', {}).
-      success(function(data) {
-        console.log("returne " + data.videos.length + " videos.");
-        $scope.videos = {}; // reset videos
-
-        var vidNames = [];
-        for (var i = 0; i < data.videos.length; i++) {
-          vidNames.push(data.videos[i].name);
-          $scope.videos[data.videos[i].name] = data.videos[i]; // add the video to the videos object by name
-        }
-      callback(vidNames); 
-    });
-  };
-
-  $scope.$on('typeahead-updated', function() {
-
-    var selectedVideo = $scope.videos[$scope.parentVideo.name];
-
-    if (selectedVideo) {
-
-      console.log('Video selected '+ $scope.selectedVideo._id);  
-      $scope.parentVideo.valid = true;
-      $scope.newVideoSegment.videoRef = selectedVideo._id;      
-    }    
-  });
-
   $scope.addNewVideoSegment = function() {
-    
-    console.log("adding url: " + $scope.newVideoSegment.url);
 
-    console.log("one possible client-side VideoStatus value is: " + window.Constantsinople.VideoStatus.AVAILABLE);
+    // add _id of parent video as videoRef
+    if ($scope.parentVideoInput.selectedObj) {
+      $scope.newVideoSegment.videoRef = $scope.parentVideoInput.selectedObj._id;
+    }
+
+    console.log("adding video with url: " + $scope.newVideoSegment.url + "  videoRef: " + $scope.newVideoSegment.videoRef);
 
     $http.post('/api/addVideoSegment', $scope.newVideoSegment).
       success(function(data) {
