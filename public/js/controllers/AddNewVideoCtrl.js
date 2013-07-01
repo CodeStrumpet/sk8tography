@@ -4,11 +4,11 @@ function AddNewVideoCtrl($scope, $http, dialog, dialogModel) {
 
   $scope.loading = false;
 
-  console.log("resolve passed in: " + JSON.stringify(dialogModel));
+  $scope.video = {};
 
-  $scope.video = dialogModel;  // in case this is 'edit' instead of new... (note:  'parentVideo' was passed in through the dialogModel resolve...)
+  $scope.video.name = dialogModel.value;
 
-  console.log("video passed in: " + JSON.stringify($scope.parentVideo));
+  console.log(dialogModel);
 
   $scope.submitNewVideo = function() {
     $scope.loading = true;
@@ -20,7 +20,14 @@ function AddNewVideoCtrl($scope, $http, dialog, dialogModel) {
           dialog.close("Unable to add video");
         } else {
           console.log("add video returned success.");
-          dialog.close(data);
+          console.log(data.video);
+
+          var returnData = {
+            entity : data.video,
+            value : data.video.name
+          };
+
+          dialog.close(returnData);
         }
     });
   };

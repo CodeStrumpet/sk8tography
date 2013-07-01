@@ -34,6 +34,8 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
     typeaheadResults : [],
     selectedObj : null,
     entityName : "Video",
+    templateUrl: 'partials/addNewVideo',
+    controller: 'AddNewVideoCtrl',
     typeaheadFetch : function(searchText, successFunction) {
 
       var url = '/api/videos';
@@ -62,9 +64,6 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
       if (!valid) {
         this.selectedObj = null;
       }
-    },
-    addNewEntity : function() {
-      console.log("Add new entity");
     }
   });
 
@@ -136,37 +135,6 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
       $scope.newVideoSegment.videoRef = selectedVideo._id;      
     }    
   });
-
-  $scope.addNewVideo = function() {
-
-    $scope.opts = {
-      backdrop: true,
-      keyboard: true,
-      backdropClick: true,
-      title : "Add New Video",
-      message: "Now is the time!",
-      buttons: [{label:'Yes, I\'m sure', result: 'yes'},{label:'Nope', result: 'no'}],
-      templateUrl: 'partials/addNewVideo',
-      controller: 'AddNewVideoCtrl',
-      dialogClass: 'modal modal-form',
-      resolve: {
-        dialogModel: function() {
-          return $scope.parentVideo;            
-        } 
-      }
-    };
-
-    var d = $dialog.dialog($scope.opts);
-    d.open().then(function(result){
-      if(result) {
-        if (result.video._id) {
-          console.log('Video added '+ result.video._id);  
-          $scope.parentVideo.valid = true;
-          $scope.newVideoSegment.videoRef = result.video._id;    
-        }
-      }
-    });
-  };
 
   $scope.addNewVideoSegment = function() {
     
