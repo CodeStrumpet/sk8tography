@@ -33,6 +33,7 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
     typeahead : "value.name for value in getMatches($viewValue, $index)",
     typeaheadResults : [],
     selectedObj : null,
+    entityName : "Video",
     typeaheadFetch : function(searchText, successFunction) {
 
       var url = '/api/videos';
@@ -50,7 +51,7 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
     checkValidity : function() {
       var valid = false;
       for (var i = 0; i < this.typeaheadResults.length; i++) {
-        if (this.typeaheadResults[i].name === this.value) {
+        if (this.typeaheadResults[i].name.toLowerCase() === this.value.toLowerCase()) {
           console.log("exact typeahead match!");
           this.selectedObj = this.typeaheadResults[i];
           valid = true;
@@ -61,6 +62,9 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
       if (!valid) {
         this.selectedObj = null;
       }
+    },
+    addNewEntity : function() {
+      console.log("Add new entity");
     }
   });
 
@@ -87,8 +91,6 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
           url: infoURL,
           method: "GET"
         }).success(function(videoInfo, status, headers, config) {
-
-          console.log("video info: " + JSON.stringify(videoInfo));
 
           $scope.newVideoSegment.valid = true;
 
