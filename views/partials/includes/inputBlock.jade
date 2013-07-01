@@ -11,11 +11,7 @@ form.form-horizontal
               typeahead-on-select='onTypeaheadSelect($index)').input-xlarge
         span &nbsp;&nbsp;
         i(ng-show="inputs[$index].selectedObj != null").icon-check-sign
-        span
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        span(ng-show='showAddEntity($index)', data-ng-animate="'fade'", style="display:none")
-          "{{input.value}}" not found.
-        span
-          &nbsp;&nbsp;&nbsp;&nbsp;                
-        button.btn.btn-success.btn-small(ng-show='showAddEntity($index)', ng-click='addNewEntity($index)', data-ng-animate="'fade'", style="display:none") Add new {{input.entityName}} to the Sk8abase
+        span(ng-show='showAddEntity($index)', data-ng-animate="'fade'", style="display:none")          
+          &nbsp;&nbsp;&nbsp;&nbsp; "{{input.value}}" not found. &nbsp;&nbsp;&nbsp;&nbsp;                
+          button.btn.btn-success.btn-small(ng-click='addNewEntity($index)') Add new {{input.entityName}} to the Sk8abase
         span.help-block {{input.helpText}}

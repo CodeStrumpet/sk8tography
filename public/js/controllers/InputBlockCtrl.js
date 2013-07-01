@@ -16,6 +16,9 @@ var InputBlockCtrl = function ($scope, $http, $dialog) {
     // !!! typeahead fetch function must return a promise
     var inputObj = $scope.inputs[index];
     return inputObj.typeaheadFetch(inputText, function(results) {
+      if (!results) {
+        results = [];
+      }
       inputObj.typeaheadResults = results;
       inputObj.checkValidity();
       return inputObj.typeaheadResults;
@@ -23,8 +26,6 @@ var InputBlockCtrl = function ($scope, $http, $dialog) {
   };
 
   $scope.showAddEntity = function (index) {
-    console.log("showAddEntity index: " + index);
-
     return $scope.inputs[index].value.length > 2 && $scope.inputs[index].typeaheadResults.length < 1;
   };
 

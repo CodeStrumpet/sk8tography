@@ -24,7 +24,7 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
     name : "Parent Video",
     value : "",
     type : "text",
-    helpText : "The name of the video this segment is from (if applicable)",
+    helpText : "(optional) The video this segment comes from",
     typeahead : "value.name for value in getMatches($viewValue, $index)",
     typeaheadResults : [],
     selectedObj : null,
@@ -62,8 +62,51 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
     }
   };
 
-  // input1
+  // input0
   $scope.inputs.push($scope.parentVideoInput);
+
+  $scope.skaterInput = {
+    name : "Skater",
+    value : "",
+    type : "text",
+    helpText : "(optional) The skater who appears most often in this segment",
+    typeahead : "value.name for value in getMatches($viewValue, $index)",
+    typeaheadResults : [],
+    selectedObj : null,
+    entityName : "Skater",
+    templateUrl: 'partials/addNewSkater',
+    controller: 'AddNewSkaterCtrl',
+    typeaheadFetch : function(searchText, successFunction) {
+
+      var url = '/api/skaters';
+      if (searchText) {
+        url = url + "?q=" + searchText;
+      }
+
+      return $http.get(url, {query : searchText}).then(function(response) {
+        var videos = response.data.videos;
+        return successFunction(videos);
+      });
+    },
+    checkValidity : function() {
+      var valid = false;
+      for (var i = 0; i < this.typeaheadResults.length; i++) {
+        if (this.typeaheadResults[i].name.toLowerCase() === this.value.toLowerCase()) {
+          console.log("exact typeahead match!");
+          this.selectedObj = this.typeaheadResults[i];
+          valid = true;
+          break;
+        } 
+      }
+      // reset selectedObj to null if we don't have a match
+      if (!valid) {
+        this.selectedObj = null;
+      }
+    }
+  };
+
+  // input1
+  $scope.inputs.push($scope.skaterInput);
 
   $scope.segmentUrlUpdated = function() {
 
