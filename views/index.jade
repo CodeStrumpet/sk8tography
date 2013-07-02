@@ -6,14 +6,10 @@ block body
       div.container-fluid
         a.brand(href="/") Sk8tography
         ul.nav
-          li(data-match-route="/addPost")
-            a(href='/addPost') Add a new post
-          li(data-match-route="/videoSegments")
-            a(href='/videoSegments') Video Segments
-          li(data-match-route="/addVideoSegment")
-            a(href='/addVideoSegment') Add Videos
           li(data-match-route="/tagClips")
             a(href='/tagClips') Tag Clips
+          li(data-match-route="/addVideoSegment")
+            a(href='/addVideoSegment') Add Videos
   div(ng-view)
 
 
