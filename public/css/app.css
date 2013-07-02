@@ -58,26 +58,6 @@ table th, table td {
   width : 25%;
 }
 
-/* tag clips */
-
-.container-fluid > .sidebar {
-    position: relative;
-    top: 0;
-    left:auto;
-    width: 240px;
-}
-
-.left {
-    float:left;
-}
-
-.right {
-    float:right;
-}
-
-.container-fluid > .content {
-    margin: 0 260px;
-}
 
 /**************************************************
   Navbar
@@ -95,8 +75,49 @@ table th, table td {
   Video console & tag clips page styles
 ***************************************************/
 
-.content {
+.container-fluid > .sidebar.left {
+    position: fixed;
+    top: auto;
+    left:auto;
+    width: 25%;
+    margin-bottom: 5px;
+}
+
+.left {
+    float:left;
+}
+
+.right {
+    float:right;
+}
+
+.container-fluid > .content {
+    vertical-align: top;
+    position: fixed;
+    margin: 0 26%;
+    width: 69%;
+}
+
+.player-console {
+  float: left;
+  width:60%;
+}
+
+.tagging-console {
+  width:40%;
+  height: 300px;
+  float: right;
+}
+
+.clip-filter {
   position: fixed;
+}
+
+.clips {
+  height: 800px;
+  margin-top: 30px;
+  overflow:auto; 
+  overflow-y:auto;
 }
 
 .activeclip {
@@ -111,12 +132,22 @@ table th, table td {
   width: 150px;
 }
 
+
 .maxwidth {
   width:100%;
 }
 
+.scrubbar-cell {
+  width: 70%;
+}
+
+.button-cell {
+  width: 30%;
+}
+
 .videoconsole {
-  width: 640px;
+  margin-right: 10px;
+  padding: 10px;
 }
 
 .slider {

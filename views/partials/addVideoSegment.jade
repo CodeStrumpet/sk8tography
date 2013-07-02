@@ -1,51 +1,52 @@
 // TODO get the inline display:none styles out!                  
 
-form.form-horizontal.well
-  h3 Add a new Video Segment
-  div.row
-    div.span12       
-      fieldset
-        div.control.group
-          strong.control-label(for="segmentUrl") URL
-          div.controls
-            input.input-xxlarge#segmentUrl(ng-model="newVideoSegment.url", type="url", name="segmentUrl", placeholder="http://www.youtube.com/...", ng-change='segmentUrlUpdated()')
-          div#videoInfo.controls(ng-show='newVideoSegment.valid', data-ng-animate="'fade'", style="display:none")
-            table
-              tr
-                td.thumbColumn
-                  img(ng-src="{{newVideoSegment.sourceSquareThumb}}")
-                td
-                  strong {{newVideoSegment.sourceTitle}}                    
-                  br
-                  small {{newVideoSegment.sourceDesc}}             
-      div(ng-show='newVideoSegment.valid', data-ng-animate="'fade'", style="display:none")
-        include includes/inputBlock
-      div.row
-        div.span4
-          div
-            br
-            br
-            button.btn.btn-primary.btn-large.btn-block(ng-click='addNewVideoSegment()') Add Segment     
-
-h3 Recently added Segments
 div.span12
-  table.table.videosTable
-    thead
-      tr
-        th.thumbColumn image
-        th.infoColumn info
-        th.extraInfoColumn extra info
-        th.urlColumn url
-    tbody
-      tr(ng-repeat='videoSegment in videoSegments')
+  form.form-horizontal.well
+    h3 Add a new Video Segment
+    div.row
+      div.span12       
+        fieldset
+          div.control.group
+            strong.control-label(for="segmentUrl") URL
+            div.controls
+              input.input-xxlarge#segmentUrl(ng-model="newVideoSegment.url", type="url", name="segmentUrl", placeholder="http://www.youtube.com/...", ng-change='segmentUrlUpdated()')
+            div#videoInfo.controls(ng-show='newVideoSegment.valid', data-ng-animate="'fade'", style="display:none")
+              table
+                tr
+                  td.thumbColumn
+                    img(ng-src="{{newVideoSegment.sourceSquareThumb}}")
+                  td
+                    strong {{newVideoSegment.sourceTitle}}                    
+                    br
+                    small {{newVideoSegment.sourceDesc}}             
+        div(ng-show='newVideoSegment.valid', data-ng-animate="'fade'", style="display:none")
+          include includes/inputBlock
+        div.row
+          div.span4
+            div
+              br
+              br
+              button.btn.btn-primary.btn-large.btn-block(ng-click='addNewVideoSegment()') Add Segment     
 
-        td
-          img(ng-src="{{videoSegment.sourceSquareThumb}}")
-        td
-          h3 {{videoSegment.sourceTitle}}
-          p {{videoSegment.sourceDesc}}
-        td
-          p {{videoSegment.sourceDuration}}
-          input(type="button", value="Process", ng-click="processVideoSegment($index)")
-        td
-          p {{videoSegment.url}}
+  h3 Recently added Segments
+  div.span12
+    table.table.videosTable
+      thead
+        tr
+          th.thumbColumn image
+          th.infoColumn info
+          th.extraInfoColumn extra info
+          th.urlColumn url
+      tbody
+        tr(ng-repeat='videoSegment in videoSegments')
+
+          td
+            img(ng-src="{{videoSegment.sourceSquareThumb}}")
+          td
+            h3 {{videoSegment.sourceTitle}}
+            p {{videoSegment.sourceDesc}}
+          td
+            p {{videoSegment.sourceDuration}}
+            input(type="button", value="Process", ng-click="processVideoSegment($index)")
+          td
+            p {{videoSegment.url}}

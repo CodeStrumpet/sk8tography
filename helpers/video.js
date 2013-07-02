@@ -187,8 +187,8 @@ exports.copyVideoSegmentFromCache = function(videoSegment, callback) {
 exports.processVideoSegment = function(videoSegment, callback) {
 
   
+  // use async waterfall control flow to pass result of one operation to the next...
   require('async').waterfall([
-
 
     function(waterfallCallback) { // analyze and split
       var err = null;
@@ -341,6 +341,12 @@ exports.createClips = function(videoSegment, callback, timestamps) {
       startTime : clipInfo.start,
       duration : clipInfo.duration
     });
+
+    // set the skaterRef if it's present in videoSegment extra info
+    var skaterRef = videoSegment.extraInfo.skaterRef;
+    if (skaterRef) {
+      clip.skaterRef = skaterRef;
+    }
 
     // add save function to array so we can execute saves in parallel
     saveClips.push((function(doc) {
