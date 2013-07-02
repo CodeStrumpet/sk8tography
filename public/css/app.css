@@ -170,6 +170,14 @@ table th, table td {
   background-image:none;background-color:#887e6d;
 }
 
+.thumbspan {
+  width: 120px;
+}
+
+.clips .infoColumn {
+  width: 50%;
+}
+
 /**************************************************
   Videos page
 ***************************************************/
