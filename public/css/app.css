@@ -284,3 +284,7 @@ body.modal-form.fade.in {
   left:-100px;
   opacity:0;
 }
+
+[ng\:cloak], [ng-cloak], .ng-cloak {
+  display: none !important;
+}

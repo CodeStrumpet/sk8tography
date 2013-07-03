@@ -28,6 +28,11 @@ var app = angular.module('myApp', ['ui.bootstrap', 'myApp.filters', 'myApp.servi
         templateUrl: 'partials/addNewSkater',
         controller: AddNewSkaterCtrl
       }).
+      when('/admin', {
+        templateUrl: 'partials/admin',
+        controller: AdminCtrl,
+        auth: true
+      }).      
       when('/addPost', {
         templateUrl: 'partials/addPost',
         controller: AddPostCtrl

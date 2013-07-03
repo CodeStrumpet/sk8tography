@@ -1,6 +1,6 @@
 'use strict'
 
-function NavbarCtrl($scope, $http, $dialog, UserService) {
+function NavbarCtrl($scope, $http, $dialog, UserService, AuthService) {
 
   // Prevent the login dropdown from closing on us
   $('.dropdown-toggle').dropdown(); 
@@ -33,7 +33,7 @@ function NavbarCtrl($scope, $http, $dialog, UserService) {
   };
 
   $scope.signup = function () {
-    
+
     $scope.opts = {
       backdrop: true,
       keyboard: true,

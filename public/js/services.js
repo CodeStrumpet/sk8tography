@@ -19,54 +19,60 @@ angular.module('myApp.services', []).
 
 .service( 'UserService', [ '$rootScope', '$http', function($rootScope, $http) {
   
-  this.isLoggedIn = false;  
-  this.username = "";
+  return {
+    isLoggedIn : false,
+    username : "",
+    userId : null,
 
-  this.logout = function() {
-    this.isLoggedIn = false;
-    this.username = "";
-  };
+    logout : function() {
+      this.isLoggedIn = false;
+      this.username = "";
+      this.userId = null;
+    },
 
-  this.login = function(theUsername, thePassword) {
-    var parent = this;
+    login : function(theUsername, thePassword) {
+      var parent = this;
 
-    var body = {username: theUsername, password: thePassword};
+      var body = {username: theUsername, password: thePassword};
 
-    var promise = $http.post('/api/login', body).then(function (response) {        
+      var promise = $http.post('/api/login', body).then(function (response) {        
 
-      console.log(response);
+        console.log(response);
 
-      if (response.data.error) {
-        console.log("error: " + response.data.error);
-      } else if (response.data.user) {
-        parent.username = response.data.user.username;
-        parent.isLoggedIn = true;
-      }
-      return response.data;
-    });      
+        if (response.data.error) {
+          console.log("error: " + response.data.error);
+        } else if (response.data.user) {
+          parent.username = response.data.user.username;
+          parent.userId = response.data.user._id;
+          parent.isLoggedIn = true;
+        }
+        return response.data;
+      });      
 
-    return promise;
-  };
+      return promise;
+    },
 
-  this.signup = function(theUsername, thePassword, theEmail) {
-    var parent = this;
+    signup : function(theUsername, thePassword, theEmail) {
+      var parent = this;
 
-    var body = {username: theUsername, password: thePassword, email: theEmail};
+      var body = {username: theUsername, password: thePassword, email: theEmail};
 
-    var promise = $http.post('/api/signup', body).then(function (response) {        
+      var promise = $http.post('/api/signup', body).then(function (response) {        
 
-      console.log(response);
+        console.log(response);
 
-      if (response.data.error) {
-        console.log("error: " + response.data.error);
-      } else if (response.data.user) {
-        parent.username = response.data.user.username;
-        parent.isLoggedIn = true;
-      }
-      return response.data;
-    });      
+        if (response.data.error) {
+          console.log("error: " + response.data.error);
+        } else if (response.data.user) {
+          parent.username = response.data.user.username;
+          parent.userId = response.data.user._id;
+          parent.isLoggedIn = true;
+        }
+        return response.data;
+      });      
 
-    return promise;
+      return promise;
+    }
   };
 
 }])
@@ -128,6 +134,23 @@ app.factory('SocketConnection', function ($rootScope) {
       socket.emit(eventName, data);
     }
   };
+});
+
+app.factory('AuthService', function ($rootScope, $route, $location, UserService) {
+
+  $rootScope.$on("$routeChangeStart", function(event, next, current) {    
+    
+    var authRequired = next && next.$$route && next.$$route.auth;
+    if (authRequired && !UserService.isLoggedIn) {
+      console.log("you should be logged in to use this page...");
+      $location.url('/');
+      //var currentUrl = $location.url();
+      //$location.url("/signin?redirect_url=" + encodeURIComponent(currentUrl));
+    } 
+    
+  });
+
+  return {};
 });
 
 
