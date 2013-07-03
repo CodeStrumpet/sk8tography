@@ -19,8 +19,8 @@ angular.module('myApp.services', []).
 
 .service( 'UserService', [ '$rootScope', '$http', function($rootScope, $http) {
   
-  this.isLoggedIn = true;  
-  this.username = "Something";
+  this.isLoggedIn = false;  
+  this.username = "";
 
   this.logout = function() {
     this.isLoggedIn = false;

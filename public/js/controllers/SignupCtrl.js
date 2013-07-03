@@ -5,6 +5,7 @@ function SignupCtrl($scope, $http, $injector, UserService, dialog) {
   $injector.invoke(InputBlockCtrl, this, {$scope: $scope});
 
   $scope.loading = false;
+  $scope.error = null;
 
   $scope.usernameInput = {
     name : "Username",
@@ -37,21 +38,46 @@ function SignupCtrl($scope, $http, $injector, UserService, dialog) {
 
 
   $scope.signup = function() {
-    $scope.loading = true;
 
     var usernameVal = $scope.usernameInput.value;
     var passwordVal = $scope.passwordInput.value;
+    var repeatPasswordVal = $scope.repeatPasswordInput.value;
     var emailVal = $scope.emailInput.value;
 
+
+    $scope.error = null;
+
+    if (usernameVal == "") {
+      $scope.error = "Username required";
+    } else if (!passwordVal || passwordVal == "") {
+      $scope.error = "Invalid Password";
+    } else if (passwordVal != repeatPasswordVal) {
+      $scope.error = "Password vals don't match";
+    } else if (!emailVal || emailVal == "") {
+      $scope.error = "Email required";
+    }
+
+    if ($scope.error != null) {
+      return;
+    }
+
+    $scope.loading = true;
+
+    
     var user = {
       username : usernameVal,
       email : emailVal,
       password : passwordVal
     };
 
-    UserService.signup(usernameVal, passwordVal, emailVal).then(function(d) {      
-      console.log("signup returned");
-      dialog.close();
+    UserService.signup(usernameVal, passwordVal, emailVal).then(function(d) { 
+      if (d.error) {
+        $scope.loading = false;
+        $scope.error = d.error;        
+      } else {
+        // signup was successful
+        dialog.close();        
+      }
     });
   };
 

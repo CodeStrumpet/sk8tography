@@ -5,9 +5,11 @@ div
   div.modal-body
     include includes/inputBlock
   div.control-group.modal-footer
+    div.controls(ng-show="error").error
+      span {{error}}
     div.controls(ng-show="!loading")
       button.btn.btn-primary(ng-click="signup()") Sign Up
       button.btn.btn-danger(ng-click="close()") Cancel
-    div(ng-show="loading")
+    div(ng-show="loading && !error")
       i.icon-spinner.icon-spin.icon-large
       span &nbsp;&nbsp;&nbsp; Working...
