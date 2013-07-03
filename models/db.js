@@ -1,6 +1,6 @@
 
 
-var models = ['./track.js', './video.js', './brand.js', './videoSegment.js', './skater.js', './trickType.js', 
+var models = ['./track.js', './user.js', './video.js', './brand.js', './videoSegment.js', './skater.js', './trickType.js', 
 	'./trick.js', './spot.js', './clip.js'];
 
 exports.initialize = function() {

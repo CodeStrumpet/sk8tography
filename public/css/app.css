@@ -4,6 +4,11 @@ body {
   padding-top: 70px;
 }
 
+.login-menu {
+  padding: 15px;
+  padding-bottom: 0px;
+}
+
 .menu {
   list-style: none;
   border-bottom: 0.1em solid black;
@@ -176,6 +181,11 @@ table th, table td {
 
 .clips .infoColumn {
   width: 50%;
+}
+
+
+li.clip-element:hover {
+  background-color: pink;
 }
 
 /**************************************************

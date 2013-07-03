@@ -17,6 +17,60 @@ angular.module('myApp.services', []).
    };
  }])
 
+.service( 'UserService', [ '$rootScope', '$http', function($rootScope, $http) {
+  
+  this.isLoggedIn = true;  
+  this.username = "Something";
+
+  this.logout = function() {
+    this.isLoggedIn = false;
+    this.username = "";
+  };
+
+  this.login = function(theUsername, thePassword) {
+    var parent = this;
+
+    var body = {username: theUsername, password: thePassword};
+
+    var promise = $http.post('/api/login', body).then(function (response) {        
+
+      console.log(response);
+
+      if (response.data.error) {
+        console.log("error: " + response.data.error);
+      } else if (response.data.user) {
+        parent.username = response.data.user.username;
+        parent.isLoggedIn = true;
+      }
+      return response.data;
+    });      
+
+    return promise;
+  };
+
+  this.signup = function(theUsername, thePassword, theEmail) {
+    var parent = this;
+
+    var body = {username: theUsername, password: thePassword, email: theEmail};
+
+    var promise = $http.post('/api/signup', body).then(function (response) {        
+
+      console.log(response);
+
+      if (response.data.error) {
+        console.log("error: " + response.data.error);
+      } else if (response.data.user) {
+        parent.username = response.data.user.username;
+        parent.isLoggedIn = true;
+      }
+      return response.data;
+    });      
+
+    return promise;
+  };
+
+}])
+
 .service('StringHelperService', ['$rootScope', function( $rootScope) {
   return {
     urlParams : function(url) {
@@ -75,6 +129,5 @@ app.factory('SocketConnection', function ($rootScope) {
     }
   };
 });
-
 
 

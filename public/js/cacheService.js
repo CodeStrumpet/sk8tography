@@ -4,6 +4,8 @@ angular.module('myApp.cacheService', []).
 .service( 'CacheService', [ '$rootScope', function( $rootScope ) {
   return {
 
+
+      // TODO add promise based cache lookup...
     
    };
  }]);

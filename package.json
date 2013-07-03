@@ -10,7 +10,8 @@
     "async": "~0.1.22",
     "awssum": "~0.12.xx",
     "validator": "~1.1.3",
-    "fluent-ffmpeg": "~1.4.0"
+    "fluent-ffmpeg": "~1.4.0",
+    "bcrypt": "~0.7.6"
   },
   "engines": {
     "node": "0.8.x",

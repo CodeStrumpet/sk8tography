@@ -9,7 +9,7 @@
 
 function AddPostCtrl($scope, $http, $location) {
   $scope.form = {
-    sampleVal : "something..."
+
   };
   $scope.submitPost = function () {
     $http.post('/api/post', $scope.form).

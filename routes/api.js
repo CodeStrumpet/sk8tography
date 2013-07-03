@@ -7,6 +7,7 @@ var VideoSegment = mongoose.model("VideoSegment");
 var Clip = mongoose.model("Clip");
 var Video = mongoose.model("Video");
 var Skater = mongoose.model("Skater");
+var User = mongoose.model("User");
 
 var videoHelper = require('../helpers/video');
 
@@ -157,6 +158,69 @@ exports.addVideoSegment = function(req, res) {
       // kick off child process to actually download and import the video
       console.log("kick off import of the video segment");
       videoHelper.importVideoSegment(results.newSegment);
+    }
+  });
+};
+
+
+exports.login = function (req, res) {
+  var username = req.body.username;
+  var password = req.body.password;
+
+  // attempt to authenticate user
+  User.getAuthenticated(username, password, function(err, user, reason) {
+    var response = {};
+
+    if (err) {
+      response.error = err;
+    } else if (user) {
+      response.user = user;
+    } else {
+      // otherwise we can determine why we failed
+      var reasons = User.failedLogin;
+      switch (reason) {
+        case reasons.NOT_FOUND:
+        case reasons.PASSWORD_INCORRECT:
+          response.error = "login failed";
+            // note: these cases are usually treated the same - don't tell
+            // the user *why* the login failed, only that it did
+            break;
+        case reasons.MAX_ATTEMPTS:
+          response.error  = "too many failed login attempts";
+            // send email or otherwise notify user that account is
+            // temporarily locked
+            break;
+      }
+    }
+    res.json(response);
+  });
+
+};
+
+
+exports.signup = function (req, res) {
+  var username = req.body.username;
+  var password = req.body.password;
+  var email = req.body.email;
+
+  // create a new user
+  var newUser = new User({
+    username: username,
+    password: password,
+    email: email
+  });
+
+  // save user to database
+  newUser.save(function(err) {
+    if (err) {
+      console.log(err);
+      res.json({        
+        error: "sign in failed"  // TODO send back more useful error
+      });
+    } else {
+      res.json({
+        user : newUser
+      });
     }
   });
 };

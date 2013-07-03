@@ -133,6 +133,8 @@ app.get('/api/videos', api.videos);
 app.post('/api/addVideoSegment', api.addVideoSegment);
 app.post('/api/addVideo', api.addVideo);
 app.post('/api/addSkater', api.addSkater);
+app.post('/api/login', api.login);
+app.post('/api/signup', api.signup);
 
 // ========================================
 app.get('/api/posts', api.posts);

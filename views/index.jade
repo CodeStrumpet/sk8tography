@@ -1,15 +1,38 @@
 extends layout
 
 block body
-  div.navbar.navbar-fixed-top(bs-navbar)
+  div(ng-controller="NavbarCtrl").navbar.navbar-fixed-top
     div.navbar-inner
       div.container-fluid
-        a.brand(href="/") Sk8tography
+        a(href="/").brand Sk8tography
         ul.nav
           li(data-match-route="/tagClips")
             a(href='/tagClips') Tag Clips
           li(data-match-route="/addVideoSegment")
             a(href='/addVideoSegment') Add Videos
+
+        ul(ng-show="!isLoggedIn()", ng-cloak).nav.pull-right
+          li
+            a(href="/sign_up", ng-click="signup()") Sign Up
+          li.divider-vertical
+          li.dropdown
+            a(href="#", data-toggle="dropdown").dropdown-toggle Sign In
+              strong.caret
+            div.dropdown-menu
+              form.login-menu
+                fieldset
+                  legend Login
+                  input(type="text", placeholder="Username", ng-model="usernameVal")
+                  input(type="password", placeholder="Password", ng-model="passwordVal")
+                  button(type="submit", ng-click="login()").btn Login
+        ul(ng-show="isLoggedIn()", ng-cloak).nav.pull-right
+          li.dropdown
+            a(href="#", data-toggle="dropdown").dropdown-toggle {{username()}}
+              strong.caret
+            ul.dropdown-menu.login-menu
+              li
+                a(ng-click="logout()") Logout
+
   div(ng-view)
 
 
@@ -37,6 +60,8 @@ block body
 
 
   // controllers
+  script(src='js/controllers/SignupCtrl.js')
+  script(src='js/controllers/NavbarCtrl.js')
   script(src='js/controllers/InputBlockCtrl.js')
   script(src='js/controllers/AddNewVideoCtrl.js')
   script(src='js/controllers/AddNewSkaterCtrl.js')
