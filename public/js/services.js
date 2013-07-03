@@ -20,8 +20,7 @@ angular.module('myApp.services', []).
 .service( 'UserService', [ '$rootScope', '$http', '$cookies', function($rootScope, $http, $cookies) {
   
   return {
-
-    isLoggedIn : function() {
+    isLoggedIn : function() { 
       return $cookies.username && $cookies.userId;
     },
 
@@ -39,7 +38,6 @@ angular.module('myApp.services', []).
     },
 
     login : function(theUsername, thePassword) {
-      var parent = this;
 
       var body = {username: theUsername, password: thePassword};
 
@@ -56,12 +54,10 @@ angular.module('myApp.services', []).
         }
         return response.data;
       });      
-
       return promise;
     },
 
     signup : function(theUsername, thePassword, theEmail) {
-      var parent = this;
 
       var body = {username: theUsername, password: thePassword, email: theEmail};
 
@@ -77,11 +73,9 @@ angular.module('myApp.services', []).
         }
         return response.data;
       });      
-
       return promise;
     }
   };
-
 }])
 
 .service('StringHelperService', ['$rootScope', function( $rootScope) {

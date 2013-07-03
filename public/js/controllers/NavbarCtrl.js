@@ -9,6 +9,8 @@ function NavbarCtrl($scope, $http, $dialog, UserService, AuthService) {
     e.stopPropagation();
   });
 
+  // !!! TODO: do this in a way that doesn't require the overhead 
+  // of calling this function about 5 times with every page action
   $scope.isLoggedIn = function() {
     return UserService.isLoggedIn();
   };
