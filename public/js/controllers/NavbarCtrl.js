@@ -10,11 +10,11 @@ function NavbarCtrl($scope, $http, $dialog, UserService, AuthService) {
   });
 
   $scope.isLoggedIn = function() {
-    return UserService.isLoggedIn;
+    return UserService.isLoggedIn();
   };
 
   $scope.username = function() {
-    return UserService.username;
+    return UserService.username();
   };
 
   $scope.logout = function() {

@@ -17,17 +17,25 @@ angular.module('myApp.services', []).
    };
  }])
 
-.service( 'UserService', [ '$rootScope', '$http', function($rootScope, $http) {
+.service( 'UserService', [ '$rootScope', '$http', '$cookies', function($rootScope, $http, $cookies) {
   
   return {
-    isLoggedIn : false,
-    username : "",
-    userId : null,
+
+    isLoggedIn : function() {
+      return $cookies.username && $cookies.userId;
+    },
+
+    username : function() {
+      return $cookies.username;
+    },
+
+    userId : function() {
+      return $cookies.userId;
+    },
 
     logout : function() {
-      this.isLoggedIn = false;
-      this.username = "";
-      this.userId = null;
+      delete $cookies.username;
+      delete $cookies.userId;
     },
 
     login : function(theUsername, thePassword) {
@@ -42,9 +50,9 @@ angular.module('myApp.services', []).
         if (response.data.error) {
           console.log("error: " + response.data.error);
         } else if (response.data.user) {
-          parent.username = response.data.user.username;
-          parent.userId = response.data.user._id;
-          parent.isLoggedIn = true;
+
+          $cookies.username = response.data.user.username;
+          $cookies.userId = response.data.user._id;
         }
         return response.data;
       });      
@@ -64,9 +72,8 @@ angular.module('myApp.services', []).
         if (response.data.error) {
           console.log("error: " + response.data.error);
         } else if (response.data.user) {
-          parent.username = response.data.user.username;
-          parent.userId = response.data.user._id;
-          parent.isLoggedIn = true;
+          $cookies.username = response.data.user.username;
+          $cookies.userId = response.data.user._id;
         }
         return response.data;
       });      
@@ -141,7 +148,7 @@ app.factory('AuthService', function ($rootScope, $route, $location, UserService)
   $rootScope.$on("$routeChangeStart", function(event, next, current) {    
     
     var authRequired = next && next.$$route && next.$$route.auth;
-    if (authRequired && !UserService.isLoggedIn) {
+    if (authRequired && !UserService.isLoggedIn()) {
       console.log("you should be logged in to use this page...");
       $location.url('/');
       //var currentUrl = $location.url();
