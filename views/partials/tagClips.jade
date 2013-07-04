@@ -15,7 +15,9 @@ div.container-fluid
 							strong {{clip.duration | number:0 }} s	
 							p {{clip.updated | date:'short'}}
 	div.content.right.well
-		div(ng-controller='YoutubeCtrl').player-console
-			include includes/videoconsole
-		div.tagging-console
+		div.current-clip-content
+			div(ng-controller='YoutubeCtrl').player-console
+				include includes/videoconsole
+			div.tagging-console
+				include includes/inputBlockThin
 				

@@ -77,7 +77,7 @@ table th, table td {
 
 
 /**************************************************
-  Video console & tag clips page styles
+  Videoconsole & tag clips page styles
 ***************************************************/
 
 .container-fluid > .sidebar.left {
@@ -112,6 +112,10 @@ table th, table td {
   width:40%;
   height: 300px;
   float: right;
+  margin-top:10px;
+}
+
+.current-clip-content {
 }
 
 .clip-filter {

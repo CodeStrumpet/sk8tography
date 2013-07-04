@@ -298,24 +298,31 @@ exports.skaters = function (req, res) {
     });
   };
 
+
   var searchTerms = req.query.q;
+  var skaterId = req.query._id;
 
-  console.log("searchTerms: " + searchTerms);
+  console.log("searchTerms: " + searchTerms + " _id: " + skaterId);
 
-  var query = Skater.
-  find()
-  .limit(20);
-
-  if (typeof(searchTerms) != 'undefined') {
-    var re = new RegExp('\\b' + searchTerms, 'i');
-
-    query.where('name').regex(re);
+  if (skaterId) {
+    
+    Skater.findById(skaterId).exec(skatersCallback);
 
   } else {
-    query.sort('-updated')
+    var query = Skater.
+    find()
+    .limit(20);
+
+    if (typeof(searchTerms) != 'undefined') {
+      var re = new RegExp('\\b' + searchTerms, 'i');
+
+      query.where('name').regex(re);
+
+    } else {
+      query.sort('-updated')
+    }    
+    query.exec(skatersCallback);  
   }
-  
-  query.exec(skatersCallback);  
 };
 
 
