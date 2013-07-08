@@ -55,7 +55,14 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
 
   var newTrickInput = function() {
     return {
-      name : "Trick(s)",
+      name : "",
+      getName : function() {
+        if (this.isFirstTrick) {
+          return "Trick(s)";
+        } else {
+          return "";
+        }
+      },
       value : "",
       type : "text",
       helpText : "",
@@ -68,6 +75,7 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
       multipleField : true,
       dropdownOptions : ["Ledge", "Flatground", "Rail", "Gap", "Transition"],
       isLastTrick : true,
+      isFirstTrick : false,
       typeaheadFetch : function(searchText, successFunction) {
 
         var url = '/api/trickTypes';
@@ -100,6 +108,7 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
 
   // initialize the tricks array with one trick
   $scope.tricks = [newTrickInput()];
+  $scope.tricks[0].isFirstTrick = true;
 
   $scope.inputs.push($scope.tricks[0]);
 

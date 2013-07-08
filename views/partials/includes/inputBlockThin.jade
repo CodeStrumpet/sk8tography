@@ -1,9 +1,9 @@
 form.form-inline
   fieldset(ng-repeat="input in inputs").control-group
-    div
+    div(ng-show="!inputs[$index].multipleField")
       label.control-label {{input.name}}
       div.controls
-        span(ng-show="!inputs[$index].multipleField")
+        span
           input(ng-model="input.value", 
                 type="{{input.type}}", 
                 index="{{$index}}", 
@@ -16,26 +16,26 @@ form.form-inline
             &nbsp;&nbsp;&nbsp;&nbsp; "{{input.value}}" not found. &nbsp;&nbsp;&nbsp;&nbsp;                
             button.btn.btn-success.btn-small(ng-click='addNewEntity($index)') Add new {{input.entityName}} to the Sk8abase
           span.help-block {{input.helpText}}
-        // multiple field option
-        span(ng-show="inputs[$index].multipleField")
-          form
-            input(ng-model="input.value", 
-                  type="{{input.type}}", 
-                  index="{{$index}}", 
-                  structured-input, 
-                  typeahead="value for value in defaultTypeahed($viewValue)", 
-                  typeahead-on-select='onTypeaheadSelect($index)').input-medium
-            span &nbsp;&nbsp;
-            i(ng-show="inputs[$index].selectedObj != null").icon-check-sign
-            span(ng-show='showAddEntity($index)', style="display:none")          
-              &nbsp;&nbsp;&nbsp;&nbsp; "{{input.value}}" not found. &nbsp;&nbsp;&nbsp;&nbsp;                
-              button.btn.btn-success.btn-small(ng-click='addNewEntity($index)') Add new {{input.entityName}} to the Sk8abase
-            span(ng-show='!showAddEntity($index)') 
-              span &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              label.checkbox          
-                input(type="checkbox")
-                label.checkbox Switch
-              // TODO terrain dropdown
-          br
-          br
-          button(ng-show="inputs[$index].isLastTrick", ng-click="addAnotherTrick($index)") Add another trick
+
+    // multiple field option
+    div(ng-show="inputs[$index].multipleField")
+      label.control-label {{ input.getName() }}
+      div.controls
+        input(ng-model="input.value", 
+              type="{{input.type}}", 
+              index="{{$index}}", 
+              structured-input, 
+              typeahead="value for value in defaultTypeahed($viewValue)", 
+              typeahead-on-select='onTypeaheadSelect($index)').input-medium
+        span &nbsp;&nbsp;
+        i(ng-show="inputs[$index].selectedObj != null").icon-check-sign
+        span(ng-show='showAddEntity($index)', style="display:none")          
+          &nbsp;&nbsp;&nbsp;&nbsp; "{{input.value}}" not found. &nbsp;&nbsp;&nbsp;&nbsp;                
+          button.btn.btn-success.btn-small(ng-click='addNewEntity($index)') Add new {{input.entityName}} to the Sk8abase
+        span(ng-show='!showAddEntity($index)') 
+          span &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          label.checkbox          
+            input(type="checkbox")
+            label.checkbox Switch
+          // TODO terrain dropdown
+      button(ng-show="inputs[$index].isLastTrick", ng-click="addAnotherTrick($index)") Add another trick
