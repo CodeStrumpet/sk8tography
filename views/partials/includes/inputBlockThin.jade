@@ -19,9 +19,12 @@ form.form-inline
           span.help-block {{input.helpText}}
 
     // multiple field option
-    div(ng-show="inputs[$index].multipleField")
-      label.control-label {{ input.getName() }}
-      div.controls
+    div(ng-show="inputs[$index].multipleField",
+        ng-mouseenter="mouseEnteredInput($index)",
+        ng-mouseleave="mouseLeftInput($index)")
+      label.control-label {{ input.getName() }} &nbsp;&nbsp;&nbsp;&nbsp;
+      i(ng-show="inputs[$index].isFirstTrick", ng-click="addAnotherTrick($index)").icon-plus-sign.icon-large.add-action
+      div().controls        
         input(ng-model="input.value", 
               type="{{input.type}}", 
               index="{{$index}}", 
@@ -35,10 +38,10 @@ form.form-inline
         span(ng-show='showAddEntity($index)', style="display:none")          
           &nbsp;&nbsp;&nbsp;&nbsp; "{{input.value}}" not found. &nbsp;&nbsp;&nbsp;&nbsp;                
           button.btn.btn-success.btn-small(ng-click='addNewEntity($index)') Add new {{input.entityName}} to the Sk8abase
-        span(ng-show='!showAddEntity($index)') 
+        span(ng-show='!showAddEntity($index) && (inputs[$index].active || input.isSwitchTrick)') 
           span &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           label.checkbox          
-            input(type="checkbox")
+            input(type="checkbox", ng-model="input.isSwitchTrick")
             label.checkbox Switch
           //- span &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           //- span.input-small.dropdown Terrain:&nbsp;&nbsp;&nbsp;
@@ -50,8 +53,8 @@ form.form-inline
           //-       a Choice 2
           //-     li
           //-       a Choice 3
+          i(ng-click="removeTrick($index)", ng-show="!inputs[$index].isFirstTrick").icon-minus-sign.icon-large.remove-action.remove-trick
 
       div(ng-show="!inputs[$index].isLastTrick", ng-class="{'combo-true' : inputs[$index].isComboTrick}").trick-linkage
         i(ng-click="inputs[$index].isComboTrick = !inputs[$index].isComboTrick").icon-link.icon-2x
-      button(ng-show="inputs[$index].isLastTrick", ng-click="addAnotherTrick($index)") Add another trick
       

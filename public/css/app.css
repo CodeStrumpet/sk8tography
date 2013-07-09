@@ -200,6 +200,19 @@ li.clip-element:hover {
   color: #00f;
 }
 
+.add-action {
+  color: #00AB66;
+}
+
+.remove-action {
+  color: #B22222;
+}
+
+.remove-trick {
+  position: relative;
+  left: 40px;
+}
+
 /**************************************************
   Videos page
 ***************************************************/

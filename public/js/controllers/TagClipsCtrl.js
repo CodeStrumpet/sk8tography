@@ -76,6 +76,7 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
       isLastTrick : true,
       isFirstTrick : false,
       isComboTrick : false,
+      isSwitchTrick : false,
       typeaheadFetch : function(searchText, successFunction) {
 
         var url = '/api/trickTypes';
@@ -137,6 +138,32 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
 
     // add the new trick to the end of our tricks array
     $scope.tricks.push(newTrick);
+  };
+
+  $scope.removeTrick = function(index) {
+
+    var trickToRemove = $scope.inputs[index];
+
+    // figure out the trick index 
+    var i;
+    for (i = 0; i < $scope.tricks.length; i++) {
+      if ($scope.tricks[i] == trickToRemove) {
+        break;
+      }
+    }
+
+    $scope.tricks.remove(i);
+    $scope.inputs.remove(index);
+
+    $scope.tricks[$scope.tricks.length - 1].isLastTrick = true;
+  };
+
+  $scope.mouseEnteredInput = function(index) {
+    $scope.inputs[index].active = true;
+  };
+
+  $scope.mouseLeftInput = function(index) {
+    $scope.inputs[index].active = false;
   };
 
   $scope.terrainName = function(terrainType) {
