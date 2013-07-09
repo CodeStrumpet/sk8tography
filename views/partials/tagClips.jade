@@ -5,7 +5,7 @@ div.container-fluid
 				h5 Sidebar
 			div.clips
 				ul.nav.nav-list
-					li(ng-repeat="clip in clips", ng-class="{activeclip: $index==currClipIndex}", ng-click="setCurrentClip(clip)", clips-loaded).clip-element
+					li(ng-repeat="clip in clips", ng-class="getClipClass($index)", ng-click="setCurrentClip(clip)", clips-loaded)
 						ul.thumbnails
 							li.span.thumbspan
 								div.thumbnail

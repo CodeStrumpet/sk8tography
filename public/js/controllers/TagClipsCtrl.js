@@ -181,6 +181,17 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
     }       
   };
 
+  $scope.getClipClass = function(index) {
+    
+    var result = [];
+    if (index == $scope.currClipIndex) {
+      result.push("activeclip");
+    } else {
+      result.push("clip-element");
+    }
+    return result;
+  };
+
   $scope.setCurrentClip = function(clip) {
   	$scope.currClipIndex = $scope.clips.indexOf(clip);
 
