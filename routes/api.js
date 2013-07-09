@@ -8,6 +8,7 @@ var Clip = mongoose.model("Clip");
 var Video = mongoose.model("Video");
 var Skater = mongoose.model("Skater");
 var User = mongoose.model("User");
+var TrickType = mongoose.model("TrickType");
 
 var videoHelper = require('../helpers/video');
 
@@ -64,6 +65,30 @@ exports.addSkater = function(req, res) {
       });
     }
   });  
+};
+
+exports.addTrickType = function(req, res) {
+  var trickTypeData = req.body;
+
+  var newTrickType = new TrickType({
+    name: trickTypeData.name,
+    otherNames: trickTypeData.otherNames,
+    categories: trickTypeData.categories
+  });
+
+  newTrickType.save(function (saveErr) {
+    if (saveErr) {
+      console.log("saveErr: " + saveErr);
+      res.json({
+        error : saveErr
+      });
+    } else {
+      res.json({
+        trickType : newTrickType
+      });
+    }
+  });  
+
 };
 
 
@@ -322,6 +347,42 @@ exports.skaters = function (req, res) {
       query.sort('-updated')
     }    
     query.exec(skatersCallback);  
+  }
+};
+
+exports.trickTypes = function (req, res) {
+  
+  var trickTypesCallback = function (err, trickTypes) {
+    console.log("num trickTypes: " + trickTypes);
+    res.json({
+      trickTypes : trickTypes
+    });
+  };
+
+
+  var searchTerms = req.query.q;
+  var trickTypeId = req.query._id;
+
+  console.log("searchTerms: " + searchTerms + " _id: " + trickTypeId);
+
+  if (trickTypeId) {
+    
+    TrickType.findById(trickTypeId).exec(trickTypesCallback);
+
+  } else {
+    var query = TrickType.
+    find()
+    .limit(20);
+
+    if (typeof(searchTerms) != 'undefined') {
+      var re = new RegExp('\\b' + searchTerms, 'i');
+
+      query.where('name').regex(re);
+
+    } else {
+      query.sort('-updated')
+    }    
+    query.exec(trickTypesCallback);  
   }
 };
 

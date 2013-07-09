@@ -17,6 +17,18 @@ scope.Constantsinople.TerrainType = {
 	LAUNCHRAMP : 0x200
 };
 
+// from wikipedia
+scope.Constantsinople.TrickCategory = {
+	UNKNOWN : 0x0,
+	OLLIE : 0x1,
+	AERIAL : 0x2,
+	FLIPTRICK : 0x4,
+	FREESTYLE : 0x8,
+	SLIDE : 0x10,
+	GRIND : 0x20,
+	LIPTRICK : 0x40
+};
+
 // Field Names
 
 scope.Constantsinople.fields = {

@@ -9,7 +9,8 @@ form.form-inline
                 index="{{$index}}", 
                 structured-input, 
                 typeahead="value for value in defaultTypeahed($viewValue)", 
-                typeahead-on-select='onTypeaheadSelect($index)').input-xlarge
+                typeahead-on-select='onTypeaheadSelect($index)',
+                on-blur="typeaheadBlur($index)").input-xlarge
           span &nbsp;&nbsp;
           i(ng-show="inputs[$index].selectedObj != null").icon-check-sign
           span(ng-show='showAddEntity($index)', data-ng-animate="'fade'", style="display:none")          
@@ -28,7 +29,7 @@ form.form-inline
               typeahead="value for value in defaultTypeahed($viewValue)", 
               typeahead-on-select='onTypeaheadSelect($index)',
               on-focus="inputs[$index].focused=true",
-              on-blur="inputs[$index].focused=false").input-medium
+              on-blur="typeaheadBlur($index)").input-medium
         span &nbsp;&nbsp;
         i(ng-show="inputs[$index].selectedObj != null").icon-check-sign
         span(ng-show='showAddEntity($index)', style="display:none")          

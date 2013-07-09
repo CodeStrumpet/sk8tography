@@ -25,6 +25,10 @@ var InputBlockCtrl = function ($scope, $http, $dialog) {
     });
   };
 
+  $scope.typeaheadBlur = function(index) {
+    $scope.inputs[index].checkValidity();
+  };
+
   $scope.showAddEntity = function (index) {
     return $scope.inputs[index].typeahead && $scope.inputs[index].value.length > 2 && $scope.inputs[index].typeaheadResults.length < 1;
   };

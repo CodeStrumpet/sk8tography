@@ -1,0 +1,11 @@
+div
+  h3.modal-header Add a new Trick
+  div.modal-body
+    include includes/inputBlock
+  div.control-group.modal-footer
+    div.controls(ng-show="!loading")
+      button.btn.btn-primary(ng-click="submitNewTrickType()") Add Trick
+      button.btn.btn-danger(ng-click="close()") Cancel
+    div(ng-show="loading")
+      i.icon-spinner.icon-spin.icon-large
+      span &nbsp;&nbsp;&nbsp; Adding Trick...

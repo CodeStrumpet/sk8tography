@@ -69,11 +69,10 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
       typeahead : "value.name for value in getMatches($viewValue, $index)",
       typeaheadResults : [],
       selectedObj : null,
-      entityName : "TrickType",
-      templateUrl: 'partials/addNewSkater',
+      entityName : "Trick",
+      templateUrl: 'partials/addNewTrickType',
       controller: 'AddNewTrickTypeCtrl',
       multipleField : true,
-      dropdownOptions : ["Ledge", "Flatground", "Rail", "Gap", "Transition"],
       isLastTrick : true,
       isFirstTrick : false,
       isComboTrick : false,
@@ -142,8 +141,6 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
 
   $scope.terrainName = function(terrainType) {
     var name = "Unspecified";
-
-
   }
 
   $scope.clipsBecameAvailable = function() {

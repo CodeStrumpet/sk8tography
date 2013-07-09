@@ -8,7 +8,8 @@ form.form-horizontal
               index="{{$index}}", 
               structured-input, 
               typeahead="value for value in defaultTypeahed($viewValue)", 
-              typeahead-on-select='onTypeaheadSelect($index)').input-xlarge
+              typeahead-on-select='onTypeaheadSelect($index)',
+              on-blur="typeaheadBlur($index)").input-xlarge
         span &nbsp;&nbsp;
         i(ng-show="inputs[$index].selectedObj != null").icon-check-sign
         span(ng-show='showAddEntity($index)', data-ng-animate="'fade'", style="display:none")          
