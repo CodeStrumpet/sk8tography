@@ -3,6 +3,20 @@ var scope = typeof exports != 'undefined' ? exports : window;
 
 scope.Constantsinople = {};
 
+scope.Constantsinople.TerrainType = {
+	UNKNOWN : 0x0,
+	FLATGROUND : 0x1,
+	BANK : 0x2,
+	LEDGE : 0x4,
+	STAIRS : 0x8,
+	RAIL : 0x10,
+	GAP : 0x20,
+	QUARTERPIPE : 0x40,
+	MINIRAMP : 0x80,
+	HALFPIPE : 0x100,
+	LAUNCHRAMP : 0x200
+};
+
 // Field Names
 
 scope.Constantsinople.fields = {

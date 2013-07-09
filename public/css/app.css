@@ -192,6 +192,14 @@ li.clip-element:hover {
   background-color: pink;
 }
 
+.trick-linkage {
+  position: absolute;  
+}
+
+.combo-true {
+  color: #00f;
+}
+
 /**************************************************
   Videos page
 ***************************************************/

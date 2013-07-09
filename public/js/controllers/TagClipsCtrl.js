@@ -76,6 +76,7 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
       dropdownOptions : ["Ledge", "Flatground", "Rail", "Gap", "Transition"],
       isLastTrick : true,
       isFirstTrick : false,
+      isComboTrick : false,
       typeaheadFetch : function(searchText, successFunction) {
 
         var url = '/api/trickTypes';
@@ -139,6 +140,11 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
     $scope.tricks.push(newTrick);
   };
 
+  $scope.terrainName = function(terrainType) {
+    var name = "Unspecified";
+
+
+  }
 
   $scope.clipsBecameAvailable = function() {
   	$scope.clipsAvailable = true;

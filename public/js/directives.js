@@ -86,8 +86,7 @@ angular.module('myApp.directives', []).
       });
     }
   };
-}).
-  directive('structuredInput', function () {
+}).directive('structuredInput', function () {
 
     return {
       controller: ['$scope', '$element', '$attrs', '$transclude', function($scope, $element, $attrs, $transclude) { 
@@ -108,5 +107,23 @@ angular.module('myApp.directives', []).
 
       }]
     };
-  });
+  }).directive('onFocus', function() {
+  return {
+    restrict: 'A',
+    link: function(scope, elm, attrs) {        
+      elm.bind('focus', function() {
+        scope.$apply(attrs.onFocus);
+      });
+    }
+  };        
+}).directive('onBlur', function() {
+  return {
+    restrict: 'A',
+    link: function(scope, elm, attrs) {
+      elm.bind('blur', function() {
+        scope.$apply(attrs.onBlur);
+      });
+    }
+  };        
+});
 

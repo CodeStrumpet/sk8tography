@@ -26,7 +26,9 @@ form.form-inline
               index="{{$index}}", 
               structured-input, 
               typeahead="value for value in defaultTypeahed($viewValue)", 
-              typeahead-on-select='onTypeaheadSelect($index)').input-medium
+              typeahead-on-select='onTypeaheadSelect($index)',
+              on-focus="inputs[$index].focused=true",
+              on-blur="inputs[$index].focused=false").input-medium
         span &nbsp;&nbsp;
         i(ng-show="inputs[$index].selectedObj != null").icon-check-sign
         span(ng-show='showAddEntity($index)', style="display:none")          
@@ -37,5 +39,18 @@ form.form-inline
           label.checkbox          
             input(type="checkbox")
             label.checkbox Switch
-          // TODO terrain dropdown
+          //- span &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          //- span.input-small.dropdown Terrain:&nbsp;&nbsp;&nbsp;
+          //-   a.dropdown-toggle Terrain Type
+          //-   ul.dropdown-menu
+          //-     li
+          //-       a Choice 1
+          //-     li
+          //-       a Choice 2
+          //-     li
+          //-       a Choice 3
+
+      div(ng-show="!inputs[$index].isLastTrick", ng-class="{'combo-true' : inputs[$index].isComboTrick}").trick-linkage
+        i(ng-click="inputs[$index].isComboTrick = !inputs[$index].isComboTrick").icon-link.icon-2x
       button(ng-show="inputs[$index].isLastTrick", ng-click="addAnotherTrick($index)") Add another trick
+      
