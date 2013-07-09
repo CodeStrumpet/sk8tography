@@ -98,9 +98,11 @@ table th, table td {
 
 .container-fluid > .content {
     vertical-align: top;
+    width: 69%;
+    /*
     position: fixed;
     margin: 0 26%;
-    width: 69%;
+    */
 }
 
 .player-console {
@@ -109,10 +111,11 @@ table th, table td {
 }
 
 .tagging-console {
-  width:40%;
-  height: 300px;
+  width:38%;
   float: right;
   margin-top:10px;
+  background-color: #C0C0C0;
+  padding: 1%;
 }
 
 .current-clip-content {
