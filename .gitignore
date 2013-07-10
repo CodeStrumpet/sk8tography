@@ -1,7 +1,28 @@
 node_modules
 .env
 .DS_Store
-*~
 /videos/*
 /images/*
 /videocache/*
+
+# asset files
+/video/*
+
+# emacs
+*~
+
+# node
+lib-cov
+*.seed
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+*.gz
+
+pids
+logs
+results
+
+npm-debug.log
