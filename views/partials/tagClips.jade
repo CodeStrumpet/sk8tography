@@ -18,6 +18,7 @@ div.container-fluid
 		div.current-clip-content
 			div(ng-controller='YoutubeCtrl').player-console
 				include includes/videoconsole
-			div.tagging-console
+			div(ng-show="currClipIndex >= 0").tagging-console
 				include includes/inputBlockThin
-				button.btn.btn-primary(ng-click='addNewVideoSegment()') Update Clip
+				alert(ng-repeat="error in errors", type="error.type", close="closeAlert($index)") {{error.msg}}
+				button.btn.btn-primary(ng-click='updateClip()') Update Clip

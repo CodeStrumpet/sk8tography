@@ -13,7 +13,7 @@ var TrickType = mongoose.model("TrickType");
 var videoHelper = require('../helpers/video');
 
 var constantsPath = '../public/js/SharedConstants';
-
+var consts = require(constantsPath).Constantsinople;
 
 
 
@@ -103,8 +103,6 @@ exports.addVideoSegment = function(req, res) {
   if (req.body.skaterRef) {
     var skaterRef = mongoose.Types.ObjectId(req.body.skaterRef);
   }
-
-  var consts = require(constantsPath).Constantsinople;
 
   require('async').series({
     validateURL : function(callback) {
@@ -446,6 +444,47 @@ exports.processVideoSegment = function(req, res) {
     }
   });
 };
+
+
+exports.updateClip = function(req, res) {
+  var clip = req.body.clip;
+
+  var clipCallback = function (err, dbClip) {
+    if (err) { 
+      console.log("retrieval error: " + err);
+      res.json({
+        error : err
+      });         
+    } else {      
+      dbClip.updated = new Date().toISOString();
+
+      dbClip.skaterRef = clip.skaterRef;
+
+      // merge or replace the clips existing tricks with the one passed in the request body
+      dbClip.mergeTricks(clip.tricks);
+
+      if (dbClip.tricks.length > 0 || dbClip.skaterRef) {
+        dbClip.status = consts.ClipStatus.TAGGED;
+      }
+
+      dbClip.save(function (saveErr) {
+        if (saveErr) {
+          res.json({
+            error : saveErr
+          });         
+        } else {
+          res.json({
+            clip : dbClip
+          });
+        }
+      });
+    }
+  };
+
+  Clip.findById(clip._id).exec(clipCallback);
+};
+
+
 
 // ============================================================
 // ============================================================

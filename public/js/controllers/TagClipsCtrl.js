@@ -2,6 +2,8 @@
 
 function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
 
+  var consts = window.Constantsinople;
+
   $injector.invoke(InputBlockCtrl, this, {$scope: $scope});
 
 	$scope.currClipIndex = -1;
@@ -158,6 +160,10 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
     $scope.tricks[$scope.tricks.length - 1].isLastTrick = true;
   };
 
+  $scope.closeAlert = function(index) {
+    $scope.errors.remove(index);
+  };
+
   $scope.mouseEnteredInput = function(index) {
     $scope.inputs[index].active = true;
   };
@@ -182,7 +188,7 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
   };
 
   $scope.getClipClass = function(index) {
-    
+
     var result = [];
     if (index == $scope.currClipIndex) {
       result.push("activeclip");
@@ -193,7 +199,17 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
   };
 
   $scope.setCurrentClip = function(clip) {
-  	$scope.currClipIndex = $scope.clips.indexOf(clip);
+
+    var newClipIndex = $scope.clips.indexOf(clip);
+
+    // don't do anything if the clip is already selected
+    if (newClipIndex == $scope.currClipIndex) {
+      return;
+    }
+
+  	$scope.currClipIndex = newClipIndex;
+
+    $scope.errors = [];
 
     var currSkater = "";
 
@@ -219,5 +235,53 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
   	if (YoutubeService.playerIsReady) {
   		YoutubeService.cueClip(clip);
   	}
+  };
+
+  $scope.updateClip = function() {
+
+    // reset errors before starting
+    $scope.errors = [];
+
+    var clip = $scope.clips[$scope.currClipIndex];
+
+    if ($scope.skaterInput.value == "") {
+      clip.skaterRef = null;
+    } else if (!$scope.skaterInput.selectedObj) {
+      $scope.errors.push({type: 'error', msg: "invalid skater: " + $scope.skaterInput.value});
+    } else if (clip.skaterRef != $scope.skaterInput.selectedObj._id) {
+      console.log("skater ref mismatch");
+      if ($scope.skaterInput.selectedObj) {
+        clip.skaterRef = $scope.skaterInput.selectedObj._id;
+        console.log("new skater!");
+      } 
+    }
+
+    var clipTricks = [];
+    for (var i = 0; i < $scope.tricks.length; i++) {
+      if ($scope.tricks[i].selectedObj) {
+        var trick = {};        
+        trick.trickTypeRef = $scope.tricks[i].selectedObj._id;
+        trick.stance = consts.Stance.UNKNOWN; // TODO !!!!
+        trick.terrainType = consts.TerrainType.UNKNOWN; // TODO !!!!
+        clipTricks.push(trick);
+      } else if ($scope.tricks[i].value != "") {
+        $scope.errors.push({type: 'error', msg: "invalid trick: " + $scope.tricks[i].value});
+      }
+    }
+
+    if ($scope.errors.length == 0) {
+
+      clip.tricks = clipTricks;
+
+      $http.put('/api/updateClip', {clip: clip}).
+      success(function(data) {
+        console.log(JSON.stringify(data));
+        if (data.error) {
+          console.log("updating clip failed");
+        } else {
+          console.log("updateClip returned success.");
+        }
+      });
+    }
   };
 }

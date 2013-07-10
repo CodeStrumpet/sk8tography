@@ -16,7 +16,7 @@ module.exports = function() {
         fileFormat: Number,
         startTime: Number,
         duration: Number,
-        tricks : [Trick],
+        tricks : [Trick.schema],
         skaterRef : Schema.ObjectId,
         spotRef : Schema.ObjectId,
         thumbFileName : String
@@ -31,6 +31,25 @@ module.exports = function() {
 
       return viddyName;
     };
+
+    clipSchema.methods.mergeTricks = function(newTricks) {
+
+      // we will simply replace all of the old tricks with new ones
+
+      var replacementTricks = [];
+
+      for (var i = 0; i < newTricks.length; i++) {
+        var trick = new Trick(
+        {
+          stance : newTricks[i].stance,
+          trickTypeRef : mongoose.Types.ObjectId(newTricks[i].trickTypeRef),
+          terrainType : newTricks[i].terrainType
+        });
+
+        replacementTricks.push(trick);
+      }
+      this.tricks = replacementTricks;
+    }
 
     mongoose.model("Clip", clipSchema);
 };

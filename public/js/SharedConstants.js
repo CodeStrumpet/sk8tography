@@ -3,6 +3,14 @@ var scope = typeof exports != 'undefined' ? exports : window;
 
 scope.Constantsinople = {};
 
+scope.Constantsinople.Stance = {
+	UNKNOWN : 0x0,
+	NORMAL : 0x1,
+	NOLLIE : 0x2,
+	SWITCH : 0x3,
+	FAKIE : 0x4
+};
+
 scope.Constantsinople.TerrainType = {
 	UNKNOWN : 0x0,
 	FLATGROUND : 0x1,
