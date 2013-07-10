@@ -12,48 +12,6 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
       $scope.clips = data.clips;
   });
 
-  $scope.skaterInput = {
-    name : "Skater",
-    value : "",
-    type : "text",
-    helpText : "",
-    typeahead : "value.name for value in getMatches($viewValue, $index)",
-    typeaheadResults : [],
-    selectedObj : null,
-    entityName : "Skater",
-    templateUrl: 'partials/addNewSkater',
-    controller: 'AddNewSkaterCtrl',
-    typeaheadFetch : function(searchText, successFunction) {
-
-      var url = '/api/skaters';
-      if (searchText) {
-        url = url + "?q=" + searchText;
-      }
-
-      return $http.get(url).then(function(response) {
-        var skaters = response.data.skaters;
-        return successFunction(skaters);
-      });
-    },
-    checkValidity : function() {
-      var valid = false;
-      for (var i = 0; i < this.typeaheadResults.length; i++) {
-        if (this.typeaheadResults[i].name.toLowerCase() === this.value.toLowerCase()) {
-          console.log("exact typeahead match!");
-          this.selectedObj = this.typeaheadResults[i];
-          valid = true;
-          break;
-        } 
-      }
-      // reset selectedObj to null if we don't have a match
-      if (!valid) {
-        this.selectedObj = null;
-      }
-    }
-  };
-
-  $scope.inputs.push($scope.skaterInput);
-
 
   var newTrickInput = function() {
     return {
@@ -109,12 +67,106 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
     };
   };
 
-  // initialize the tricks array with one trick
-  $scope.tricks = [newTrickInput()];
-  $scope.tricks[0].isFirstTrick = true;
+  $scope.updateInputsWithClip = function(clip) {
 
-  $scope.inputs.push($scope.tricks[0]);
+    $scope.inputs = [];
+    
+    $scope.skaterInput = {
+      name : "Skater",
+      value : "",
+      type : "text",
+      helpText : "",
+      typeahead : "value.name for value in getMatches($viewValue, $index)",
+      typeaheadResults : [],
+      selectedObj : null,
+      entityName : "Skater",
+      templateUrl: 'partials/addNewSkater',
+      controller: 'AddNewSkaterCtrl',
+      typeaheadFetch : function(searchText, successFunction) {
 
+        var url = '/api/skaters';
+        if (searchText) {
+          url = url + "?q=" + searchText;
+        }
+
+        return $http.get(url).then(function(response) {
+          var skaters = response.data.skaters;
+          return successFunction(skaters);
+        });
+      },
+      checkValidity : function() {
+        var valid = false;
+        for (var i = 0; i < this.typeaheadResults.length; i++) {
+          if (this.typeaheadResults[i].name.toLowerCase() === this.value.toLowerCase()) {
+            console.log("exact typeahead match!");
+            this.selectedObj = this.typeaheadResults[i];
+            valid = true;
+            break;
+          } 
+        }
+        // reset selectedObj to null if we don't have a match
+        if (!valid) {
+          this.selectedObj = null;
+        }
+      }
+    };
+
+    $scope.inputs.push($scope.skaterInput);
+
+    // get skater if we have it...
+    if (clip.skaterRef) {
+
+      var url = '/api/skaters?_id=' + clip.skaterRef;
+
+      $http.get(url).then(function (response) {        
+
+        if (response.data.error) {
+          console.log("error: " + response.data.error);
+        } else if (response.data.skaters) {
+          $scope.skaterInput.value = response.data.skaters.name;
+          $scope.skaterInput.typeaheadResults = [response.data.skaters];
+          $scope.skaterInput.selectedObj = response.data.skaters;
+        }
+        return response.data.skaters.name;
+      });
+    }
+
+
+    // initialize the tricks array with one trick
+    $scope.tricks = [newTrickInput()];
+    $scope.tricks[0].isFirstTrick = true;
+
+    $scope.inputs.push($scope.tricks[0]);
+
+    for (var i = 0; i < clip.tricks.length; i++) {
+
+      // we have already added the first trick, so we don't have to do it again
+      if (i > 0) {        
+        $scope.addAnotherTrick();
+      } 
+
+      var url = '/api/trickTypes?_id=' + clip.tricks[i].trickTypeRef;
+
+      $http.get(url).then(trickTypeCallback(i));
+    }
+  };
+
+  // creating function that returns a function to deal with functional scope issue
+  var trickTypeCallback = function(index) {
+    var newIndex = index;
+    
+    return function(response) {
+
+      if (response.data.error) {
+        console.log("error: " + response.data.error);
+      } else if (response.data.trickTypes) {
+        $scope.tricks[newIndex].value = response.data.trickTypes.name;
+        $scope.tricks[newIndex].typeaheadResults = [response.data.trickTypes];
+        $scope.tricks[newIndex].selectedObj = response.data.trickTypes;
+      }
+      //return response.data.trickTypes.name;      
+    };
+  }
 
   $scope.addAnotherTrick = function(index) {
 
@@ -140,6 +192,8 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
 
     // add the new trick to the end of our tricks array
     $scope.tricks.push(newTrick);
+
+    return newTrick;
   };
 
   $scope.removeTrick = function(index) {
@@ -211,25 +265,8 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
 
     $scope.errors = [];
 
-    var currSkater = "";
-
-    // get skater if we have it...
-    if (clip.skaterRef) {
-
-      var url = '/api/skaters?_id=' + clip.skaterRef;
-
-      $http.get(url).then(function (response) {        
-
-        if (response.data.error) {
-          console.log("error: " + response.data.error);
-        } else if (response.data.skaters) {
-          $scope.skaterInput.value = response.data.skaters.name;
-          $scope.skaterInput.typeaheadResults = [response.data.skaters];
-          $scope.skaterInput.selectedObj = response.data.skaters;
-        }
-        return response.data.skaters.name;
-      });
-    }
+    // update inputs
+    $scope.updateInputsWithClip(clip);
 
     // cue the video if our console is ready to play videos
   	if (YoutubeService.playerIsReady) {
@@ -263,6 +300,7 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
         trick.trickTypeRef = $scope.tricks[i].selectedObj._id;
         trick.stance = consts.Stance.UNKNOWN; // TODO !!!!
         trick.terrainType = consts.TerrainType.UNKNOWN; // TODO !!!!
+
         clipTricks.push(trick);
       } else if ($scope.tricks[i].value != "") {
         $scope.errors.push({type: 'error', msg: "invalid trick: " + $scope.tricks[i].value});
@@ -275,10 +313,10 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
 
       $http.put('/api/updateClip', {clip: clip}).
       success(function(data) {
-        console.log(JSON.stringify(data));
         if (data.error) {
           console.log("updating clip failed");
         } else {
+          $scope.clips[$scope.currClipIndex] = data.clip;
           console.log("updateClip returned success.");
         }
       });

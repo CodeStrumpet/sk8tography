@@ -47,7 +47,10 @@ module.exports = function() {
         });
 
         replacementTricks.push(trick);
+        console.log("replacementTrick: " + trick.trickTypeRef);
       }
+
+
       this.tricks = replacementTricks;
     }
 

@@ -364,7 +364,7 @@ exports.trickTypes = function (req, res) {
   console.log("searchTerms: " + searchTerms + " _id: " + trickTypeId);
 
   if (trickTypeId) {
-    
+    console.log("finding by ID: " + trickTypeId);
     TrickType.findById(trickTypeId).exec(trickTypesCallback);
 
   } else {
