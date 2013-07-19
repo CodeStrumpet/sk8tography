@@ -28,6 +28,10 @@ var app = angular.module('myApp', ['ui.bootstrap', 'ngCookies', 'myApp.filters',
         templateUrl: 'partials/addNewSkater',
         controller: AddNewSkaterCtrl
       }).
+      when('/visPlayground', {
+        templateUrl: 'partials/visPlayground',
+        controller: VisPlaygroundCtrl
+      }).
       when('/admin', {
         templateUrl: 'partials/admin',
         controller: AdminCtrl,
