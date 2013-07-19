@@ -11,9 +11,9 @@ div.container-fluid
 								div.thumbnail
 									img(ng-show="!clip.thumbFileName", ng-src="http://img.youtube.com/vi/{{clip.videoSegmentId}}/default.jpg")
 									img(ng-show="clip.thumbFileName", ng-src="./images/{{clip.thumbFileName}}")							
-						div.right.infoColumn							
-							strong {{clip.duration | number:0 }} s	
-							p {{clip.updated | date:'short'}}
+							div.right.infoColumn							
+								strong {{clip.duration | number:0 }} s	
+								p {{clip.updated | date:'short'}}
 	div.content.right.well
 		div.current-clip-content
 			div(ng-controller='YoutubeCtrl').player-console

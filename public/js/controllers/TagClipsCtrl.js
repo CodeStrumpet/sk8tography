@@ -256,6 +256,8 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
 
     var newClipIndex = $scope.clips.indexOf(clip);
 
+    console.log(clip);
+
     // don't do anything if the clip is already selected
     if (newClipIndex == $scope.currClipIndex) {
       return;

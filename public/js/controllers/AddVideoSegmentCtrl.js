@@ -84,8 +84,8 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
       }
 
       return $http.get(url, {query : searchText}).then(function(response) {
-        var videos = response.data.videos;
-        return successFunction(videos);
+        var skaters = response.data.skaters;
+        return successFunction(skaters);
       });
     },
     checkValidity : function() {

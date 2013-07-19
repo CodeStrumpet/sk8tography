@@ -67,7 +67,7 @@ function YoutubeCtrl($scope, $http, YoutubeService) {
   $scope.updateUIForCurrentTime = function () {
     var currentTime = $scope.player.getCurrentTime(); 
     $scope.slider.slider( "value", currentTime);
-    console.log("currentTime:  " + currentTime);
+    //console.log("currentTime:  " + currentTime);
   };
 
   $scope.sliderChanged = function( event, ui ) {
