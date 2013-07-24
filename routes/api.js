@@ -388,6 +388,64 @@ exports.trickTypes = function (req, res) {
 
 // PUT
 
+exports.fetchResults = function (req, res) {
+
+  var response = {};
+
+  var modelMappings = {
+    "Skater" : Skater,
+    "Clip" : Clip,
+    "TrickType" : TrickType,
+    "Video" : Video
+  };
+
+  var queryObj = req.body.q;
+
+  var entity = modelMappings[queryObj.entity];
+
+  // exit early if it is an invalid query
+  if (!entity) {
+    response.error = "invalid entity";
+    res.json(response);
+    return;
+  } 
+
+  var fetchCallback = function (err, results) {
+    console.log("num results: " + results.length);
+    
+    res.json({
+      results : results
+    });
+  };
+
+  var searchTerms = queryObj.searchTerms;
+  var objectId = queryObj._id;
+
+  console.log("searchTerms: " + searchTerms + " _id: " + objectId);
+
+  if (objectId) {
+    
+    entity.findById(objectId).exec(fetchCallback);
+
+  } else {
+    var query = entity.find();
+
+    query.select("name");
+
+    if (typeof(searchTerms) != 'undefined' && typeof(searchField) != 'undefined') {
+      var re = new RegExp('\\b' + searchTerms, 'i');
+
+      query.where(searchField).regex(re);
+
+    } else {
+        query.sort({name : 1});
+
+        //query.sort('-updated')
+    }    
+    query.exec(fetchCallback);  
+  }
+};
+
 exports.processVideoSegment = function(req, res) {
 
   var videoSegmentId = req.body.videoSegmentId;

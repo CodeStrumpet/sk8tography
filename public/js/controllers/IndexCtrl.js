@@ -1,18 +1,20 @@
 'use strict';
 
-function IndexCtrl($scope, $http, SocketConnection, $injector) {
+function IndexCtrl($scope, $http, SocketConnection, APIService) {
 
-  $injector.invoke(AddPostCtrl, this, {$scope: $scope});
+  $scope.testFetch = function() {
+    var query = {
+      entity : "TrickType"
+    };
 
-  console.log("sampleVal: " + $scope.form.sampleVal);
+    APIService.fetchItems(query, true).then(function(results) {
+      console.log(JSON.stringify(results));  
+    });
+    
+  };
 
   // socket listeners
   SocketConnection.on('init', function (data) {
     console.log("init received:  " + data.msg);
   });
-
-  $http.get('/api/posts').
-    success(function(data, status, headers, config) {
-      $scope.posts = data.posts;
-    });
 }
