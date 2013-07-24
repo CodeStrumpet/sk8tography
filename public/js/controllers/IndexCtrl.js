@@ -2,16 +2,22 @@
 
 function IndexCtrl($scope, $http, SocketConnection, APIService) {
 
-  $scope.testFetch = function() {
-    var query = {
-      entity : "TrickType"
-    };
-
-    APIService.fetchItems(query, true).then(function(results) {
-      console.log(JSON.stringify(results));  
-    });
-    
+  var skatersQuery = {
+    entity : "Skater"
   };
+  $scope.skaters = APIService.fetchItems(skatersQuery, true);
+
+
+  var trickTypesQuery = {
+    entity : "TrickType"
+  };
+  $scope.trickTypes = APIService.fetchItems(trickTypesQuery, true);
+
+  var clipsQuery = {
+    entity : "Clip"
+  };
+  $scope.clips = APIService.fetchItems(clipsQuery, true);
+
 
   // socket listeners
   SocketConnection.on('init', function (data) {

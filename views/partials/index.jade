@@ -2,15 +2,32 @@
 div.span12
   div.input-append.btn-group
     input(id="appendedInputButton", size="16", type="text").span2
-    a(data-toggle="dropdown", href="#", ng-click="testFetch()").btn.btn-primary.dropdown-toggle
+    a(data-toggle="dropdown", href="#").btn.btn-primary.dropdown-toggle
       span.caret
     ul.dropdown-menu
-      li
-        a(href="#").icon-pencil Edit
-      li
-        a(href="#").icon-trash Delete
-      li
-        a(href="#").icon-ban-circle Ban
-      li.divider
-      li
-        a(href="#").i Make Admin
+      li(ng-repeat='skater in skaters')        
+        a(href="#") {{skater.name}}
+
+  br 
+  br
+  br
+
+  div.input-append.btn-group
+    input(id="appendedInputButton", size="16", type="text").span2
+    a(data-toggle="dropdown", href="#").btn.btn-primary.dropdown-toggle
+      span.caret
+    ul.dropdown-menu
+      li(ng-repeat='trickType in trickTypes')        
+        a(href="#") {{trickType.name}}
+
+  br 
+  br
+  br
+
+  div.input-append.btn-group
+    input(id="appendedInputButton", size="16", type="text").span2
+    a(data-toggle="dropdown", href="#").btn.btn-primary.dropdown-toggle
+      span.caret
+    ul.dropdown-menu
+      li(ng-repeat='clip in clips')        
+        a(href="#") {{clip._id}}
