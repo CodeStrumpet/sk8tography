@@ -1,10 +1,16 @@
-p There are {{posts.length}} posts
-div(ng-repeat='post in posts')
-  h3 {{post.title}}
-  div {{post.text}}
 
-  a(href='/readPost/{{post._id}}') More
-  |  - 
-  a(href='/editPost/{{post._id}}') Edit
-  |  - 
-  a(href='/deletePost/{{post._id}}') Delete
+div.span12
+  div.input-append.btn-group
+    input(id="appendedInputButton", size="16", type="text").span2
+    a(data-toggle="dropdown", href="#").btn.btn-primary.dropdown-toggle
+      span.caret
+    ul.dropdown-menu
+      li
+        a(href="#").icon-pencil Edit
+      li
+        a(href="#").icon-trash Delete
+      li
+        a(href="#").icon-ban-circle Ban
+      li.divider
+      li
+        a(href="#").i Make Admin
