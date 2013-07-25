@@ -75,6 +75,10 @@ table th, table td {
   position:fixed;
 }
 
+.navbar-contents {
+  background-color: lightgray;
+}
+
 
 /**************************************************
   Home Page

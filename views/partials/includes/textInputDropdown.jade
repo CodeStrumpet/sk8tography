@@ -1,0 +1,10 @@
+form.form-horizontal
+  label.control-label Skater
+    div.controls
+      div.input-append.btn-group
+        input(id="appendedInputButton", type="text").span2
+        a(data-toggle="dropdown", href="#").btn.btn-primary.dropdown-toggle
+          span.caret
+        ul.dropdown-menu
+          li(ng-repeat='skater in skaters')        
+            a(href="#") {{skater.name}}
