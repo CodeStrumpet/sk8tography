@@ -5,7 +5,11 @@ function IndexCtrl($scope, $http, SocketConnection, APIService) {
   var skatersQuery = {
     entity : "Skater"
   };
-  $scope.skaters = APIService.fetchItems(skatersQuery, true);
+
+
+  $scope.skaters = APIService.fetchItems(skatersQuery, true).then(function(results) {
+    $scope.skaters = results;
+  });
 
 
   var trickTypesQuery = {

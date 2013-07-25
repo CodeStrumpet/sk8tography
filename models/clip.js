@@ -17,7 +17,7 @@ module.exports = function() {
         startTime: Number,
         duration: Number,
         tricks : [Trick.schema],
-        skaterRef : Schema.ObjectId,
+        skaterRef : {type: Schema.Types.ObjectId, ref: 'Skater' },
         spotRef : Schema.ObjectId,
         thumbFileName : String
     });

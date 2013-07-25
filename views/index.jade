@@ -10,7 +10,11 @@ block body
             a(href='/tagClips') Tag Clips
           li(data-match-route="/addVideoSegment")
             a(href='/addVideoSegment') Add Videos
-
+        div.span1
+        span.input-append.btn-group
+          input(id="appendedInputButton", type="text").span3
+          a(href="#").btn.btn-primary
+            span.icon-search
         ul(ng-show="!isLoggedIn()", ng-cloak).nav.pull-right
           li
             a(href="/sign_up", ng-click="signup()") Sign Up

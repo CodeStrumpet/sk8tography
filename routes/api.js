@@ -385,6 +385,78 @@ exports.trickTypes = function (req, res) {
 };
 
 
+exports.skaterClips = function(req, res) {
+
+  Clip.find().distinct("skaterRef", function(error, skaterRefs) {
+    if (error) {
+      res.json({error : error});
+      return;
+    } else {
+
+      Clip.find().exec(function(error, clips) {
+        if (error) {
+          res.json({error : error});
+          return;
+
+        } else {          
+          var skatersObj = {};
+          for (var i = 0; i < skaterRefs.length; i++) {
+            skatersObj[skaterRefs[i]] = 1;
+          }
+          var reducedClips = [];
+          for (var i = 0; i < clips.length; i++) {
+            if (skatersObj[clips[i].skaterRef]) { // check if there is still a skater with this clip's skaterRef
+              delete skatersObj[clips[i].skaterRef]; // we remove the skater
+              reducedClips.push(clips[i]);
+            } 
+          }
+          res.json({results : reducedClips});
+        }
+
+      });
+    }
+  });
+
+
+  /*
+
+  This could theoretically be done with a map-reduce function. here is the start of that...
+
+  var o = {};
+  o.map = function () { emit(this.skaterRef, this.thumbFileName) }
+  o.reduce = function (k, vals) {
+    return vals[0];
+  }
+  o.verbose = true;
+
+  Clip.mapReduce(o, function (err, model, stats) {
+
+    console.log("err: " + err);
+    for (var i = 0; i < model.length; i++) {
+      console.log("model: " + JSON.stringify(model[i]));      
+    }
+  });
+
+
+  */
+/*
+  Clip.find().distinct('skaterRef', function(error, skaterRefs) {
+    if (error) {
+      // todo call error function with res and error params
+      res.json({error: error});
+    } else {
+      Clip.find().where('skaterRef').in(skaterRefs).exec(function (error, clips) {
+        if (error) {
+          res.json({error: error});
+        } else {
+          res.json({results:clips});
+        }
+      });
+    }
+  });
+*/
+}
+
 
 // PUT
 
