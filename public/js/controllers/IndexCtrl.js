@@ -2,23 +2,27 @@
 
 function IndexCtrl($scope, $http, $timeout, SocketConnection, APIService) {
 
+  $scope.currSearch = {};
+  $scope.resultSets = [];
+
+
   var skatersQuery = {
     entity : "Skater"
   };
-  $scope.skaters = APIService.fetchItems(skatersQuery, true).then(function(results) {
-    $scope.skaters = results;
-  });
-
-
   var trickTypesQuery = {
     entity : "TrickType"
   };
-  $scope.trickTypes = APIService.fetchItems(trickTypesQuery, true);
 
-  var clipsQuery = {
-    entity : "Clip"
+  $scope.resultSets[0] = {
+    query: skatersQuery,
+    results: APIService.fetchItems(skatersQuery, true)
   };
-  $scope.clips = APIService.fetchItems(clipsQuery, true);
+
+  $scope.resultSets[1] = {
+    query: trickTypesQuery,
+    results: APIService.fetchItems(trickTypesQuery, true)
+  };
+
 
 
   // socket listeners
@@ -27,14 +31,13 @@ function IndexCtrl($scope, $http, $timeout, SocketConnection, APIService) {
   });
 
 
-  $scope.layoutDone = function() {
+  $scope.layoutDone = function(elementId) {
 
     $timeout(function() {
-      console.log("layoutDone");
+      console.log("layoutDone: " + elementId);
       //var scroller =    $("#tS1");
 
-
-      $("#tS1").thumbnailScroller({
+      $(elementId).thumbnailScroller({
         scrollerType:"hoverPrecise",
         scrollerOrientation:"horizontal",
         scrollSpeed:2,
@@ -49,26 +52,4 @@ function IndexCtrl($scope, $http, $timeout, SocketConnection, APIService) {
       });
     }, 500);
   };
-
- (function($){
-   return;
-   window.onload=function(){
-     console.log("wtf");
-     console.log($("#ts1"));
-    $("#tS1").thumbnailScroller({
-      scrollerType:"hoverAccelerate",
-      scrollerOrientation:"horizontal",
-      scrollSpeed:2,
-      scrollEasing:"easeOutCirc",
-      scrollEasingAmount:600,
-      acceleration:4,
-      //scrollSpeed:800,
-      noScrollCenterSpace:10,
-      autoScrolling:0,
-      autoScrollingSpeed:2000,
-      autoScrollingEasing:"easeInOutQuad",
-      autoScrollingDelay:500
-    });
-   }
- })(jQuery);
 }

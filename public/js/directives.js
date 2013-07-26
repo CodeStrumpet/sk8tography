@@ -66,7 +66,7 @@ angular.module('myApp.directives', []).
 })
 .directive('loadThumbScroller', function () {
   return function ($scope, element, attrs) {
-    jQuery.noConflict();
+    //jQuery.noConflict();
 
     element.thumbnailScroller({
       scrollerType:"hoverPrecise",

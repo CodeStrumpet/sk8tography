@@ -1,28 +1,16 @@
 div.span12
-  div.row
-    div(id="tS1").jThumbnailScroller
+  div.row.info-row
+
+div(ng-repeat="resultSet in resultSets")
+  span.thumb-scroller-row
+    div.thumb-scroller-info-column
+      p().block {{resultSet.query.entity}}
+    div(id="{{'thumbScroller' + $index}}").jThumbnailScroller
       div.jTscrollerContainer
         div.jTscroller
-          a(href="#", ng-repeat="skater in skaters", repeat-done="layoutDone()").scroller-thumb-container
+          a(href="#", ng-repeat="result in resultSet.results", repeat-done="layoutDone('#thumbScroller' + $parent.$index)").scroller-thumb-container
             div
               img(src="./images/kQq_9o0Jvi8_29_thumb_4.37.jpg").scroller-thumb
-              p Rodney Mullen!
-      a(href="#").jTscrollerPrevButton
-      a(href="#").jTscrollerNextButton
+              p {{result.name}}
 
-//
-//
-//    a(href="#")
-//      img(src="./images/kQq_9o0Jvi8_29_thumb_4.37.jpg")
-//    a(href="#")
-//      img(src="./images/kQq_9o0Jvi8_29_thumb_4.37.jpg")
-//    a(href="#")
-//      img(src="./images/kQq_9o0Jvi8_29_thumb_4.37.jpg")
-//    a(href="#")
-//      img(src="./images/kQq_9o0Jvi8_29_thumb_4.37.jpg")
-//    a(href="#")
-//      img(src="./images/kQq_9o0Jvi8_29_thumb_4.37.jpg")
-//    a(href="#")
-//      img(src="./images/kQq_9o0Jvi8_29_thumb_4.37.jpg")
-//    a(href="#")
-//      img(src="./images/kQq_9o0Jvi8_29_thumb_4.37.jpg")
+

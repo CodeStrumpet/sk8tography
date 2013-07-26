@@ -87,6 +87,14 @@ table th, table td {
     float: none;
 }
 
+.thumb-scroller-row {
+  height: 200px;
+}
+
+.thumb-scroller-info-column {
+  width: 200px;
+}
+
 .scroller-thumb {
   height: 120px;
 }
@@ -94,6 +102,29 @@ table th, table td {
 .scroller-thumb-container {
   height: 160px;
 }
+
+/* This parent can be any width and height */
+.block {
+  text-align: center;
+}
+
+/* The ghost, nudged to maintain perfect centering */
+.block:before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+  margin-right: -0.25em; /* Adjusts for spacing */
+}
+
+/* The element to be centered, can
+   also be of any width and height */
+.centered {
+  display: inline-block;
+  vertical-align: middle;
+  width: 300px;
+}
+
 
 /**************************************************
   Videoconsole & tag clips page styles

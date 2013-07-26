@@ -3,7 +3,7 @@
 Thumbnail scroller jQuery plugin
 scrollers styling
 */
-.jThumbnailScroller{position:relative; width:800px; height:190px; margin:160px auto 0 auto; border:5px solid #eee; background:#bbb; padding:0; overflow:hidden; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px;}
+.jThumbnailScroller{position:relative; width:800px; height:190px; margin:10px auto 0 auto; border:5px solid #eee; background:#bbb; padding:0; overflow:hidden; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px;}
 .jThumbnailScroller .jTscrollerContainer{position:absolute;}
 .jThumbnailScroller .jTscroller{position:relative; height:100%; margin:0; left:0; top:0; display:inline-block; *display:inline;}
 .jThumbnailScroller .jTscrollerNextButton,.jThumbnailScroller .jTscrollerPrevButton{position:absolute; display:block; width:40px; height:40px; -moz-border-radius:20px; -webkit-border-radius:20px; border-radius:20px; opacity:0.7;}
@@ -15,8 +15,10 @@ scrollers styling
 .jThumbnailScroller .jTscroller a:first-child{margin-left:10px;}
 .jThumbnailScroller .jTscroller a img{border:none;}
 /* different styled scrollers */
+
 /* liquid width scroller */
-.jThumbnailScroller#tS1{width:95%;}
+.jThumbnailScroller{width:80%;}
+
 .jThumbnailScroller#tS2{margin:30px auto;}
 .jThumbnailScroller#tS2 .jTscroller a{opacity:0.7;}
 .jThumbnailScroller#tS2 .jTscroller a:hover{opacity:1;}
