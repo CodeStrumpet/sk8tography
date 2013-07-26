@@ -3,6 +3,7 @@ var Schema = mongoose.Schema;
 
 var Trick = mongoose.model("Trick");
 var Skater = mongoose.model("Skater");
+var TrickType = mongoose.model("TrickType");
 
 var consts = require('../public/js/SharedConstants').Constantsinople;
 
@@ -32,7 +33,7 @@ module.exports = function() {
       return viddyName;
     };
 
-    clipSchema.methods.mergeTricks = function(newTricks) {
+    clipSchema.methods.mergeTricks = function(newTricks, clip) {
 
       // we will simply replace all of the old tricks with new ones
 
@@ -50,8 +51,25 @@ module.exports = function() {
         console.log("replacementTrick: " + trick.trickTypeRef);
       }
 
-
       this.tricks = replacementTricks;
+      
+      // lastly, we add this clip's thumbnail to the trickType obj if the clip only has one newTrick
+      if (newTricks.length == 1) {
+        console.log("about to update thumbnail");
+        TrickType.findOne({_id: newTricks[0].trickTypeRef}, function (err, trickType) {
+          console.log("find one tricktype " + trickType);
+          if (!err) {
+            console.log("adding thumbFileName: " + clip.thumbFileName);
+            trickType.thumbFileName = clip.thumbFileName;
+
+            trickType.save(function (err) {
+              if (err) {
+                console.log("error saving new thumb with trickType");
+              }
+            });
+          }
+        });
+      }
     }
 
     mongoose.model("Clip", clipSchema);

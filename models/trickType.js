@@ -6,7 +6,8 @@ module.exports = function() {
   var trickTypeSchema = new Schema({
 		name: String,
 		otherNames: [String],
-		categories: {type: Number, default: 0}      // bitwise (flip-trick, rotation, stall, …)
+		categories: {type: Number, default: 0},     // bitwise (flip-trick, rotation, stall, …)
+        thumbFileName: String
 	});
 
   mongoose.model("TrickType", trickTypeSchema);

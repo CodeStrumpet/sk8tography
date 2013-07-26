@@ -57,6 +57,32 @@ angular.module('myApp.directives', []).
         });
 	}
 })
+.directive('repeatDone', function() {
+  return function(scope, element, attrs) {
+    if (scope.$last) { // all are rendered
+      scope.$eval(attrs.repeatDone);
+    }
+  }
+})
+.directive('loadThumbScroller', function () {
+  return function ($scope, element, attrs) {
+    jQuery.noConflict();
+
+    element.thumbnailScroller({
+      scrollerType:"hoverPrecise",
+      scrollerOrientation:"horizontal",
+      scrollSpeed:2,
+      scrollEasing:"easeOutCirc",
+      scrollEasingAmount:600,
+      acceleration:4,
+      noScrollCenterSpace:10,
+      autoScrolling:0,
+      autoScrollingSpeed:2000,
+      autoScrollingEasing:"easeInOutQuad",
+      autoScrollingDelay:500
+    });
+  };
+})
 .directive('bsNavbar', function($location) {
   'use strict';
 

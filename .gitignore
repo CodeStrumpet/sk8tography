@@ -26,3 +26,7 @@ logs
 results
 
 npm-debug.log
+
+
+# webstorm
+/.idea

@@ -588,10 +588,29 @@ exports.updateClip = function(req, res) {
     } else {      
       dbClip.updated = new Date().toISOString();
 
-      dbClip.skaterRef = clip.skaterRef;
+      // add the skaterRef to the dbClip
+      if (clip.skaterRef) {
+        dbClip.skaterRef = clip.skaterRef;
+
+        // use this opportunity to set a thumbnail for the skater if it isn't already set
+        Skater.findOne({_id: clip.skaterRef}, function (err, skater) {
+          if (skater) {
+            if (!skater.thumbFileName) {
+              skater.thumbFileName = clip.thumbFileName;
+
+              skater.save(function (err) {
+                if (err) {
+                  console.log("error saving new thumb with skater");
+                }
+              });
+            }
+          }
+        });
+      }
+
 
       // merge or replace the clips existing tricks with the one passed in the request body
-      dbClip.mergeTricks(clip.tricks);
+      dbClip.mergeTricks(clip.tricks, clip);
 
       if (dbClip.tricks.length > 0 || dbClip.skaterRef) {
         dbClip.status = consts.ClipStatus.TAGGED;
