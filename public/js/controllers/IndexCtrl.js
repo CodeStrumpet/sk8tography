@@ -41,7 +41,7 @@ function IndexCtrl($scope, $http, $timeout, SocketConnection, APIService) {
         scrollEasing:"easeOutCirc",
         scrollEasingAmount:600,
         acceleration:4,
-        noScrollCenterSpace:10,
+        noScrollCenterSpace:200,
         autoScrolling:0,
         autoScrollingSpeed:2000,
         autoScrollingEasing:"easeInOutQuad",

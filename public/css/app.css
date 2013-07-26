@@ -87,6 +87,13 @@ table th, table td {
     float: none;
 }
 
+.scroller-thumb {
+  height: 120px;
+}
+
+.scroller-thumb-container {
+  height: 160px;
+}
 
 /**************************************************
   Videoconsole & tag clips page styles
