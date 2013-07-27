@@ -64,6 +64,16 @@ table th, table td {
 }
 
 
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  display: block;
+}
+
+.ellipsis.multiline {
+  white-space: normal;
+}
+
 /**************************************************
   Navbar
 **************************************************/
@@ -88,41 +98,42 @@ table th, table td {
 }
 
 .thumb-scroller-row {
-  height: 200px;
+  height: 300px;
 }
 
 .thumb-scroller-info-column {
   width: 200px;
+  text-align: center;
+  vertical-align: middle;
 }
 
 .scroller-thumb {
   height: 120px;
+  width: 150px;
+  display: inline-block;
+}
+
+.thumb-info {
+  height: 40px;
+  display: inline-block;
 }
 
 .scroller-thumb-container {
-  height: 160px;
-}
-
-/* This parent can be any width and height */
-.block {
-  text-align: center;
-}
-
-/* The ghost, nudged to maintain perfect centering */
-.block:before {
-  content: '';
+  height: 168px;
+  width: 150px;
   display: inline-block;
-  height: 100%;
-  vertical-align: middle;
-  margin-right: -0.25em; /* Adjusts for spacing */
 }
 
-/* The element to be centered, can
-   also be of any width and height */
-.centered {
-  display: inline-block;
-  vertical-align: middle;
-  width: 300px;
+.jThumbnailScroller {
+  height: 190px;
+}
+
+#scroller-table th {
+  border-top: none;
+}
+
+#scroller-table td {
+  border-top: none;
 }
 
 

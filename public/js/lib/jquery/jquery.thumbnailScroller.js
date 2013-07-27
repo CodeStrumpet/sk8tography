@@ -16,7 +16,7 @@ Homepage: manos.malihu.gr/jquery-thumbnail-scroller
 		autoScrolling:0, //value: integer
 		autoScrollingSpeed:8000, //value: milliseconds
 		autoScrollingEasing:"easeInOutQuad", //easing type
-		autoScrollingDelay:2500 //value: milliseconds
+		autoScrollingDelay:2500, //value: milliseconds
 	};
 	var options=$.extend(defaults,options);
     return this.each(function(){ 
@@ -26,6 +26,12 @@ Homepage: manos.malihu.gr/jquery-thumbnail-scroller
 		var $scroller=$this.children(".jTscrollerContainer").children(".jTscroller");
 		var $scrollerNextButton=$this.children(".jTscrollerNextButton");
 		var $scrollerPrevButton=$this.children(".jTscrollerPrevButton");
+    if (options.scrollerPrevButton) {
+      $scrollerPrevButton = options.scrollerPrevButton;
+    }
+    if (options.scrollerNextButton) {
+      $scrollerNextButton = options.scrollerNextButton;
+    }
 		//set scroller width
 		if(options.scrollerOrientation=="horizontal"){
 			$scrollerContainer.css("width",999999); 
@@ -56,7 +62,7 @@ Homepage: manos.malihu.gr/jquery-thumbnail-scroller
 					$scroller.stop();
 				});
 				$scrollerPrevButton.add($scrollerNextButton).hide(); //hide buttons
-			}else if(options.scrollerType=="clickButtons"){
+			} else if(options.scrollerType=="clickButtons"){
 				ClickScrolling();
 			}else{ //type hoverPrecise
 				pos=findPos(this);
@@ -75,10 +81,20 @@ Homepage: manos.malihu.gr/jquery-thumbnail-scroller
 			if(options.autoScrolling>0){
 				AutoScrolling();
 			}
-		} else {
+    } else {
 			//no scrolling needed
 			$scrollerPrevButton.add($scrollerNextButton).hide(); //hide buttons
 		}
+
+    // change width if necessary...
+    if (totalWidth < $this.width()) {
+      // change width
+      $this.width(totalWidth);
+    }
+
+    // use this below if we need to apply the background after figuring out the width...
+    //$this.addClass("jThumbnailScrollerBackground");
+
 		//"hoverAccelerate" scrolling fn
 		var scrollerPos;
 		var scrollerPosY;

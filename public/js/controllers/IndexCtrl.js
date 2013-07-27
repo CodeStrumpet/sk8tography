@@ -7,10 +7,12 @@ function IndexCtrl($scope, $http, $timeout, SocketConnection, APIService) {
 
 
   var skatersQuery = {
-    entity : "Skater"
+    entity : "Skater",
+    displayName : "Skaters"
   };
   var trickTypesQuery = {
-    entity : "TrickType"
+    entity : "TrickType",
+    displayName : "Tricks"
   };
 
   $scope.resultSets[0] = {
@@ -31,24 +33,26 @@ function IndexCtrl($scope, $http, $timeout, SocketConnection, APIService) {
   });
 
 
-  $scope.layoutDone = function(elementId) {
+  $scope.layoutDone = function(elementId, index) {
 
     $timeout(function() {
       console.log("layoutDone: " + elementId);
       //var scroller =    $("#tS1");
 
       $(elementId).thumbnailScroller({
-        scrollerType:"hoverPrecise",
+        scrollerType:"hoverAccelerate",   //hoverPrecise
         scrollerOrientation:"horizontal",
         scrollSpeed:2,
         scrollEasing:"easeOutCirc",
         scrollEasingAmount:600,
         acceleration:4,
-        noScrollCenterSpace:200,
+        noScrollCenterSpace:400,
         autoScrolling:0,
         autoScrollingSpeed:2000,
         autoScrollingEasing:"easeInOutQuad",
-        autoScrollingDelay:500
+        autoScrollingDelay:500,
+        scrollerPrevButton: $('#prevButton' + index),
+        scrollerNextButton: $('#nextButton' + index)
       });
     }, 500);
   };
