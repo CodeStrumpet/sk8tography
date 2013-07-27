@@ -19,14 +19,29 @@ function YoutubeCtrl($scope, $http, YoutubeService) {
 
     autoplay = playImmediately;
 
+    var prevClip = $scope.currClip;
     $scope.currClip = clip;
 
-    $scope.player.cueVideoById({
-          videoId: clip.videoSegmentId,
-          startSeconds: clip.startTime,
-          endSeconds: clip.startTime + clip.duration,
-          suggestedQuality: 'default'
-    });         
+    if (prevClip && prevClip.videoSegmentId == clip.videoSegmentId) {
+      // don't recue video if it hasn't changed (fixes a youtube bug)
+      $scope.player.seekTo(clip.startTime, true);
+
+      // explicitly pause video if we aren't playing immediately
+      if (!playImmediately) {
+        $scope.pauseVideo();
+      } else {
+        $scope.playVideo();
+      }
+
+    } else {
+      $scope.player.cueVideoById({
+        videoId: clip.videoSegmentId,
+        startSeconds: clip.startTime,
+        endSeconds: clip.startTime + clip.duration,
+        suggestedQuality: 'default'
+      });
+    }
+
     $scope.slider.slider( "option", "min", clip.start_time );
     $scope.slider.slider( "option", "max", clip.end_time );
     $scope.slider.slider("option", "value", clip.start_time);
@@ -61,6 +76,10 @@ function YoutubeCtrl($scope, $http, YoutubeService) {
     if ($scope.player.getPlayerState() == YT.PlayerState.PLAYING) {                                   
       setTimeout($scope.checkCurrentTime, 100);
       $scope.updateUIForCurrentTime();
+      if ($scope.player.getCurrentTime() > $scope.currClip.startTime + $scope.currClip.duration) {
+        $scope.player.pauseVideo();
+        $scope.cueClip($scope.currClip, false);
+      }
     }
   };
 
