@@ -492,6 +492,7 @@ exports.fetchResults = function (req, res) {
 
   var searchTerms = queryObj.searchTerms;
   var objectId = queryObj._id;
+  var searchConditions = queryObj.conditions;
 
   console.log("searchTerms: " + searchTerms + " _id: " + objectId);
 
@@ -500,7 +501,18 @@ exports.fetchResults = function (req, res) {
     entity.findById(objectId).exec(fetchCallback);
 
   } else {
+
     var query = entity.find();
+
+    // add the search conditions if they exist
+    if (searchConditions) {
+      for (var i = 0; i < searchConditions.length; i++) {
+        query.where(searchConditions[i].path, searchConditions[i].val);
+      }
+    }
+
+    console.log("query: " + JSON.stringify(query));
+
 
     query.select("name");
 

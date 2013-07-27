@@ -20,13 +20,28 @@ function IndexCtrl($scope, $http, $timeout, SocketConnection, APIService) {
     // limit clipsQuery to the specified skater or trick
     if (context.type == skatersQuery.entity || context.type == trickTypesQuery.entity) {
 
+      var conditions = [];
+      var condition = {};
+      condition.method = "where";
+      condition.path = "status";
+      condition.val = 1; // TODO replace with value from shared constants
+      conditions.push(condition);
+
       if (context.type == skatersQuery.entity) {
-        clipsQuery.matchField = "skaterRef";
-        clipsQuery.matchId = context.item._id;
+        var condition = {};
+        condition.method = "where";
+        condition.path = "skaterRef";
+        condition.val = context.item._id;
+        //condition["skaterRef"] = context.item._id;
+        conditions.push(condition);
       } else if (context.type == trickTypesQuery.entity) {
-        clipsQuery.matchField = "tricks.trickTypeRef";
-        clipsQuery.matchId = context.item._id;
+        var condition = {};
+        condition["tricks.trickTypeRef"] = context.item._id;
+        conditions.push(condition);
       }
+
+      clipsQuery.conditions = conditions;
+
       $scope.resultSets.push({
         displayName: "Clips",
         query: clipsQuery,
