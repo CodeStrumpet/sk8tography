@@ -107,9 +107,13 @@ table th, table td {
   vertical-align: middle;
 }
 
+.thumb-scroller-column {
+  text-align: left;
+  vertical-align: middle;
+}
+
 .scroller-thumb {
   height: 120px;
-  width: 150px;
   display: inline-block;
 }
 
@@ -120,7 +124,6 @@ table th, table td {
 
 .scroller-thumb-container {
   height: 168px;
-  width: 150px;
   display: inline-block;
 }
 

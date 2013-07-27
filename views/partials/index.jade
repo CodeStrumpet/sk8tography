@@ -7,7 +7,7 @@ table(id="scroller-table").table
     td(style="text-align: center; vertical-align: middle;").thumb-scroller-info-column
       h4
         {{resultSet.displayName}}
-    td(style="text-align: center; vertical-align: middle;")
+    td(style="vertical-align: middle;").thumb-scroller-column
       div(id="{{'thumbScroller' + $index}}").jThumbnailScroller.jThumbnailScrollerBackground
         div.jTscrollerContainer
           div.jTscroller
@@ -17,7 +17,8 @@ table(id="scroller-table").table
               ng-click="refreshResults({type : resultSet.query.entity, item : result})").scroller-thumb-container
               div
                 img(ng-src="./images/{{result.thumbFileName}}").scroller-thumb
-                p.thumb-info.ellipsis.multiline {{result.name}}
+                br
+                p.thumb-info.ellipsis.multiline {{sliderItemLabel(result)}}
 
 
 

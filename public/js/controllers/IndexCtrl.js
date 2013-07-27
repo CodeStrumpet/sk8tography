@@ -68,6 +68,24 @@ function IndexCtrl($scope, $http, $timeout, SocketConnection, APIService) {
 
   }
 
+  $scope.sliderItemLabel = function(item) {
+    if (item.name) {
+      return item.name;
+    } else { //item is of type 'Clip'
+
+      if ($scope.currSearch.type == "Skater") {
+        // show trick name
+        if (item.tricks.length > 0) {
+          return item.tricks[0].trickTypeRef.name;
+        }
+      } else if ($scope.currSearch.type == "TrickType") {
+        // show skater name
+        return item.skaterRef.name;
+      }
+    }
+    return "<--->";
+  };
+
 
   // call refresh results with no search context to display the default content
   $scope.refreshResults({});
