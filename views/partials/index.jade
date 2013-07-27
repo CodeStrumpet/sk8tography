@@ -16,7 +16,7 @@ table(id="scroller-table").table
               repeat-done="layoutDone('#thumbScroller' + $parent.$index)", $parent.$index
               ng-click="refreshResults({type : resultSet.query.entity, item : result})").scroller-thumb-container
               div
-                img(src="./images/kQq_9o0Jvi8_29_thumb_4.37.jpg").scroller-thumb
+                img(ng-src="./images/{{result.thumbFileName}}").scroller-thumb
                 p.thumb-info.ellipsis.multiline {{result.name}}
 
 

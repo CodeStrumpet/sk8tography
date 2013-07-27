@@ -8,17 +8,15 @@ function IndexCtrl($scope, $http, $timeout, SocketConnection, APIService) {
 
   $scope.refreshResults = function(context) {
 
-    console.log("context: " + JSON.stringify(context));
-
-    $scope.resultSets = [];
-    $scope.currSearch = context;
-
-    var skatersQuery = {entity : "Skater"};
-    var trickTypesQuery = {entity : "TrickType"};
+    var skatersQuery = {entity : "Skater", select : "name thumbFileName"};
+    var trickTypesQuery = {entity : "TrickType", select : "name thumbFileName"};
     var clipsQuery = {entity : "Clip"};
 
     // limit clipsQuery to the specified skater or trick
     if (context.type == skatersQuery.entity || context.type == trickTypesQuery.entity) {
+
+      $scope.resultSets = [];
+      $scope.currSearch = context;
 
       var conditions = [];
       var condition = {};
