@@ -511,10 +511,17 @@ exports.fetchResults = function (req, res) {
       }
     }
 
-    console.log("query: " + JSON.stringify(query));
+    // set the fields to retrieve
+    if (queryObj.select) {
+      query.select(queryObj.select);
+    } else {
+      query.select("name");
+    }
 
-
-    query.select("name");
+    // try to populate subfields if possible
+    if (queryObj.populate) {
+      query.populate(queryObj.populate);
+    }
 
     if (typeof(searchTerms) != 'undefined' && typeof(searchField) != 'undefined') {
       var re = new RegExp('\\b' + searchTerms, 'i');

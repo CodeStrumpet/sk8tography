@@ -18,8 +18,8 @@ module.exports = function() {
         startTime: Number,
         duration: Number,
         tricks : [Trick.schema],
-        skaterRef : {type: Schema.Types.ObjectId, ref: 'Skater' },
-        spotRef : Schema.ObjectId,
+        skaterRef : {type: Schema.ObjectId, ref: 'Skater' },
+        spotRef : {type: Schema.ObjectId, ref: 'Spot'},
         thumbFileName : String
     });
 

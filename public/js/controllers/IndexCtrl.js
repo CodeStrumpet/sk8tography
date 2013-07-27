@@ -40,6 +40,8 @@ function IndexCtrl($scope, $http, $timeout, SocketConnection, APIService) {
       }
 
       clipsQuery.conditions = conditions;
+      clipsQuery.select = "duration thumbFileName skaterRef tricks";
+      clipsQuery.populate = "skaterRef tricks.trickTypeRef";
 
       $scope.resultSets.push({
         displayName: "Clips",
@@ -47,8 +49,11 @@ function IndexCtrl($scope, $http, $timeout, SocketConnection, APIService) {
         results: APIService.fetchItems(clipsQuery, true)
       });
 
-    } else {
+    } else if (context.type == clipsQuery.entity) {
 
+      console.log("Selected Clip: " + JSON.stringify(context.item));
+
+    } else {
       // no specific search criteria, search for both skaters and tricks
       $scope.resultSets.push({
         displayName: "Skaters",

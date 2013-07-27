@@ -7,7 +7,7 @@ module.exports = function() {
 
   var trickSchema = new Schema({
 		stance: Number,
-		trickTypeRef: Schema.ObjectId,
+		trickTypeRef: {type: Schema.ObjectId, ref: 'TrickType' },
 		terrainType: {type : Number, default: 0}  // bitwise (ledge, flat, rail, stairs, transition)
 	});
 
