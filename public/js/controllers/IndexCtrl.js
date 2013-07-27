@@ -15,24 +15,33 @@ function IndexCtrl($scope, $http, $timeout, SocketConnection, APIService) {
 
     var skatersQuery = {entity : "Skater"};
     var trickTypesQuery = {entity : "TrickType"};
+    var clipsQuery = {entity : "Clip"};
 
-    // limit trickTypesQuery to the specified skater
-    if (context.type == skatersQuery.entity) {
-      trickTypesQuery.skaterId = context.item._id;
+    // limit clipsQuery to the specified skater or trick
+    if (context.type == skatersQuery.entity || context.type == trickTypesQuery.entity) {
+
+      if (context.type == skatersQuery.entity) {
+        clipsQuery.matchField = "skaterRef";
+        clipsQuery.matchId = context.item._id;
+      } else if (context.type == trickTypesQuery.entity) {
+        clipsQuery.matchField = "tricks.trickTypeRef";
+        clipsQuery.matchId = context.item._id;
+      }
+      $scope.resultSets.push({
+        displayName: "Clips",
+        query: clipsQuery,
+        results: APIService.fetchItems(clipsQuery, true)
+      });
+
     } else {
-      // only search for skaters if a skater is not specified
+
+      // no specific search criteria, search for both skaters and tricks
       $scope.resultSets.push({
         displayName: "Skaters",
         query: skatersQuery,
         results: APIService.fetchItems(skatersQuery, true)
       });
-    }
 
-    // limit skatersQuery to the specified trickType
-    if (context.type == trickTypesQuery.entity) {
-      skatersQuery.trickTypeId = context.item._id;
-    } else {
-      // only search for trickTypes if a trickType is not specified
       $scope.resultSets.push({
         displayName: "Tricks",
         query: trickTypesQuery,
