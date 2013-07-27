@@ -2,29 +2,49 @@
 
 function IndexCtrl($scope, $http, $timeout, SocketConnection, APIService) {
 
-  $scope.currSearch = {};
   $scope.resultSets = [];
+  $scope.currSearch = {};
 
 
-  var skatersQuery = {
-    entity : "Skater",
-    displayName : "Skaters"
-  };
-  var trickTypesQuery = {
-    entity : "TrickType",
-    displayName : "Tricks"
-  };
+  $scope.refreshResults = function(context) {
 
-  $scope.resultSets[0] = {
-    query: skatersQuery,
-    results: APIService.fetchItems(skatersQuery, true)
-  };
+    console.log("context: " + JSON.stringify(context));
 
-  $scope.resultSets[1] = {
-    query: trickTypesQuery,
-    results: APIService.fetchItems(trickTypesQuery, true)
-  };
+    $scope.resultSets = [];
+    $scope.currSearch = context;
 
+    var skatersQuery = {entity : "Skater"};
+    var trickTypesQuery = {entity : "TrickType"};
+
+    // limit trickTypesQuery to the specified skater
+    if (context.type == skatersQuery.entity) {
+      trickTypesQuery.skaterId = context.item._id;
+    } else {
+      // only search for skaters if a skater is not specified
+      $scope.resultSets.push({
+        displayName: "Skaters",
+        query: skatersQuery,
+        results: APIService.fetchItems(skatersQuery, true)
+      });
+    }
+
+    // limit skatersQuery to the specified trickType
+    if (context.type == trickTypesQuery.entity) {
+      skatersQuery.trickTypeId = context.item._id;
+    } else {
+      // only search for trickTypes if a trickType is not specified
+      $scope.resultSets.push({
+        displayName: "Tricks",
+        query: trickTypesQuery,
+        results: APIService.fetchItems(trickTypesQuery, true)
+      });
+    }
+
+  }
+
+
+  // call refresh results with no search context to display the default content
+  $scope.refreshResults({});
 
 
   // socket listeners
@@ -33,11 +53,11 @@ function IndexCtrl($scope, $http, $timeout, SocketConnection, APIService) {
   });
 
 
+  // this should be moved into a directive somehow....
   $scope.layoutDone = function(elementId, index) {
 
     $timeout(function() {
       console.log("layoutDone: " + elementId);
-      //var scroller =    $("#tS1");
 
       $(elementId).thumbnailScroller({
         scrollerType:"hoverAccelerate",   //hoverPrecise

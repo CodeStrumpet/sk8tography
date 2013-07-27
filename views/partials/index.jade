@@ -6,12 +6,15 @@ table(id="scroller-table").table
   tr(ng-repeat="resultSet in resultSets").thumb-scroller-row
     td(style="text-align: center; vertical-align: middle;").thumb-scroller-info-column
       h4
-        {{resultSet.query.displayName}}
+        {{resultSet.displayName}}
     td(style="text-align: center; vertical-align: middle;")
       div(id="{{'thumbScroller' + $index}}").jThumbnailScroller.jThumbnailScrollerBackground
         div.jTscrollerContainer
           div.jTscroller
-            a(href="#", ng-repeat="result in resultSet.results", repeat-done="layoutDone('#thumbScroller' + $parent.$index)", $parent.$index).scroller-thumb-container
+            a(href="#",
+              ng-repeat="result in resultSet.results",
+              repeat-done="layoutDone('#thumbScroller' + $parent.$index)", $parent.$index
+              ng-click="refreshResults({type : resultSet.query.entity, item : result})").scroller-thumb-container
               div
                 img(src="./images/kQq_9o0Jvi8_29_thumb_4.37.jpg").scroller-thumb
                 p.thumb-info.ellipsis.multiline {{result.name}}
