@@ -22,21 +22,20 @@ function IndexCtrl($scope, $http, $timeout, SocketConnection, APIService) {
 
       var conditions = [];
       var condition = {};
-      condition.method = "where";
       condition.path = "status";
       condition.val = 1; // TODO replace with value from shared constants
       conditions.push(condition);
 
       if (context.type == skatersQuery.entity) {
         var condition = {};
-        condition.method = "where";
         condition.path = "skaterRef";
         condition.val = context.item._id;
         //condition["skaterRef"] = context.item._id;
         conditions.push(condition);
       } else if (context.type == trickTypesQuery.entity) {
         var condition = {};
-        condition["tricks.trickTypeRef"] = context.item._id;
+        condition.path = "tricks.trickTypeRef";
+        condition.val = context.item._id;
         conditions.push(condition);
       }
 
