@@ -1,10 +1,20 @@
 'use strict';
 
-function IndexCtrl($scope, $http, $timeout, SocketConnection, APIService) {
+function IndexCtrl($scope, $http, $timeout, $routeParams, $location, SocketConnection, APIService) {
 
   $scope.resultSets = [];
   $scope.currSearch = {};
 
+  if ($routeParams.entityId) {
+    console.log("id: " + $routeParams.entityId);
+  }
+
+  $scope.loadNewContext = function(context) {
+    $scope.currSearch = context;
+
+    //$location.path('/' + )
+
+  };
 
   $scope.refreshResults = function(context) {
 
