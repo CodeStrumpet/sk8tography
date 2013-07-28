@@ -174,6 +174,12 @@ app.factory('APIService', function ($rootScope, $http, $q) {
     fetchItems: fetchItems
   };
 
-});
+})
+
+.service( 'SearchContextService', [ '$rootScope', function( $rootScope ) {
+  return {
+    currSearchContext : {}
+  };
+}]);
 
 

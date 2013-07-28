@@ -1,0 +1,25 @@
+div.span12
+  div.row.info-row
+
+
+table(id="scroller-table").table
+  tr(ng-repeat="resultSet in resultSets").thumb-scroller-row
+    td(style="text-align: center; vertical-align: middle;").thumb-scroller-info-column
+      h4
+        {{resultSet.displayName}}
+    td(style="vertical-align: middle;").thumb-scroller-column
+      div(id="{{'thumbScroller' + $index}}").jThumbnailScroller.jThumbnailScrollerBackground
+        div.jTscrollerContainer
+          div.jTscroller
+            a(href="#",
+            ng-repeat="result in resultSet.results",
+            repeat-done="layoutDone('#thumbScroller' + $parent.$index)", $parent.$index
+            ng-click="refreshResults({type : resultSet.query.entity, item : result})").scroller-thumb-container
+            div
+            img(ng-src="./images/{{result.thumbFileName}}").scroller-thumb
+              br
+              p.thumb-info.ellipsis.multiline {{sliderItemLabel(result)}}
+
+
+
+

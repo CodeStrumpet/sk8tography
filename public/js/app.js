@@ -8,6 +8,10 @@ var app = angular.module('myApp', ['ui.bootstrap', 'ngCookies', 'myApp.filters',
         templateUrl: 'partials/index',
         controller: IndexCtrl
       }).
+      when('/view/:entityId', {
+        templateUrl: 'partials/view',
+        controller: ViewCtrl
+      }).
       when('/videoSegments', {
         templateUrl: 'partials/videoSegments',
         controller: VideoSegmentsCtrl

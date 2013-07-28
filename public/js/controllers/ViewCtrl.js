@@ -1,14 +1,21 @@
 'use strict';
 
-function IndexCtrl($scope, $http, $timeout, $routeParams, $location, SocketConnection, APIService, SearchContextService) {
+function ViewCtrl($scope, $http, $timeout, $routeParams, $location, APIService) {
 
   $scope.resultSets = [];
   $scope.currSearch = {};
 
+  if ($routeParams.entityId) {
+    console.log("id: " + $routeParams.entityId);
+  }
+
+  $scope.loadNewContext = function(context) {
+    $scope.currSearch = context;
+
+    //$location.path('/' + )
+  };
 
   $scope.refreshResults = function(context) {
-
-    SearchContextService.currSearchContext = context;
 
     var skatersQuery = {entity : "Skater", select : "name thumbFileName"};
     var trickTypesQuery = {entity : "TrickType", select : "name thumbFileName"};
@@ -93,12 +100,6 @@ function IndexCtrl($scope, $http, $timeout, $routeParams, $location, SocketConne
   $scope.refreshResults({});
 
 
-  // socket listeners
-  SocketConnection.on('init', function (data) {
-    console.log("init received:  " + data.msg);
-  });
-
-
   // this should be moved into a directive somehow....
   $scope.layoutDone = function(elementId, index) {
 
@@ -122,4 +123,5 @@ function IndexCtrl($scope, $http, $timeout, $routeParams, $location, SocketConne
       });
     }, 500);
   };
+
 }
