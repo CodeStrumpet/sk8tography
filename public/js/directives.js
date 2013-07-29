@@ -211,5 +211,15 @@ angular.module('myApp.directives', []).
   };
 
 
-});
+}).directive('youtubePlayer', function() {
+    return {
+      restrict: 'E',
+      link: function(scope, elm, attrs) {
+        console.log("youtube player function");
+      },
+      templateUrl: 'partials/youtubePlayer.jade',
+      controller: YoutubePlayerCtrl,
+      scope: {}
+    };
+  });
 

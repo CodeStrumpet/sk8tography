@@ -177,7 +177,7 @@ app.factory('APIService', function ($rootScope, $http, $q) {
 
 })
 
-.service( 'SearchContextService', [ '$rootScope', function( $rootScope ) {
+.service( 'SearchContext', [ '$rootScope', function( $rootScope ) {
   return {
     currSearchContext : {}
   };

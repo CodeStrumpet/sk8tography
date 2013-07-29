@@ -1,9 +1,12 @@
 'use strict';
 
-function DetailsCtrl($scope, $http, $timeout, $routeParams, $location, APIService, SearchContextService) {
+function DetailsCtrl($scope, $http, $timeout, $routeParams, $location, APIService, SearchContext) {
+
+
+
 
   $scope.resultSets = [];
-  $scope.currSearch = SearchContextService.currSearchContext;
+  $scope.currSearch = SearchContext.currSearchContext;
 
   $scope.refreshResults = function(context) {
 

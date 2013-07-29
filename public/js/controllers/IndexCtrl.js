@@ -1,6 +1,6 @@
 'use strict';
 
-function IndexCtrl($scope, $timeout, $location, SocketConnection, APIService, SearchContextService) {
+function IndexCtrl($scope, $timeout, $location, SocketConnection, APIService, SearchContext) {
 
   // Housekeeping: open socket connection for the app
   SocketConnection.on('init', function (data) {
@@ -13,14 +13,14 @@ function IndexCtrl($scope, $timeout, $location, SocketConnection, APIService, Se
 
   // called before redirecting to details
   $scope.viewDetails = function(context) {
-    SearchContextService.currSearchContext = context;
+    SearchContext.currSearchContext = context;
   };
 
 
   $scope.refreshResults = function(context) {
 
     // reset search context
-    SearchContextService.currSearchContext = context;
+    SearchContext.currSearchContext = context;
 
 
     var skatersQuery = {entity : "Skater", select : "name thumbFileName nameSlug"};

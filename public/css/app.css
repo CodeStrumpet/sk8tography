@@ -141,6 +141,41 @@ table th, table td {
 
 
 /**************************************************
+  Details Page
+**************************************************/
+
+.container-fluid.details > .sidebar {
+  position: relative;
+  top: 0;
+  left:auto;
+  width: 220px;
+}
+
+.container-fluid.details > .content {
+  margin: 0 240px;
+}
+
+
+.row-fluid > .sidebar-nav {
+  position: relative;
+  top: 0;
+  left:auto;
+  width: 260px;
+}
+
+.fixed-fluid {
+  margin-left: 300px;
+}
+.fluid-fixed {
+  margin-right: 300px;
+  margin-left:auto !important;
+}
+.fixed-fixed {
+  margin: 0 320px;
+}
+
+
+/**************************************************
   Videoconsole & tag clips page styles
 ***************************************************/
 

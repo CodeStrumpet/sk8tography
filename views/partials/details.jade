@@ -1,4 +1,20 @@
-div.span12
+
+div.container-fluid
+  div.row-fluid
+    div.sidebar-nav.left
+      div.thumbnail
+        h2 {{currSearch.item.name}}
+        img(src="./images/{{currSearch.item.thumbFileName}}")
+
+    div.sidebar-nav.right
+      p bla blah blah
+      p bla blah blah
+      p bla blah blah
+      p bla blah blah
+    div.content.fixed-fixed
+      div.hero-unit
+        youtube-player
+
   div.row.info-row
 
   p this is the view Ctrl
