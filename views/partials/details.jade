@@ -7,20 +7,13 @@ div.container-fluid
         img(src="./images/{{currSearch.item.thumbFileName}}")
 
     div.sidebar-nav.right
-      p bla blah blah
-      p bla blah blah
-      p bla blah blah
-      p bla blah blah
+      table.table
+        tr(ng-repeat="clip in clips", mouseover="activeclip", ng-click="selectClip(clip)")
+          td
+            img(src="{{'./images/' + clip.thumbFileName}}")
+          td
+            p(ng-repeat="trick in clip.tricks")
+              {{trick.trickTypeRef.name}}
     div.content.fixed-fixed
-      div.hero-unit
+      div
         youtube-player
-
-  div.row.info-row
-
-  p this is the view Ctrl
-  p {{currSearch.item.nameSlug}}
-  ul
-    li(ng-repeat="resultSet in resultSets")
-      ul
-        li(ng-repeat="result in resultSet.results")
-          img(ng-src="{{'./images/' + result.thumbFileName}}")

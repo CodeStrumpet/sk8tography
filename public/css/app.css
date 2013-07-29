@@ -235,6 +235,10 @@ table th, table td {
   background-color: gray;
 }
 
+li.clip-element:hover {
+  background-color: pink;
+}
+
 .controls {
   margin: 20px 0px 20px 0px; 
 }
@@ -287,11 +291,6 @@ table th, table td {
 
 .clips .infoColumn {
   width: 50%;
-}
-
-
-li.clip-element:hover {
-  background-color: pink;
 }
 
 .trick-linkage {

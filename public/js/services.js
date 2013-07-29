@@ -11,8 +11,8 @@ angular.module('myApp.services', []).
 .service( 'YoutubeService', [ '$rootScope', function( $rootScope ) {
   return {
     playerIsReady : false,
-    cueClip: function(clip) {
-      $rootScope.$broadcast('YoutubeService.cueClip', clip);
+    cueClip: function(clip, playerId) {
+      $rootScope.$broadcast('YoutubeService.cueClip', clip, playerId);
     }
    };
  }])
