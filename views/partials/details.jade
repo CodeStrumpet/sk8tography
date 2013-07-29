@@ -1,0 +1,10 @@
+div.span12
+  div.row.info-row
+
+  p this is the view Ctrl
+  p {{currSearch.item.nameSlug}}
+  ul
+    li(ng-repeat="resultSet in resultSets")
+      ul
+        li(ng-repeat="result in resultSet.results")
+          img(ng-src="{{'./images/' + result.thumbFileName}}")

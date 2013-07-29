@@ -1,73 +1,46 @@
 'use strict';
 
-function IndexCtrl($scope, $http, $timeout, $routeParams, $location, SocketConnection, APIService, SearchContextService) {
+function IndexCtrl($scope, $timeout, $location, SocketConnection, APIService, SearchContextService) {
 
+  // Housekeeping: open socket connection for the app
+  SocketConnection.on('init', function (data) {
+    console.log("socket opened (init received):  " + data.msg);
+  });
+
+  // models
   $scope.resultSets = [];
   $scope.currSearch = {};
+
+  // called before redirecting to details
+  $scope.viewDetails = function(context) {
+    SearchContextService.currSearchContext = context;
+  };
 
 
   $scope.refreshResults = function(context) {
 
+    // reset search context
     SearchContextService.currSearchContext = context;
 
-    var skatersQuery = {entity : "Skater", select : "name thumbFileName"};
-    var trickTypesQuery = {entity : "TrickType", select : "name thumbFileName"};
-    var clipsQuery = {entity : "Clip"};
 
-    // limit clipsQuery to the specified skater or trick
-    if (context.type == skatersQuery.entity || context.type == trickTypesQuery.entity) {
+    var skatersQuery = {entity : "Skater", select : "name thumbFileName nameSlug"};
+    var trickTypesQuery = {entity : "TrickType", select : "name thumbFileName nameSlug"};
 
-      $scope.resultSets = [];
-      $scope.currSearch = context;
+    // add search for skaters
+    $scope.resultSets.push({
+      displayName: "Skaters",
+      pathName: "skaters",
+      query: skatersQuery,
+      results: APIService.fetchItems(skatersQuery, true)
+    });
 
-      var conditions = [];
-      var condition = {};
-      condition.path = "status";
-      condition.val = 1; // TODO replace with value from shared constants
-      conditions.push(condition);
-
-      if (context.type == skatersQuery.entity) {
-        var condition = {};
-        condition.path = "skaterRef";
-        condition.val = context.item._id;
-        //condition["skaterRef"] = context.item._id;
-        conditions.push(condition);
-      } else if (context.type == trickTypesQuery.entity) {
-        var condition = {};
-        condition.path = "tricks.trickTypeRef";
-        condition.val = context.item._id;
-        conditions.push(condition);
-      }
-
-      clipsQuery.conditions = conditions;
-      clipsQuery.select = "duration thumbFileName skaterRef tricks";
-      clipsQuery.populate = "skaterRef tricks.trickTypeRef";
-
-      $scope.resultSets.push({
-        displayName: "Clips",
-        query: clipsQuery,
-        results: APIService.fetchItems(clipsQuery, true)
-      });
-
-    } else if (context.type == clipsQuery.entity) {
-
-      console.log("Selected Clip: " + JSON.stringify(context.item));
-
-    } else {
-      // no specific search criteria, search for both skaters and tricks
-      $scope.resultSets.push({
-        displayName: "Skaters",
-        query: skatersQuery,
-        results: APIService.fetchItems(skatersQuery, true)
-      });
-
-      $scope.resultSets.push({
-        displayName: "Tricks",
-        query: trickTypesQuery,
-        results: APIService.fetchItems(trickTypesQuery, true)
-      });
-    }
-
+    // add search for tricks
+    $scope.resultSets.push({
+      displayName: "Tricks",
+      pathName: "tricks",
+      query: trickTypesQuery,
+      results: APIService.fetchItems(trickTypesQuery, true)
+    });
   }
 
   $scope.sliderItemLabel = function(item) {
@@ -91,12 +64,6 @@ function IndexCtrl($scope, $http, $timeout, $routeParams, $location, SocketConne
 
   // call refresh results with no search context to display the default content
   $scope.refreshResults({});
-
-
-  // socket listeners
-  SocketConnection.on('init', function (data) {
-    console.log("init received:  " + data.msg);
-  });
 
 
   // this should be moved into a directive somehow....

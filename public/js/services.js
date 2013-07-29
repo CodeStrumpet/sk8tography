@@ -165,6 +165,7 @@ app.factory('APIService', function ($rootScope, $http, $q) {
 
     var result = $http.put(url, {q : query}).then(function(response) {
       deferred.resolve(response.data.results);
+      console.log("resolved " + response.data.results.length + "results");
     });
 
     return deferred.promise;

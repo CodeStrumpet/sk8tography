@@ -11,10 +11,10 @@ table(id="scroller-table").table
       div(id="{{'thumbScroller' + $index}}").jThumbnailScroller.jThumbnailScrollerBackground
         div.jTscrollerContainer
           div.jTscroller
-            a(href="#",
+            a(href="/{{resultSet.pathName}}/{{result.nameSlug}}",
               ng-repeat="result in resultSet.results",
               repeat-done="layoutDone('#thumbScroller' + $parent.$index)", $parent.$index
-              ng-click="refreshResults({type : resultSet.query.entity, item : result})").scroller-thumb-container
+              ng-click="viewDetails({type : resultSet.query.entity, item : result})").scroller-thumb-container
               div
                 img(ng-src="./images/{{result.thumbFileName}}").scroller-thumb
                 br
