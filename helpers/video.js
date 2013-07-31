@@ -71,7 +71,7 @@ exports.importVideoSegment = function(videoSegment) {
             videoSegment.status = consts.VideoStatus.INVALID;
           }
 
-          videoSegment.save(function (saveErr) {
+          videoSegment.saveWithBroadcast(function (saveErr) {
             if (saveErr) {
               err = "error saving video";
             }

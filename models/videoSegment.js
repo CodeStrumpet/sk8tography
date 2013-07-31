@@ -37,5 +37,27 @@ module.exports = function() {
     return viddyName;
   };
 
+  videoSegmentSchema.methods.saveWithBroadcast = function(callback) {
+    this.save(function(err) {
+      callback(err);
+
+      // broadcast to all the socket clients if there has been no error...
+      if (!err) {
+
+        var modelInfo = null;
+        if (this.emitted && this.emitted.complete && this.emitted.complete.length > 0) {
+          modelInfo = this.emitted.complete[0];
+        }
+
+        if (modelInfo) {
+          var sockets = require('../routes/modules').sockets;
+          sockets.emit("videoSegmentUpdated", {
+            "videoSegment" : modelInfo
+          });
+        }
+      }
+    });
+  };
+
   mongoose.model("VideoSegment", videoSegmentSchema);
 };

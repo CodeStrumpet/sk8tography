@@ -95,6 +95,10 @@ var app = module.exports = express.createServer();
 // Hook Socket.io into Express
 var io = require('socket.io').listen(app);
 
+// set the sockets variable on the modules object so everyone can access it
+var modules = require('./routes/modules.js');
+modules.sockets = io.sockets;
+
 // Configuration
 
 app.configure(function(){
@@ -174,7 +178,7 @@ var port = process.env.PORT || 3000;
 var ipaddr = process.env.IP;
 
 // Socket.io Communication
-io.sockets.on('connection', socket);
+io.sockets.on('connection', socket.init);
 
 app.listen(port, ipaddr, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);

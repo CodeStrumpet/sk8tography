@@ -1,6 +1,26 @@
 'use strict'
 
-function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, StringHelperService, $dialog) {
+function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, $dialog, SocketConnection, StringHelperService) {
+
+  // add Socket events
+  SocketConnection.on('videoSegmentUpdated', function (data) {
+    console.log("videoSegmentUpdated: " + JSON.stringify(data));
+
+    var index = -1;
+    for (var i = 0; i < $scope.videoSegments.length; i++) {
+      if ($scope.videoSegments[i]._id == data.videoSegment._id) {
+        index = i;
+        break;
+      }
+    }
+
+    if (index >= 0) {
+      $scope.videoSegments[index] = data.videoSegment;
+    } else {
+      console.log("match for updated video segment not found. updating all video segments...");
+      $scope.refreshVideoSegments();
+    }
+  });
 
   // use injector to inherit scope from InputBlockCtrl...
   $injector.invoke(InputBlockCtrl, this, {$scope: $scope});
