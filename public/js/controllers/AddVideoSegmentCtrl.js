@@ -2,6 +2,7 @@
 
 function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, StringHelperService, $dialog) {
 
+  // use injector to inherit scope from InputBlockCtrl...
   $injector.invoke(InputBlockCtrl, this, {$scope: $scope});
 
   // model
@@ -9,22 +10,15 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
     valid : false
   };
 
-
   $scope.videos = {};
-
   $scope.additionalInfoVisible = false;
-
-  $http.get('/api/videoSegments').
-    success(function(data, status, headers, config) {
-      $scope.videoSegments = data.videoSegments;
-  });
 
 
   $scope.parentVideoInput = {
     name : "Parent Video",
     value : "",
     type : "text",
-    helpText : "(optional) The video this segment comes from",
+    helpText : "optional: The video this segment comes from (e.g. \"Photosynthesis\")",
     typeahead : "value.name for value in getMatches($viewValue, $index)",
     typeaheadResults : [],
     selectedObj : null,
@@ -62,14 +56,11 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
     }
   };
 
-  // input0
-  $scope.inputs.push($scope.parentVideoInput);
-
   $scope.skaterInput = {
     name : "Skater",
     value : "",
     type : "text",
-    helpText : "(optional) The skater who appears most often in this segment",
+    helpText : "optional: The skater who appears most often in this segment",
     typeahead : "value.name for value in getMatches($viewValue, $index)",
     typeaheadResults : [],
     selectedObj : null,
@@ -105,8 +96,26 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
     }
   };
 
-  // input1
+  // add inputs
   $scope.inputs.push($scope.skaterInput);
+  $scope.inputs.push($scope.parentVideoInput);
+
+
+  $scope.refreshVideoSegments = function() {
+    $http.get('/api/videoSegments').
+      success(function(data, status, headers, config) {
+        $scope.videoSegments = data.videoSegments;
+      });
+  };
+
+  $scope.refreshInputs = function() {
+    $scope.newVideoSegment = {
+      valid : false
+    };
+
+    // call InputBlockCtrl method to clear inputs
+    $scope.clearInputs();
+  }
 
   $scope.segmentUrlUpdated = function() {
 
@@ -160,8 +169,15 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
         if (data.error) {
           console.log("add videoSegment failed: " + data.error);
         } else {
-          console.log("add videoSegment returned success.");  
+          console.log("add videoSegment returned success.");
+          $scope.refreshVideoSegments();
+          $scope.refreshInputs();
         }
     });
   };
+
+
+
+  // Init
+  $scope.refreshVideoSegments();
 }

@@ -18,6 +18,11 @@ function YoutubePlayerCtrl($scope, YoutubeService) {
     var prevClip = $scope.currClip;
     $scope.currClip = clip;
 
+    if (! YoutubeService.playerIsReady) {
+      console.log("player not ready yet");
+      return;
+    }
+
     if (prevClip && prevClip.videoSegmentId == clip.videoSegmentId) {
 
       // don't recue video if it hasn't changed (fixes a youtube bug)
@@ -76,6 +81,10 @@ function YoutubePlayerCtrl($scope, YoutubeService) {
   // this function is passed to the video player and will be called when the player is ready
   $scope.onPlayerReady = function (event) {
     YoutubeService.playerIsReady = true;
+    if ($scope.currClip) {
+      console.log("already have clip on deck");
+      $scope.cueClip($scope.currClip, false);
+    }
   };
 
   // this function is passed to the video player and will be called when the player's state changes

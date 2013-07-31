@@ -17,3 +17,8 @@ div.container-fluid
     div.content.fixed-fixed
       div
         youtube-player
+      div.well
+        h2 {{currClip.skaterRef.name}}
+        div(ng-repeat="trick in currClip.tricks")
+            h3 {{trick.trickTypeRef.name}}
+

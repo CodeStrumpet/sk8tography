@@ -36,8 +36,15 @@ function DetailsCtrl($scope, $http, $timeout, $routeParams, $location, APIServic
     clipsQuery.populate = "skaterRef tricks.trickTypeRef";
 
     // fetch the clips
-    $scope.clips = APIService.fetchItems(clipsQuery, true);
+    $scope.clips = APIService.fetchItems(clipsQuery, true).then(function(clips) {
+      $scope.clips = clips;
 
+      if (clips.length > 0) {
+        $timeout(function() {
+          $scope.selectClip(clips[0]);
+        }, 500);
+      }
+    });
   };
 
   // call refresh results with current context
@@ -63,8 +70,8 @@ function DetailsCtrl($scope, $http, $timeout, $routeParams, $location, APIServic
   };
 
   $scope.selectClip = function(clip) {
-    console.log("videosegmentId: " + clip.videoSegmentId);
-    console.log(JSON.stringify(clip));
+    //console.log(JSON.stringify(clip));
+    $scope.currClip = clip;
     YoutubeService.cueClip(clip);
   };
 }

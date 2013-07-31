@@ -62,4 +62,13 @@ var InputBlockCtrl = function ($scope, $http, $dialog) {
       }
     });
   };
+
+  // restore empty values
+  $scope.clearInputs = function() {
+    for (var i = 0; i < $scope.inputs.length; i++) {
+      $scope.inputs[i].value = "";
+      $scope.inputs[i].selectedObj = null;
+      $scope.inputs[i].typeaheadResults = [];
+    }
+  }
 };
