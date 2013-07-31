@@ -35,10 +35,10 @@ div.span12
         tr
           th.thumbColumn image
           th.infoColumn info
-          th.extraInfoColumn extra info
+          th.extraInfoColumn status
           th.urlColumn url
       tbody
-        tr(ng-repeat='videoSegment in videoSegments')
+        tr(ng-repeat='videoSegment in videoSegments', style="vertical-align:middle")
 
           td
             img(ng-src="{{videoSegment.sourceSquareThumb}}")
@@ -46,7 +46,6 @@ div.span12
             h3 {{videoSegment.sourceTitle}}
             p {{videoSegment.sourceDesc}}
           td
-            p {{videoSegment.sourceDuration}}
-            input(type="button", value="Process", ng-click="processVideoSegment($index)")
+            h4 {{videoStatusString(videoSegment.status)}}
           td
             p {{videoSegment.url}}

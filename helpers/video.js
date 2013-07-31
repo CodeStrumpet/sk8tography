@@ -121,7 +121,15 @@ exports.downloadVideoSegment = function(videoSegment, callback) {
 
   youtubedl.stdout.on('data', function (data) {
     var buff = new Buffer(data);
-    console.log("more data: " + buff.toString('utf8'));
+    var dataString = buff.toString('utf8');
+
+    var components = dataString.split(' ');
+    //console.log("components length: " + components.length);
+    if (components.length > 0) {
+      console.log("last component: " + components[components.length - 1]);
+    }
+
+    //console.log("more data: " + buff.toString('utf8'));
   });
 
   youtubedl.stderr.on('data', function (data) {
@@ -139,7 +147,7 @@ exports.downloadVideoSegment = function(videoSegment, callback) {
     }
 
     // save video, and if successful kick off download
-    videoSegment.save(function (saveErr) {
+    videoSegment.saveWithBroadcast(function (saveErr) {
       if (saveErr) {
         err = "error saving";
       }
@@ -263,8 +271,23 @@ exports.processVideoSegment = function(videoSegment, callback) {
     }
   ], 
   function (err, result) {
-    // call the main callback that was passed into the function
-    callback(err, result);
+
+    // update status and save the videoSegment if there wasn't an error
+    if (!err) {
+      videoSegment.status = consts.VideoStatus.COMPLETE;
+    } else {
+      videoSegment.status = consts.VideoStatus.INVALID;
+    }
+
+    videoSegment.saveWithBroadcast(function(saveError) {
+
+      if (saveError) {
+        console.log("error upon saving the videoSegment: " + JSON.stringify(saveError));
+      }
+
+      // call the main callback that was passed into the function
+      callback(err, result);
+    });
   });
 };
 

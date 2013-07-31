@@ -16,7 +16,8 @@ table.table.videosTable
         h3 {{videoSegment.sourceTitle}}
         p {{videoSegment.sourceDesc}}
       td
-        p {{videoSegment.sourceDuration}}
-        input(type="button", value="Process", ng-click="processVideoSegment($index)")
+        p status: {{videoStatusString(videoSegment.status)}}
+        br
+        p duration: {{videoSegment.sourceDuration}}
       td
         p {{videoSegment.url}}

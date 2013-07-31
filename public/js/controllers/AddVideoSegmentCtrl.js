@@ -1,6 +1,8 @@
 'use strict'
 
-function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, $dialog, SocketConnection, StringHelperService) {
+function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, $window, $dialog, SocketConnection, StringHelperService) {
+
+  var consts = $window.Constantsinople;
 
   // add Socket events
   SocketConnection.on('videoSegmentUpdated', function (data) {
@@ -194,6 +196,31 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
           $scope.refreshInputs();
         }
     });
+  };
+
+  $scope.videoStatusString = function(status) {
+    var statusString = "";
+    switch(status) {
+      case consts.VideoStatus.ADDED:
+        statusString = "Video Added";
+        break;
+      case consts.VideoStatus.ACQUIRING_INFO:
+        statusString = "Acquiring Info";
+        break;
+      case consts.VideoStatus.DOWNLOADING:
+        statusString = "Downloading";
+        break;
+      case consts.VideoStatus.PROCESSING:
+        statusString = "Processing";
+        break;
+      case consts.VideoStatus.COMPLETE:
+        statusString = "Complete";
+        break;
+      case consts.VideoStatus.INVALID:
+        statusString = "Invalid Video";
+        break;
+    }
+    return statusString;
   };
 
 
