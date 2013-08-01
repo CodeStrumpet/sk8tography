@@ -122,11 +122,23 @@ exports.downloadVideoSegment = function(videoSegment, callback) {
   youtubedl.stdout.on('data', function (data) {
     var buff = new Buffer(data);
     var dataString = buff.toString('utf8');
+    //console.log(dataString);
+
+    if (dataString.length > 18) {
+      var sliceString = dataString.slice(12, 18);
+      var percentIndex = sliceString.indexOf("%");
+      // check if percent exists
+      if (percentIndex != -1) {
+        sliceString = sliceString.replace('%','');
+        sliceString = sliceString.replace(' ','');
+        console.log("percent complete: " + sliceString);
+      }
+    }
 
     var components = dataString.split(' ');
     //console.log("components length: " + components.length);
-    if (components.length > 0) {
-      console.log("last component: " + components[components.length - 1]);
+    if (components.length > 1) {
+      //console.log("last component: " + components[components.length - 1] + "  components length: " + components.length);
     }
 
     //console.log("more data: " + buff.toString('utf8'));
