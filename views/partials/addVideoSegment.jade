@@ -47,5 +47,10 @@ div.span12
             p {{videoSegment.sourceDesc}}
           td
             h4 {{videoStatusString(videoSegment.status)}}
+            div(ng-show="videoSegment.status == 3 && videoSegment.percentComplete > 0")
+              progress(percent="videoSegment.percentComplete")
+              strong.center-align {{videoSegment.timeRemaining}}
+            div(ng-show="videoSegment.status == 4")
+              i.icon-spinner.icon-spin.icon-large
           td
             p {{videoSegment.url}}

@@ -4,17 +4,25 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
 
   var consts = $window.Constantsinople;
 
-  // add Socket events
-  SocketConnection.on('videoSegmentUpdated', function (data) {
-    console.log("videoSegmentUpdated: " + JSON.stringify(data));
 
+  // helper function to find index of videoSegment based on _id
+  $scope.indexOfVideoSegment = function(videoSegmentId) {
     var index = -1;
     for (var i = 0; i < $scope.videoSegments.length; i++) {
-      if ($scope.videoSegments[i]._id == data.videoSegment._id) {
+      if ($scope.videoSegments[i]._id == videoSegmentId) {
         index = i;
         break;
       }
     }
+    return index;
+  };
+
+
+  // add Socket events
+  SocketConnection.on('videoSegmentUpdated', function (data) {
+    console.log("videoSegmentUpdated: " + JSON.stringify(data));
+
+    var index = $scope.indexOfVideoSegment(data.videoSegment._id);
 
     if (index >= 0) {
       $scope.videoSegments[index] = data.videoSegment;
@@ -22,6 +30,16 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
       console.log("match for updated video segment not found. updating all video segments...");
       $scope.refreshVideoSegments();
     }
+  });
+
+  SocketConnection.on('videoDownloadStatus', function(data) {
+    var index = $scope.indexOfVideoSegment(data.videoSegmentId);
+
+    if (index >= 0) {
+      $scope.videoSegments[index].percentComplete = data.percentComplete;
+      $scope.videoSegments[index].timeRemaining = data.timeRemaining;
+    }
+    //console.log("videoDownloadStatus: " + JSON.stringify(data));
   });
 
   // use injector to inherit scope from InputBlockCtrl...
@@ -186,7 +204,13 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
 
     console.log("adding video with url: " + $scope.newVideoSegment.url + "  videoRef: " + $scope.newVideoSegment.videoRef + "  skaterRef: " + $scope.newVideoSegment.skaterRef);
 
-    $http.post('/api/addVideoSegment', $scope.newVideoSegment).
+
+    var postBody = {
+      videoSegment: $scope.newVideoSegment,
+      socketSessionId: SocketConnection.sessionId() // add socketId to the video segment so we can get status updates
+    };
+
+    $http.post('/api/addVideoSegment', postBody).
       success(function(data) {
         if (data.error) {
           console.log("add videoSegment failed: " + data.error);

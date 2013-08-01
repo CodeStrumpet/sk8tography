@@ -195,6 +195,10 @@ table th, table td {
     float:right;
 }
 
+.center-align {
+  text-align: center;
+}
+
 .container-fluid > .content {
     vertical-align: top;
     width: 69%;

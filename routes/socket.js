@@ -3,6 +3,8 @@
 // export function for listening to the socket
 module.exports.init = function (socket) {
 
+  socket.emit('sessionID', socket.id);
+
   socket.emit('init', {
     msg: 'socket inited on server'
   });

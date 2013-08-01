@@ -94,14 +94,16 @@ exports.addTrickType = function(req, res) {
 
 exports.addVideoSegment = function(req, res) {
 
-  var videoSegmentURL = req.body.url;
+  var videoSegmentURL = req.body.videoSegment.url;
+
+  var socketClientSessionId = req.body.socketSessionId;
   
-  if (req.body.videoRef) {
-    var videoRef =  mongoose.Types.ObjectId(req.body.videoRef);
+  if (req.body.videoSegment.videoRef) {
+    var videoRef =  mongoose.Types.ObjectId(req.body.videoSegment.videoRef);
   }
 
-  if (req.body.skaterRef) {
-    var skaterRef = mongoose.Types.ObjectId(req.body.skaterRef);
+  if (req.body.videoSegment.skaterRef) {
+    var skaterRef = mongoose.Types.ObjectId(req.body.videoSegment.skaterRef);
   }
 
   require('async').series({
@@ -180,7 +182,7 @@ exports.addVideoSegment = function(req, res) {
 
       // kick off child process to actually download and import the video
       console.log("kick off import of the video segment");
-      videoHelper.importVideoSegment(results.newSegment);
+      videoHelper.importVideoSegment(results.newSegment, socketClientSessionId);
     }
   });
 };

@@ -3,7 +3,7 @@ var consts = require('../public/js/SharedConstants').Constantsinople;
 var mongoose = require('mongoose');
 var Clip = mongoose.model("Clip");
 
-exports.importVideoSegment = function(videoSegment) {
+exports.importVideoSegment = function(videoSegment, socketSessionId) {
 
   require('async').series({
 
@@ -93,7 +93,7 @@ exports.importVideoSegment = function(videoSegment) {
         exports.copyVideoSegmentFromCache(videoSegment, callback);
       } else {
         // get the video from the web
-        exports.downloadVideoSegment(videoSegment, callback);  
+        exports.downloadVideoSegment(videoSegment, callback, socketSessionId);
       }      
     },
 
@@ -114,8 +114,11 @@ exports.importVideoSegment = function(videoSegment) {
   });
 };
 
-exports.downloadVideoSegment = function(videoSegment, callback) {
+exports.downloadVideoSegment = function(videoSegment, callback, socketSessionId) {
   var err = null;
+
+  var sockets = require('../routes/modules').sockets;
+
 	var spawn = require('child_process').spawn,
     youtubedl = spawn( "youtube-dl", ["-o", "videos/" + videoSegment.fileName(), videoSegment.url]);
 
@@ -124,6 +127,7 @@ exports.downloadVideoSegment = function(videoSegment, callback) {
     var dataString = buff.toString('utf8');
     //console.log(dataString);
 
+
     if (dataString.length > 18) {
       var sliceString = dataString.slice(12, 18);
       var percentIndex = sliceString.indexOf("%");
@@ -131,7 +135,23 @@ exports.downloadVideoSegment = function(videoSegment, callback) {
       if (percentIndex != -1) {
         sliceString = sliceString.replace('%','');
         sliceString = sliceString.replace(' ','');
+
+        var components = dataString.split(' ');
+        var lastComponent = "";
+        if (components.length > 1) {
+          lastComponent = components[components.length - 1];
+        }
+
         console.log("percent complete: " + sliceString);
+
+        if (socketSessionId) {
+          sockets.socket(socketSessionId).emit("videoDownloadStatus", {
+            percentComplete: sliceString,
+            timeRemaining: lastComponent,
+            videoSegmentId : videoSegment._id
+          });
+        }
+
       }
     }
 

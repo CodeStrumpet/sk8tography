@@ -107,9 +107,23 @@ angular.module('myApp.services', []).
 
 // socket service (use 'factory' service definition so we can run one-time code before returning service)
 app.factory('SocketConnection', function ($rootScope) {
+
   var socket = io.connect();
+  var sessionIdTag = null;
+
+
+  // register the sessionID callback
+  socket.on("sessionID", function(data) {
+    sessionIdTag = data;
+    console.log("sessionID: " + JSON.stringify(data));
+  });
+
   
   return {
+
+    sessionId : function() {
+      return sessionIdTag
+    },
     
     on: function (eventName, callback) {
       socket.on(eventName, function () {  
