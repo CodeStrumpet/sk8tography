@@ -16,6 +16,10 @@ var app = angular.module('myApp', ['ui.bootstrap', 'ngCookies', 'myApp.filters',
         templateUrl: 'partials/details',
         controller: DetailsCtrl
       }).
+      when('/watch', {
+        templateUrl: 'partials/videoSegmentScroller',
+        controller: VideoSegmentScrollerCtrl
+      }).
       when('/videoSegments', {
         templateUrl: 'partials/videoSegments',
         controller: VideoSegmentsCtrl

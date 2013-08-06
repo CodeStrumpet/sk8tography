@@ -193,7 +193,7 @@ angular.module('myApp.directives', []).
         }
 
         var circles = vis.selectAll('circle')
-          .data(dataset)
+          .data(newVal)
           .enter()
           .append('circle');
 
@@ -204,8 +204,6 @@ angular.module('myApp.directives', []).
           .attr("r", function(d) {
             return d;
           });
-
-
       });
     }
   };

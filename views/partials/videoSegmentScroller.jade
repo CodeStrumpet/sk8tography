@@ -1,0 +1,15 @@
+
+div(id="player-box").container-fluid
+  div.row-fluid
+    div.sidebar-nav.left
+      h2 Left Sidebar
+
+    div.sidebar-nav.right
+      table.table
+        tr(ng-repeat="dataItem in testData", mouseover="activeclip")
+          td
+            h4 {{dataItem}}
+
+    div.content.fixed-fixed
+      div
+        youtube-player
