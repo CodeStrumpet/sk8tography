@@ -255,6 +255,7 @@ exports.signup = function (req, res) {
 
 exports.videoSegments = function (req, res) {
 
+
   var vidsCallback = function (err, videoSegments) {
     res.json({
       videoSegments : videoSegments
@@ -272,17 +273,26 @@ exports.videoSegments = function (req, res) {
 
 exports.clips = function (req, res) {
 
+  var segmentId = req.query.segmentId;
+
   var clipsCallback = function (err, clips) {
     res.json({
       clips : clips
     });
   };
 
-  Clip
-  .find()
-  .limit(20)
-  .sort('-updated')
-  .exec(clipsCallback);
+  var query = Clip.find();
+
+  if (segmentId) {
+    query.where('videoSegmentId', segmentId);
+    query.sort('startTime');
+
+  } else {
+    query.limit(20);
+    query.sort('-updated');
+  }
+
+  query.exec(clipsCallback);
 
 };
 

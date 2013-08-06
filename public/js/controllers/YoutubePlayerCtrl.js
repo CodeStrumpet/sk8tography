@@ -114,10 +114,14 @@ function YoutubePlayerCtrl($scope, YoutubeService) {
     if ($scope.player.getPlayerState() == YT.PlayerState.PLAYING) {
       setTimeout($scope.checkCurrentTime, 100);
 
+      var currTime = $scope.player.getCurrentTime();
       // forcibly end the video if we have gone past the clip duration
-      if ($scope.currClip && $scope.player.getCurrentTime() > $scope.currClip.startTime + $scope.currClip.duration) {
+      if ($scope.currClip && currTime > $scope.currClip.startTime + $scope.currClip.duration) {
         $scope.player.pauseVideo();
         $scope.cueClip($scope.currClip, false);
+      } else {
+        // update the service with the current time
+        YoutubeService.timeUpdated(currTime);
       }
     }
   };

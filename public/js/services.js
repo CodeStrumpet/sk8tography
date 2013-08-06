@@ -16,6 +16,9 @@ angular.module('myApp.services', []).
     },
     cueSegment: function(segment, playerId) {
       $rootScope.$broadcast('YoutubeService.cueSegment', segment, playerId);
+    },
+    timeUpdated: function(newTime, playerId) {
+      $rootScope.$broadcast('YoutubeService.timeUpdated', newTime, playerId);
     }
    };
  }])
