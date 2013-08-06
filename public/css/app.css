@@ -146,6 +146,7 @@ table th, table td {
 #player-box {
   height : 400px;
   background-color : #d3d3d3;
+  overflow: scroll;
 }
 
 

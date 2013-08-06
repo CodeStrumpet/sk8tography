@@ -10,6 +10,11 @@ function YoutubePlayerCtrl($scope, YoutubeService) {
     $scope.cueClip(clip, true);
   });
 
+  $scope.$on( 'YoutubeService.cueSegment', function( event, segment ) {
+    $scope.cueSegment(segment, true);
+  });
+
+
 
   $scope.cueClip = function(clip, playImmediately) {
 
@@ -50,6 +55,45 @@ function YoutubePlayerCtrl($scope, YoutubeService) {
     }
   }
 
+  $scope.cueSegment = function(segment, playImmediately) {
+
+    autoplay = playImmediately;
+
+    var prevSegment = $scope.currSegment;
+    $scope.currSegment = segment;
+
+    if (! YoutubeService.playerIsReady) {
+      console.log("player not ready yet");
+      return;
+    }
+
+    if (prevSegment && prevSegment._id == segment._id) {
+
+      // don't recue video if it hasn't changed (fixes a youtube bug)
+      $scope.player.seekTo(0, true);
+
+      // explicitly pause video if we aren't playing immediately
+      if (!playImmediately) {
+        $scope.pauseVideo();
+      } else {
+        $scope.playVideo();
+      }
+
+    } else {
+
+      var videoInfo = {
+        videoId: segment._id,
+        startSeconds: 0,
+        endSeconds: segment.sourceDuration,
+        suggestedQuality: 'default'
+      };
+
+      console.log("videoInfo: " + JSON.stringify(videoInfo));
+
+      $scope.player.cueVideoById(videoInfo);
+    }
+  }
+
   $scope.togglePlay = function() {
     if ($scope.player.getPlayerState() == YT.PlayerState.PAUSED || $scope.player.getPlayerState() == YT.PlayerState.CUED) {
       $scope.playVideo();
@@ -71,7 +115,7 @@ function YoutubePlayerCtrl($scope, YoutubeService) {
       setTimeout($scope.checkCurrentTime, 100);
 
       // forcibly end the video if we have gone past the clip duration
-      if ($scope.player.getCurrentTime() > $scope.currClip.startTime + $scope.currClip.duration) {
+      if ($scope.currClip && $scope.player.getCurrentTime() > $scope.currClip.startTime + $scope.currClip.duration) {
         $scope.player.pauseVideo();
         $scope.cueClip($scope.currClip, false);
       }
@@ -84,6 +128,9 @@ function YoutubePlayerCtrl($scope, YoutubeService) {
     if ($scope.currClip) {
       console.log("already have clip on deck");
       $scope.cueClip($scope.currClip, false);
+    } else if ($scope.currSegment) {
+      console.log("already have segment on deck");
+      $scope.cueSegment($scope.currSegment, false);
     }
   };
 
@@ -98,7 +145,11 @@ function YoutubePlayerCtrl($scope, YoutubeService) {
         stateName = "ENDED";
         autoplay = false;
         $scope.player.mute();
-        $scope.cueClip($scope.currClip, false);
+        if ($scope.currClip) {
+          $scope.cueClip($scope.currClip, false);
+        } else if ($scope.currSegment) {
+          $scope.cueSegment($scope.currSegment, false);
+        }
         break;
       case YT.PlayerState.PLAYING:
         stateName = "PLAYING";
@@ -113,7 +164,9 @@ function YoutubePlayerCtrl($scope, YoutubeService) {
         stateName = "BUFFERING";
         break;
       case YT.PlayerState.CUED:
-        $scope.player.seekTo($scope.currClip.startTime, true);
+        if ($scope.currClip) {
+          $scope.player.seekTo($scope.currClip.startTime, true);
+        }
         stateName = "CUED";
         if (autoplay) {
           $scope.playVideo();

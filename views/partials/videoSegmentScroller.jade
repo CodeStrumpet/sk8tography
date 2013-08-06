@@ -4,11 +4,11 @@ div(id="player-box").container-fluid
     div.sidebar-nav.left
       h2 Left Sidebar
 
-    div.sidebar-nav.right
+    div().sidebar-nav.right
       table.table
-        tr(ng-repeat="dataItem in testData", mouseover="activeclip")
+        tr(ng-repeat="segment in videoSegments", mouseover="activeclip", ng-click="playSegment(segment)")
           td
-            h4 {{dataItem}}
+            h4 {{segment.sourceTitle}}
 
     div.content.fixed-fixed
       div

@@ -13,6 +13,9 @@ angular.module('myApp.services', []).
     playerIsReady : false,
     cueClip: function(clip, playerId) {
       $rootScope.$broadcast('YoutubeService.cueClip', clip, playerId);
+    },
+    cueSegment: function(segment, playerId) {
+      $rootScope.$broadcast('YoutubeService.cueSegment', segment, playerId);
     }
    };
  }])
