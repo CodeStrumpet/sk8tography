@@ -28,6 +28,23 @@ angular.module('myApp.directives')
         .attr("height", height)
         .style("background-color", '#FF0');
 
+      var drag = d3.behavior.drag()
+        .on("drag", function(d,i) {
+          console.log("drag: " + d3.event.dx + ", " + d3.event.dy);
+
+          var translateAmount = d3.event.dx * scope.val.scale;
+          scrollerGroup
+            .attr("transform", "translate(" + translateAmount.toString() + ",0)");
+
+          /*
+          d.x += d3.event.dx
+          d.y += d3.event.dy
+          d3.select(this).attr("transform", function(d,i){
+            return "translate(" + [ d.x,d.y ] + ")"
+          })
+          */
+        });
+
 
 
 
@@ -54,19 +71,27 @@ angular.module('myApp.directives')
           .attr("width", fullScrollWidth)
           .attr("height", height / 2);
 
+        //scrollerGroup.call(drag);
 
-        var circles = vis.selectAll('circle')
-          .data(newVal)
-          .enter()
-          .append('circle');
+        var move = function() {
 
-        circles.attr("cx", function(d, i) {
-          return (i * 75) + 25;
-        })
-          .attr("cy", height / 2)
-          .attr("r", function(d) {
-            return d;
-          });
+          var amount = d3.event.x;
+          d3.select(this)
+            .attr("transform", "translate(" + amount + "," + 0 + ")");
+        }
+
+        var drag = d3.behavior.drag().origin(function() {
+          var t = d3.select(this);
+          return {x: t.attr("x") + d3.transform(t.attr("transform")).translate[0],
+            y: t.attr("y") + d3.transform(t.attr("transform")).translate[1]};
+        }).on("drag", move);
+
+        scrollerGroup.call(drag);
+
+
+
+
+
       });
 
       scope.$watch('val.clips', function(newVal, oldVal) {
