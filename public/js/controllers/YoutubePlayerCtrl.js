@@ -14,7 +14,14 @@ function YoutubePlayerCtrl($scope, YoutubeService) {
     $scope.cueSegment(segment, true);
   });
 
+  $scope.$on('YoutubeService.pause', function(event) {
+    $scope.pauseVideo();
+  });
 
+  $scope.$on('YoutubeService.seekVideo', function(event, desiredTime, resumePlaying) {
+    $scope.player.seekTo(desiredTime, true);
+    $scope.player.playVideo();
+  });
 
   $scope.cueClip = function(clip, playImmediately) {
 

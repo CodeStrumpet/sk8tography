@@ -2,23 +2,20 @@
 
 angular.module('myApp.directives')
 
-.directive('videoScroller', function() {
+.directive('videoScroller', ['YoutubeService', function(YoutubeService) {
 
-  var initialized
-  // constants
-  var margin = 20,
-    width = 960,
-    height = 500 - .5 - margin,
-    color = d3.interpolateRgb("#f77", "#77f");
+  var height, width;
+  var seekAmount = 0;
 
   return {
     restrict: 'E',
     scope: {
-      val: '='
+      val: '=',
+      scroll: '&'
     },
     link: function(scope, element, attrs) {
 
-      var height = 200;
+      height = 200;
       var fullScrollWidth = 0;
       var scrollerGroup = null;
 
@@ -26,7 +23,7 @@ angular.module('myApp.directives')
         .append("svg")
         .attr("width", '100%')
         .attr("height", height)
-        .style("background-color", '#FF0');
+        .attr("class", 'scroller-container');
 
       var drag = d3.behavior.drag()
         .on("drag", function(d,i) {
@@ -63,35 +60,69 @@ angular.module('myApp.directives')
 
         scrollerGroup = vis.append('g');
 
+        scrollerGroup.on('mousedown', function() {
+          console.log("mousedown");
+          seekAmount = 0;
+          YoutubeService.pauseVideo();
+        });
+
+        scrollerGroup.on('mouseup', function() {
+          console.log("mouseup");
+          if (seekAmount < -5 || seekAmount > 5) {
+
+          }
+          YoutubeService.seekVideo(-seekAmount / scope.val.scale);
+
+        });
+
+
+
         fullScrollWidth = scope.val.duration * scope.val.scale;
 
         scrollerGroup.append("rect")
           .attr("x", width / 2 - scope.val.currentTime)
           .attr("y", height / 4)
           .attr("width", fullScrollWidth)
-          .attr("height", height / 2);
+          .attr("height", height / 2)
+          .style("fill", "#000000");
 
-        //scrollerGroup.call(drag);
+        var drag = d3.behavior.drag();
 
-        var move = function() {
-
-          var amount = d3.event.x;
-          d3.select(this)
-            .attr("transform", "translate(" + amount + "," + 0 + ")");
-        }
-
-        var drag = d3.behavior.drag().origin(function() {
+        drag.origin(function() {
           var t = d3.select(this);
           return {x: t.attr("x") + d3.transform(t.attr("transform")).translate[0],
             y: t.attr("y") + d3.transform(t.attr("transform")).translate[1]};
-        }).on("drag", move);
+        });
+
+        drag.on("drag", function() {
+
+          var amount = d3.event.x;
+          var target = d3.select(this);
+
+          if (target.node()) {
+            var xforms = target.node().transform.baseVal; // An SVGTransformList
+            var firstXForm = xforms.getItem(0);       // An SVGTransform
+            if (firstXForm.type == SVGTransform.SVG_TRANSFORM_TRANSLATE){
+              var firstX = firstXForm.matrix.e,
+                  firstY = firstXForm.matrix.f;
+
+              if (amount + firstX < 0 && amount + firstX > -scope.val.duration * scope.val.scale - width/2) {
+                seekAmount = amount;
+                target.attr("transform", "translate(" + amount + "," + 0 + ")");
+
+                scope.scroll("test");
+              }
+            }
+
+
+            //console.log(target.node().transform);
+          }
+
+
+
+        });
 
         scrollerGroup.call(drag);
-
-
-
-
-
       });
 
       scope.$watch('val.clips', function(newVal, oldVal) {
@@ -119,7 +150,14 @@ angular.module('myApp.directives')
             return Math.abs(clip.duration) * scope.val.scale - 2 * horizPadding;
           })
           .attr("height", 20)
-          .style("fill", "blue");
+          .style("fill", function(clip) {
+            if (clip.skaterRef) {
+              return "blue";
+            } else {
+              return "#00FFFF";
+            }
+          });
+
 
 //        clips.attr('x', function(clip) {
 //            var relativePositionX = clip.startTime / scope.val.duration;
@@ -162,7 +200,7 @@ angular.module('myApp.directives')
 
     }
   };
-});
+}]);
 
 
 

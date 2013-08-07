@@ -27,7 +27,7 @@ function VideoSegmentScrollerCtrl($scope, $http, YoutubeService) {
 
     $scope.segmentInfo = {
       duration: segment.sourceDuration,
-      scale : 20.0,
+      scale : 40.0,
       currentTime : 0.0
     };
 
@@ -37,6 +37,10 @@ function VideoSegmentScrollerCtrl($scope, $http, YoutubeService) {
         $scope.segmentInfo.clips = data.clips;
         console.log("numClips: " + data.clips.length);
     });
+  }
+
+  $scope.scrollFunction = function(arg) {
+    console.log("scroll function called  " + arg);
   }
 
 

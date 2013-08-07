@@ -19,7 +19,14 @@ angular.module('myApp.services', []).
     },
     timeUpdated: function(newTime, playerId) {
       $rootScope.$broadcast('YoutubeService.timeUpdated', newTime, playerId);
+    },
+    pauseVideo : function() {
+      $rootScope.$broadcast('YoutubeService.pause');
+    },
+    seekVideo : function(desiredTime) {
+      $rootScope.$broadcast('YoutubeService.seekVideo', desiredTime);
     }
+
    };
  }])
 
