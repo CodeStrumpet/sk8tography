@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# create a C style array with args
+args=("$@")
  
 # Invoke the Forever module (to START our Node.js server).
 forever \
@@ -6,4 +9,4 @@ start \
 -al 'forever.log' \
 -ao 'out.log' \
 -ae 'err.log' \
-app.js
+app.js ${args[0]} ${args[1]} ${args[2]} ${args[3]} ${args[4]} ${args[5]}

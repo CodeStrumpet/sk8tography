@@ -11,8 +11,36 @@ exports.initialize = function() {
     }
 };
 
+
+
+// figure out what db to use
+var dbURI = "";
+if (nconf.get('local_db')) {
+
+  dbURI = 'mongodb://localhost/' + nconf.get('local_db');
+  console.log("using local db: " + dbURI);
+
+} else if (nconf.get('NODE_ENV') == 'production') {
+
+  dbURI = nconf.get('MONGOLAB_URI_PRODUCTION');
+  console.log("using PRODUCTION db...");
+
+} else {
+
+  dbURI = nconf.get('MONGOLAB_URI_DEVELOPMENT');
+  console.log("using DEVELOPMENT db...");
+
+}
+
+// handle the case where there is no .env file
+if (!dbURI) {
+  dbURI = 'mongodb://localhost/' + "sk8abase_test";
+  console.log("No db specified!! Using local db: " + dbURI);
+}
+
+
 var mongoose = require('mongoose');
-mongoose.connect(nconf.get('MONGOLAB_URI') || 'mongodb://localhost/test3');
+mongoose.connect(dbURI);
 
 
 
