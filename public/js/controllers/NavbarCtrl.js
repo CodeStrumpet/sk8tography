@@ -1,12 +1,14 @@
 'use strict'
 
-function NavbarCtrl($scope, $http, $dialog, $location, UserService, AuthService) {
+function NavbarCtrl($scope, $http, $dialog, $location, $timeout, UserService, AuthService) {
 
+
+  $scope.feedbackLabel = "FEEDBACK";
 
   // Prevent the login dropdown from closing on us
   $('.dropdown-toggle').dropdown(); 
   // Fix input element click problem
-  $('.dropdown input, .dropdown button, .dropdown label').click(function(e) {
+  $('.dropdown input, .dropdown button, .dropdown label, .dropdown textarea').click(function(e) {
     e.stopPropagation();
   });
 
@@ -49,6 +51,32 @@ function NavbarCtrl($scope, $http, $dialog, $location, UserService, AuthService)
     var d = $dialog.dialog($scope.opts);
     d.open().then(function(result){
       console.log("signup finished");
+    });
+  };
+
+  $scope.submitFeedback = function () {
+
+    $scope.feedbackObj.username = UserService.username();
+    $scope.feedbackObj.userRef = UserService.userId();
+
+    console.log("userId: " + UserService.userId());
+
+    $http.post('/api/feedback', {feedback : $scope.feedbackObj}).then(function (response) {
+
+      $('.dropdown.open .dropdown-toggle').dropdown('toggle');
+
+      console.log(JSON.stringify(response));
+
+      $scope.feedbackLabel = "THANKS !!";
+
+      $scope.feedbackObj = null;
+
+
+      $timeout(function() {
+        $scope.$apply(function () {
+          $scope.feedbackLabel = "FEEDBACK";
+        });
+      }, 1500);
     });
   };
 }

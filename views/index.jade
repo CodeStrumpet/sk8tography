@@ -10,6 +10,10 @@ block body
             a(href='/tagClips') Tag Clips
           li()
             a(href='/addVideoSegment') Add Videos
+          li.dropdown
+            a(href="#", data-toggle="dropdown", ng-cloak).dropdown-toggle {{feedbackLabel}}
+            div.dropdown-menu
+              include partials/includes/feedbackForm
         div.span1
         span.input-append.btn-group
           input(id="appendedInputButton", type="text").span3

@@ -9,6 +9,7 @@ var Video = mongoose.model("Video");
 var Skater = mongoose.model("Skater");
 var User = mongoose.model("User");
 var TrickType = mongoose.model("TrickType");
+var Feedback = mongoose.model("Feedback");
 
 var videoHelper = require('../helpers/video');
 
@@ -250,6 +251,28 @@ exports.signup = function (req, res) {
   });
 };
 
+exports.feedback = function (req, res) {
+
+  var feedbackObj = req.body.feedback;
+
+  var newFeedback = new Feedback(feedbackObj);
+
+  // save feedback to database
+  newFeedback.save(function(err) {
+    if (err) {
+      console.log(err);
+      res.json({
+        error: "feedback failed"  // TODO send back more useful error
+      });
+    } else {
+      res.json({
+        feedback : newFeedback
+      });
+    }
+  });
+};
+
+
 
 // GET
 
@@ -480,7 +503,8 @@ exports.fetchResults = function (req, res) {
     "Skater" : Skater,
     "Clip" : Clip,
     "TrickType" : TrickType,
-    "Video" : Video
+    "Video" : Video,
+    "Feedback" : Feedback
   };
 
   var queryObj = req.body.q;
@@ -527,7 +551,8 @@ exports.fetchResults = function (req, res) {
     if (queryObj.select) {
       query.select(queryObj.select);
     } else {
-      query.select("name");
+      // will the default be to just select everything??
+      //query.select("name");
     }
 
     // try to populate subfields if possible

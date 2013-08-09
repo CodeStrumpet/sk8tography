@@ -155,6 +155,7 @@ app.post('/api/addSkater', api.addSkater);
 app.post('/api/addTrickType', api.addTrickType);
 app.post('/api/login', api.login);
 app.post('/api/signup', api.signup);
+app.post('/api/feedback', api.feedback);
 
 // ========================================
 app.get('/api/posts', api.posts);

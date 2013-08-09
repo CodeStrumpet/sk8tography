@@ -1,0 +1,14 @@
+div.feedback-menu
+  form
+    fieldset
+      legend Feedback:  we want to hear it!
+      textarea(rows="5", ng-model="feedbackObj.text", placeholder="Suggestions, bug reports, whatever...").feedback-input
+      br
+      div.controls
+        select(ng-model="feedbackObj.type", name="Optional", value="Optional").input-large
+          option(value="", disabled, selected) Feedback type (optional)
+          option Suggestion
+          option Bug Report
+          option Love Letter
+          option Hate Mail
+      button(type="submit", ng-click="submitFeedback()").btn.btn-large Submit

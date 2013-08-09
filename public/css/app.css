@@ -89,6 +89,18 @@ table th, table td {
   background-color: lightgray;
 }
 
+/**************************************************
+  Feedback Menu
+**************************************************/
+
+.feedback-menu {
+  padding: 15px;
+  padding-bottom: 0px;
+}
+
+.feedback-input {
+  width: 400px;
+}
 
 /**************************************************
   Home Page

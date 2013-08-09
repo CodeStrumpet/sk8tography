@@ -9,7 +9,8 @@ module.exports = function() {
 		latitude : Number,
 		longitude : Number,
 		address : String, 	// TODO: should probably be structured…
-		features : Number 	// bitwise (ledge, flat, rail, stairs)
+		features : Number, 	// bitwise (ledge, flat, rail, stairs)
+    updated: { type: Date, default: Date.now }
 	});
 
   mongoose.model("Spot", spotSchema);
