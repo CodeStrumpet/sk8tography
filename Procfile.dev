@@ -1,4 +1,0 @@
-mongo: mongod
-web: nodemon app.js
-
-

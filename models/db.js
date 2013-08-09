@@ -1,4 +1,5 @@
 
+var nconf = require('nconf');
 
 var models = ['./track.js', './user.js', './video.js', './brand.js', './videoSegment.js', './skater.js', './trickType.js', 
 	'./trick.js', './spot.js', './clip.js'];
@@ -11,7 +12,7 @@ exports.initialize = function() {
 };
 
 var mongoose = require('mongoose');
-mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/test3');
+mongoose.connect(nconf.get('MONGOLAB_URI') || 'mongodb://localhost/test3');
 
 
 

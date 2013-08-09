@@ -1,6 +1,16 @@
 
 /**
- * Module dependencies.
+ * Config dependencies.
+ */
+
+var nconf = require('nconf');
+
+nconf.argv()
+    .env()
+    .file({ file: '.env' });
+
+/**
+ * General Module dependencies.
  */
 
 var http = require('http'),
@@ -174,7 +184,7 @@ app.get('*', routes.index);
 var awsKey = process.env.S3_KEY;
 var mongolabKey = process.env.MLAB_KEY;
 
-var port = process.env.PORT || 3000;
+var port = nconf.get("PORT") || 3000;
 var ipaddr = process.env.IP;
 
 // Socket.io Communication
