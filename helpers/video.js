@@ -233,7 +233,10 @@ exports.processVideoSegment = function(videoSegment, callback) {
     function(waterfallCallback) { // analyze and split
       var err = null;
       var buffer = null;
-      console.log(__dirname);
+      var command = __dirname + "/../children/shotsplitter.py" + " -input " + __dirname + "/../videos/" + videoSegment.fileName() + " -output " +  __dirname + "/../videos";
+
+      console.log("shotsplitter command: " + command);
+
       var spawn = require('child_process').spawn,
         shotsplitter = spawn(__dirname + "/../children/shotsplitter.py", ["-input", __dirname + "/../videos/" + videoSegment.fileName(), "-output", __dirname + "/../videos"]);
 
@@ -243,7 +246,7 @@ exports.processVideoSegment = function(videoSegment, callback) {
       });
 
       shotsplitter.stderr.on('data', function (data) {
-        //console.log('stdout: ' + data);
+        console.log('stderr: ' + data);
         //err = data;
       });
 
