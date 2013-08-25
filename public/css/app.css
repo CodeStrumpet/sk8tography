@@ -256,7 +256,7 @@ table th, table td {
 
 .clips {
   height: 800px;
-  margin-top: 30px;
+  margin-top: 70px;
   overflow:auto; 
   overflow-y:auto;
 }

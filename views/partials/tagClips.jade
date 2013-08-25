@@ -3,6 +3,17 @@ div.container-fluid
 		div.well
 			div.clip-filter
 				h5 Sidebar
+				span.input-append.btn-group.dropdown
+					input(id="appendedInputButton", type="text").span3
+					a(href="#", data-toggle="dropdown").btn.btn-primary.dropdown-toggle
+						span.icon-search
+					ul.dropdown-menu	
+						li 
+							a option 1							
+						li
+							a option 2
+				br
+				br
 			div.clips
 				ul.nav.nav-list
 					li(ng-repeat="clip in clips", ng-class="getClipClass($index)", ng-click="setCurrentClip(clip)", clips-loaded)

@@ -392,26 +392,34 @@ exports.createClips = function(videoSegment, callback, timestamps) {
       return;
     }
 
-    var clip = new Clip({
-      videoSegmentId : videoSegment._id,
-      index : index,
-      fileFormat : videoSegment.fileFormat,
-      startTime : clipInfo.start,
-      duration : clipInfo.duration
-    });
-
-    // set the skaterRef if it's present in videoSegment extra info
-    var skaterRef = videoSegment.extraInfo.skaterRef;
-    if (skaterRef) {
-      clip.skaterRef = skaterRef;
+    var clipDuration = clipInfo.duration;
+    // handle the last clip
+    if (clipDuration == -1) {
+      clipDuration = videoSegment.sourceDuration - clipInfo.start;
     }
 
-    // add save function to array so we can execute saves in parallel
-    saveClips.push((function(doc) {
-      return function(callback) {
-        doc.save(callback);
-      };
-    })(clip));
+    if (clipDuration > 1.5) {
+      var clip = new Clip({
+        videoSegmentId : videoSegment._id,
+        index : index,
+        fileFormat : videoSegment.fileFormat,
+        startTime : clipInfo.start,
+        duration : cclipDuration
+      });
+
+      // set the skaterRef if it's present in videoSegment extra info
+      var skaterRef = videoSegment.extraInfo.skaterRef;
+      if (skaterRef) {
+        clip.skaterRef = skaterRef;
+      }
+
+      // add save function to array so we can execute saves in parallel
+      saveClips.push((function(doc) {
+        return function(callback) {
+          doc.save(callback);
+        };
+      })(clip));
+    }
 
     index++;
   });
