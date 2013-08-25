@@ -4,14 +4,17 @@ div.container-fluid
 			div.clip-filter
 				h5 Sidebar
 				span.input-append.btn-group.dropdown
-					input(id="appendedInputButton", type="text").span3
+					input(id="appendedInputButton", 
+						ng-model="filter.videoSegment.sourceTitle",
+						type="text",
+						typeahead="value.sourceTitle for value in videoSegmentTypeahead($viewValue)", 
+            typeahead-on-select='videoSegmentSelect($item)',
+            on-blur="videoSegmentsBlur($index)").span3
 					a(href="#", data-toggle="dropdown").btn.btn-primary.dropdown-toggle
-						span.icon-search
-					ul.dropdown-menu	
-						li 
-							a option 1							
-						li
-							a option 2
+						span.caret
+					ul.dropdown-menu
+						li(ng-repeat="segment in segments")
+							a(ng-click="updateClipsWithSegmentChoice(segment)") {{segment.sourceTitle}}
 				br
 				br
 			div.clips

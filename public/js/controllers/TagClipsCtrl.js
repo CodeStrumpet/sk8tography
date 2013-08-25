@@ -8,10 +8,11 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
 
 	$scope.currClipIndex = -1;
 
+  $scope.filter = {};
+
 	$http.get('/api/clips').success(function(data, status, headers, config) {
       $scope.clips = data.clips;
   });
-
 
   var newTrickInput = function() {
     return {
@@ -65,6 +66,64 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
         }
       }
     };
+  };
+
+  $scope.updateClips = function() {
+
+    if ($scope.filter.videoSegment) {
+
+      var url = '/api/clips' + '?segmentId=' + $scope.filter.videoSegment._id;
+      console.log("calling url: " + url);
+      $http.get(url).success(function(data, status, headers, config) {
+        $scope.clips = data.clips;
+        console.log("number of clips: " + data.clips.length);
+      });
+    }
+  };
+
+  $scope.updateClipsWithSegmentChoice = function(segment) {
+    $scope.filter.videoSegment = segment;
+    $scope.updateClips();    
+  };
+
+  $scope.videoSegmentSelect = function(item) {
+    // call checkValidity function
+    //console.log("videoSegments select w/ item: " + JSON.stringify(item));
+    
+    $scope.filter.videoSegment = item;
+    $scope.updateClips();
+  };
+
+  $scope.videoSegmentTypeahead = function(inputText) {
+    
+    return $scope.getVideoSegments(inputText, function(results) {
+      console.log("numResults: " +results.length);
+      $scope.typeaheadSegments = results;
+      return results;
+    });
+
+    //console.log("num segments in typeahead fn: " + segments.length);
+    
+  };
+
+  $scope.getVideoSegments = function(queryText, successFn) {
+    var url = '/api/videoSegments';
+    if (queryText && queryText != "") {
+      url = url + "?q=" + queryText;
+    }
+
+    return $http.get(url).then(function(response) {          
+      var segments = response.data.videoSegments;
+      return successFn(segments);
+    });
+  };
+
+  $scope.getVideoSegments("", function(results) {
+    $scope.segments = results;
+  });
+
+  $scope.videoSegmentsBlur = function(index) {
+    console.log("videoSegments blur");
   };
 
   $scope.updateInputsWithClip = function(clip) {

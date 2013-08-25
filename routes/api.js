@@ -278,19 +278,27 @@ exports.feedback = function (req, res) {
 
 exports.videoSegments = function (req, res) {
 
-
   var vidsCallback = function (err, videoSegments) {
     res.json({
       videoSegments : videoSegments
     });
   };
 
+  var searchTerms = req.query.q;
 
-  VideoSegment
-  .find()
-  .limit(20)
-  .sort('-updated')
-  .exec(vidsCallback);
+  var query = VideoSegment.find();
+
+  if (typeof(searchTerms) != 'undefined') {
+    var re = new RegExp('\\b' + searchTerms, 'i');
+
+    query.where('sourceTitle').regex(re);
+
+  } else {
+    query.limit(20);    
+    query.sort('-updated');
+  }    
+
+  query.exec(vidsCallback);  
 
 };
 
