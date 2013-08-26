@@ -232,7 +232,7 @@ exports.processVideoSegment = function(videoSegment, callback) {
 
     function(waterfallCallback) { // analyze and split
       var err = null;
-      var buffer = null;
+      var buffers = [];      
       var command = __dirname + "/../children/shotsplitter.py" + " -input " + __dirname + "/../videos/" + videoSegment.fileName() + " -output " +  __dirname + "/../videos";
 
       console.log("shotsplitter command: " + command);
@@ -241,21 +241,42 @@ exports.processVideoSegment = function(videoSegment, callback) {
         shotsplitter = spawn(__dirname + "/../children/shotsplitter.py", ["-input", __dirname + "/../videos/" + videoSegment.fileName(), "-output", __dirname + "/../videos"]);
 
       shotsplitter.stdout.on('data', function (data) {
+        var buffer = null;
         buffer = new Buffer(data);
-        //console.log("data returned: " + buffer.toString('utf8'));
+        buffers.push(buffer);
+        console.log("data returned: " + buffer.toString('utf8'));
       });
 
       shotsplitter.stderr.on('data', function (data) {
-        console.log('stderr: ' + data);
+        //console.log('stderr: ' + data);
         //err = data;
       });
 
       shotsplitter.on('exit', function (code) {
 
-        if (code == 0 && buffer != null) {
+        if (code == 0 && buffers.length > 0) {
 
-          var result = JSON.parse(buffer.toString('utf8'));
+          var buffer = Buffer.concat(buffers);
 
+          console.log("buffer: " + buffer.toString('utf8'));
+
+
+
+          var fs = require('fs');
+          fs.writeFile("/../videos/" + videoSegment._id + "_times.json", buffer.toString('utf8'), function(err) {
+            if (err) {
+              console.log("error writing times to fs: " + err);
+            } else {
+              console.log("Times file saved to fs!");
+            }
+          });
+
+          var result;
+          try {
+            result = JSON.parse(buffer.toString('utf8'));
+          } catch (e) {
+            console.log("meltdown parsing timing buffer: " + JSON.stringify(e));
+          }
 
           // catch error passed back in valid json
           if (result.error || !result.timestamps) {
