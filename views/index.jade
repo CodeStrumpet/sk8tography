@@ -1,7 +1,7 @@
 extends layout
 
 block body
-  div(ng-controller="NavbarCtrl", ng-show="showNavbar()").navbar.navbar-fixed-top
+  div(ng-controller="NavbarCtrl", ng-show="showNavbar()", ng-cloak).navbar.navbar-fixed-top
     div.navbar-inner
       div.container-fluid.navbar-contents
         a(href="/").brand Sk8tography
