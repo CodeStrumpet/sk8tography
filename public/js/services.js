@@ -164,12 +164,18 @@ app.factory('SocketConnection', function ($rootScope) {
   };
 });
 
-app.factory('AuthService', function ($rootScope, $route, $location, UserService) {
+app.factory('AuthService', function ($rootScope, $route, $location, UserService, DemoService) {
 
-  $rootScope.$on("$routeChangeStart", function(event, next, current) {    
+  $rootScope.$on("$routeChangeStart", function(event, next, current) {
+
+    // we currently redirect all traffic that hasn't passed the frontpage test
+    if (!DemoService.isValidDemoUser()) {
+      $location.url('/demoauth');
+      return;
+    }
     
     var authRequired = next && next.$$route && next.$$route.auth;
-    if (authRequired && !UserService.isLoggedIn()) {
+    if (authRequired && !UserService.isLoggedIn()) { // TODO: check for specific admin userNames here
       console.log("you should be logged in to use this page...");
       $location.url('/');
       //var currentUrl = $location.url();
@@ -178,6 +184,29 @@ app.factory('AuthService', function ($rootScope, $route, $location, UserService)
   });
 
   return {};
+});
+
+app.factory('DemoService', function ($rootScope, $location, $http, $cookies) {
+
+  return {    
+    isValidDemoUser : function() {
+      //delete $cookies.validDemoUser;
+      return $cookies.validDemoUser === "valid_true";
+    },    
+    checkDemoPassword : function(pass) {
+
+      var url = '/api/checkDemoPass?pass=' + pass;
+      $http.get(url).then(function(response) {
+        console.log(JSON.stringify(response));
+        if (response.data.valid) {
+          $cookies.validDemoUser = "valid_true";
+          $location.url('/');  
+        } else {
+          console.log("incorrect pass...");
+        }
+      });
+    }
+  };
 });
 
 app.factory('APIService', function ($rootScope, $http, $q) {

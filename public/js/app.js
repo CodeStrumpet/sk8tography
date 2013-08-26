@@ -8,6 +8,10 @@ var app = angular.module('myApp', ['ui.bootstrap', 'ngCookies', 'myApp.filters',
         templateUrl: 'partials/index',
         controller: IndexCtrl
       }).
+      when('/demoauth', {
+        templateUrl: 'partials/demoAuth',
+        controller: DemoAuthCtrl
+      }).
       when('/skaters/:entityId', {
         templateUrl: 'partials/details',
         controller: DetailsCtrl

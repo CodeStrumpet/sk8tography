@@ -276,6 +276,21 @@ exports.feedback = function (req, res) {
 
 // GET
 
+exports.checkDemoPass = function(req, res) {
+
+  var nconf = require('nconf');
+
+  var response = {};
+
+  var pass = req.query.pass;
+  if (pass == nconf.get('DEMO_PASS')) {
+    response.valid = true;
+  } else {
+    response.valid = false;
+  }
+  res.json(response);
+};
+
 exports.videoSegments = function (req, res) {
 
   var vidsCallback = function (err, videoSegments) {

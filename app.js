@@ -149,6 +149,7 @@ app.get('/api/videos', api.videos);
 app.get('/api/skaters', api.skaters);
 app.get('/api/trickTypes', api.trickTypes);
 app.get('/api/skaterClips', api.skaterClips);
+app.get('/api/checkDemoPass', api.checkDemoPass);
 app.post('/api/addVideoSegment', api.addVideoSegment);
 app.post('/api/addVideo', api.addVideo);
 app.post('/api/addSkater', api.addSkater);
