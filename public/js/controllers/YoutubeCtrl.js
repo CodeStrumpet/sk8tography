@@ -3,7 +3,7 @@
 function YoutubeCtrl($scope, $http, YoutubeService) {
 
   // setup vars
-  $scope.playPauseButtonName = "Play";
+  $scope.playPauseButtonName = "icon-youtube-play";
 
 
   var autoplay = false;
@@ -42,9 +42,13 @@ function YoutubeCtrl($scope, $http, YoutubeService) {
       });
     }
 
-    $scope.slider.slider( "option", "min", clip.start_time );
-    $scope.slider.slider( "option", "max", clip.end_time );
-    $scope.slider.slider("option", "value", clip.start_time);
+    var sliderMin = Math.floor(clip.startTime);
+    var sliderMax = Math.ceil(clip.startTime + clip.duration);
+    var sliderValue = Math.floor(clip.startTime);
+
+    $scope.slider.slider( "option", "min",  sliderMin);
+    $scope.slider.slider( "option", "max", sliderMax);
+    $scope.slider.slider("option", "value", sliderValue);
   }
 
   $scope.togglePlay = function() {
@@ -61,15 +65,6 @@ function YoutubeCtrl($scope, $http, YoutubeService) {
 
   $scope.playVideo = function() {
     $scope.player.playVideo();
-  }
-
-  $scope.setPlayPauseButtonNameForCurrentState = function() {
-    if ($scope.player.getPlayerState() == YT.PlayerState.PLAYING || $scope.player.getPlayerState() == YT.PlayerState.BUFFERING) {
-      $scope.playPauseButtonName = "Pause";      
-    } else {
-      $scope.playPauseButtonName = "Play";      
-    }
-    $scope.$apply();            
   }
 
   $scope.checkCurrentTime = function () {
@@ -122,16 +117,20 @@ function YoutubeCtrl($scope, $http, YoutubeService) {
                 $scope.player.unMute();
                 // start monitoring the clip duration                        
                 $scope.checkCurrentTime();
+                $scope.playPauseButtonName = "icon-pause";
                 break;
           case YT.PlayerState.PAUSED:
-                stateName = "PAUSED";    
+                stateName = "PAUSED"; 
+                $scope.playPauseButtonName = "icon-youtube-play";
                 break;
           case YT.PlayerState.BUFFERING:
                 stateName = "BUFFERING";
+                $scope.playPauseButtonName = "icon-spinner";
                 break;
           case YT.PlayerState.CUED:
                 $scope.player.seekTo($scope.currClip.startTime, true);
                 stateName = "CUED";
+                $scope.playPauseButtonName = "icon-youtube-play";
                 if (autoplay) {
                       $scope.playVideo();
                       autoplay = false;                              
@@ -142,6 +141,7 @@ function YoutubeCtrl($scope, $http, YoutubeService) {
           default:
                 stateName = "UNKNOWN";
     }
+    $scope.$apply();
 
     console.log("YT.PlayerState:  " + stateName);
                  

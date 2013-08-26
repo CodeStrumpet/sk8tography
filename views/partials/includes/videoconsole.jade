@@ -1,10 +1,9 @@
 
 div.videoconsole
   div#player(load-youtube-player)
-  table.controls.table-condensed.maxwidth
-    tr
-      td.button-cell
-        button.nav.videobutton.btn.btn-success.btn-large(ng-click="togglePlay()")
-          {{playPauseButtonName}}
-      td.scrubbar-cell
-        div#scrubbar.nav.slider(load-scrub-bar)
+  div.player-controls
+    span(ng-click="togglePlay()", ng-class="[playPauseButtonName]").icon-2x.play-control
+    span()#scrubbar.nav.slider(load-scrub-bar)
+    span
+  
+       

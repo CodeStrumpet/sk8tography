@@ -48,6 +48,10 @@ angular.module('myApp.directives', []).
 .directive('loadScrubBar', function() {
 	console.log("loadScrubBar");
 	return function($scope, element, attrs) {
+
+    var width = $("player").width();
+    console.log("parent width: " + width);
+
 		// setup seekbar
         $scope.slider = $( "#scrubbar" ).slider({
         	range: "min",
