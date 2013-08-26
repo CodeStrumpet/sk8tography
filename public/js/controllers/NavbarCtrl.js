@@ -2,6 +2,10 @@
 
 function NavbarCtrl($scope, $http, $dialog, $location, $timeout, UserService, AuthService) {
 
+  $scope.showNavbar = function() {
+    var shouldShow = $location.path() != '/demoauth';
+    return shouldShow;
+  };
 
   $scope.feedbackLabel = "FEEDBACK";
 

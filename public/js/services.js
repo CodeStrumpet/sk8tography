@@ -190,7 +190,6 @@ app.factory('DemoService', function ($rootScope, $location, $http, $cookies) {
 
   return {    
     isValidDemoUser : function() {
-      //delete $cookies.validDemoUser;
       return $cookies.validDemoUser === "valid_true";
     },    
     checkDemoPassword : function(pass) {
