@@ -39,11 +39,11 @@ function DetailsCtrl($scope, $http, $timeout, $routeParams, $location, APIServic
     $scope.clips = APIService.fetchItems(clipsQuery, true).then(function(clips) {
       $scope.clips = clips;
 
-      if (clips.length > 0) {
-        $timeout(function() {
-          $scope.selectClip(clips[0]);
-        }, 500);
-      }
+      // if (clips.length > 0) {
+      //   $timeout(function() {
+      //     $scope.selectClip(clips[0]);
+      //   }, 500);
+      // }
     });
   };
 

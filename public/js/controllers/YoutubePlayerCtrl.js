@@ -27,17 +27,19 @@ function YoutubePlayerCtrl($scope, YoutubeService) {
 
     autoplay = playImmediately;
 
-    var prevClip = $scope.currClip;
-    $scope.currClip = clip;
-
     if (! YoutubeService.playerIsReady) {
+      $scope.pendingClip = clip;
       console.log("player not ready yet");
       return;
     }
 
+    var prevClip = $scope.currClip;
+    $scope.currClip = clip;
+
     if (prevClip && prevClip.videoSegmentId == clip.videoSegmentId) {
 
       // don't recue video if it hasn't changed (fixes a youtube bug)
+      $scope.pauseVideo();
       $scope.player.seekTo(clip.startTime, true);
 
       // explicitly pause video if we aren't playing immediately
@@ -59,20 +61,22 @@ function YoutubePlayerCtrl($scope, YoutubeService) {
       console.log("videoInfo: " + JSON.stringify(videoInfo));
 
       $scope.player.cueVideoById(videoInfo);
+      console.log("called cueVideoById...");
     }
   }
 
   $scope.cueSegment = function(segment, playImmediately) {
 
-    autoplay = playImmediately;
-
-    var prevSegment = $scope.currSegment;
-    $scope.currSegment = segment;
+    autoplay = playImmediately;    
 
     if (! YoutubeService.playerIsReady) {
+      $scope.pendingSegment = segment;
       console.log("player not ready yet");
       return;
     }
+
+    var prevSegment = $scope.currSegment;
+    $scope.currSegment = segment;
 
     if (prevSegment && prevSegment._id == segment._id) {
 
@@ -118,8 +122,7 @@ function YoutubePlayerCtrl($scope, YoutubeService) {
   }
 
   $scope.checkCurrentTime = function () {
-    if ($scope.player.getPlayerState() == YT.PlayerState.PLAYING) {
-      setTimeout($scope.checkCurrentTime, 100);
+    if ($scope.player.getPlayerState() == YT.PlayerState.PLAYING) {      
 
       var currTime = $scope.player.getCurrentTime();
       // forcibly end the video if we have gone past the clip duration
@@ -129,6 +132,7 @@ function YoutubePlayerCtrl($scope, YoutubeService) {
       } else {
         // update the service with the current time
         YoutubeService.timeUpdated(currTime);
+        setTimeout($scope.checkCurrentTime, 100);
       }
     }
   };
@@ -136,12 +140,12 @@ function YoutubePlayerCtrl($scope, YoutubeService) {
   // this function is passed to the video player and will be called when the player is ready
   $scope.onPlayerReady = function (event) {
     YoutubeService.playerIsReady = true;
-    if ($scope.currClip) {
+    if ($scope.pendingClip) {
       console.log("already have clip on deck");
-      $scope.cueClip($scope.currClip, false);
-    } else if ($scope.currSegment) {
+      $scope.cueClip($scope.pendingClip, autoplay);
+    } else if ($scope.pendingSegment) {
       console.log("already have segment on deck");
-      $scope.cueSegment($scope.currSegment, false);
+      $scope.cueSegment($scope.pendingSegment, autoplay);
     }
   };
 
