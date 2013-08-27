@@ -3,13 +3,26 @@
 div.span12
   form.form-horizontal.well
     h3 Add a new Video Segment
+    br
     div.row
-      div.span12       
-        fieldset
+      div.span12              
+        tabset
+          tab(ng-repeat="tab in tabs", heading="{{tab.title}}", active="tab.active")          
+        fieldset(ng-show="tabs[0].active")
           div.control.group
-            strong.control-label(for="segmentUrl") URL
+            strong.control-label(for="searchTerms") Search Terms
+            div.controls                  
+              span
+                input#searchTerms(ng-change="searchQueryChanged()", ng-model="youtubeSearchQuery", type="text", placeholder="", ng-enter="searchYoutube()").input-xxlarge
+                span &nbsp;&nbsp;                      
+                button(ng-click="searchYoutube()").btn Search                      
+        fieldset(ng-show="tabs[1].active")
+          div.control.group
+            strong.control-label(for="segmentUrl") URL                       
             div.controls
               input.input-xxlarge#segmentUrl(ng-model="newVideoSegment.url", type="url", name="segmentUrl", placeholder="http://www.youtube.com/...", ng-change='segmentUrlUpdated()')
+              span.help-block Paste in any Youtube URL ...                    
+        fieldset          
             div#videoInfo.controls(ng-show='newVideoSegment.valid', data-ng-animate="'fade'", style="display:none")
               table
                 tr
@@ -26,7 +39,7 @@ div.span12
             div
               br
               br
-              button.btn.btn-primary.btn-large.btn-block(ng-click='addNewVideoSegment()') Add Segment     
+              button(ng-click='addNewVideoSegment()', ng-class="!newVideoSegment.valid ? 'disabled' : ''").btn.btn-primary.btn-large.btn-block Add Segment     
 
   h3 Recently added Segments
   div.span12

@@ -50,8 +50,16 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
     valid : false
   };
 
+  $scope.youtubeSearchQuery = "";
+
   $scope.videos = {};
   $scope.additionalInfoVisible = false;
+
+
+  $scope.tabs = [ 
+    { title:"Search Youtube", active: true},
+    { title:"Enter URL"}
+  ];
 
 
   $scope.parentVideoInput = {
@@ -187,6 +195,40 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
         });
       }
     }    
+  };
+
+
+  $scope.searchYoutube = function() {
+    console.log($scope.youtubeSearchQuery.query);
+    if ($scope.youtubeSearchQuery.length <= 0) {
+      console.log("returning");
+      return;
+    }
+
+    
+    var baseUrl = "https://gdata.youtube.com/feeds/api/videos?"
+    var query = "q=" + $scope.youtubeSearchQuery;
+    var maxResults = "&max-results=15";
+    var alt = "&alt=jsonc";
+    var version = "&v=2";
+    var orderByParam = "&orderby=viewCount"; // currently not using...
+
+    var searchUrl =  baseUrl + query + maxResults + alt + version;
+    searchUrl = encodeURI(searchUrl);
+
+
+    $http({
+      url: searchUrl,
+      method: "GET"
+    }).success(function(response, status, headers, config) {
+      console.log("Request returned...");
+      console.log(response.data);
+
+    }).error(function(data, status, headers, config) {
+      console.log("search request failed: " + status);
+    });
+
+    console.log("Search!!");
   };
 
   $scope.addNewVideoSegment = function() {
