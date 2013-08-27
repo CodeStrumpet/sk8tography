@@ -425,7 +425,7 @@ exports.createClips = function(videoSegment, callback, timestamps) {
         index : index,
         fileFormat : videoSegment.fileFormat,
         startTime : clipInfo.start,
-        duration : cclipDuration
+        duration : clipDuration
       });
 
       // set the skaterRef if it's present in videoSegment extra info

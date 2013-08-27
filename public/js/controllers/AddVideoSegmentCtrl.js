@@ -180,15 +180,7 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
           method: "GET"
         }).success(function(videoInfo, status, headers, config) {
 
-          $scope.newVideoSegment.valid = true;
-
-          $scope.newVideoSegment.sourceTitle = videoInfo.data.title;
-          $scope.newVideoSegment.sourceDesc = videoInfo.data.description;
-          $scope.newVideoSegment.sourceSquareThumb = videoInfo.data.thumbnail.sqDefault;
-          $scope.newVideoSegment.sourceLargeThumb = videoInfo.data.thumbnail.hqDefault;
-          $scope.newVideoSegment.sourceDuration = videoInfo.data.duration;
-          $scope.newVideoSegment.sourceViewCount = videoInfo.data.viewCount;
-          $scope.newVideoSegment.sourceUploader = videoInfo.data.uploader;
+          $scope.populateNewVideoSegment(videoInfo.data);
 
         }).error(function(data, status, headers, config) {
           console.log("video info request failed: " + status);
@@ -197,11 +189,24 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
     }    
   };
 
+  $scope.populateNewVideoSegment = function(video) {
+    $scope.newVideoSegment.valid = true;
+
+    $scope.newVideoSegment.sourceTitle = video.title;
+    $scope.newVideoSegment.sourceDesc = video.description;
+    $scope.newVideoSegment.sourceSquareThumb = video.thumbnail.sqDefault;
+    $scope.newVideoSegment.sourceLargeThumb = video.thumbnail.hqDefault;
+    $scope.newVideoSegment.sourceDuration = video.duration;
+    $scope.newVideoSegment.sourceViewCount = video.viewCount;
+    $scope.newVideoSegment.sourceUploader = video.uploader;
+    $scope.newVideoSegment.url = "http://www.youtube.com/watch?v=" + video.id;
+  };
+
 
   $scope.searchYoutube = function() {
     console.log($scope.youtubeSearchQuery.query);
     if ($scope.youtubeSearchQuery.length <= 0) {
-      console.log("returning");
+      $scope.youtubeSearchResults = [];
       return;
     }
 
@@ -221,14 +226,17 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
       url: searchUrl,
       method: "GET"
     }).success(function(response, status, headers, config) {
-      console.log("Request returned...");
-      console.log(response.data);
+      $scope.youtubeSearchResults = response.data.items;      
 
     }).error(function(data, status, headers, config) {
       console.log("search request failed: " + status);
     });
+  };
 
-    console.log("Search!!");
+  $scope.youtubeResultSelected = function(result) {
+    $scope.populateNewVideoSegment(result);
+    $scope.youtubeSearchResults = [];
+    $scope.youtubeSearchQuery = "";
   };
 
   $scope.addNewVideoSegment = function() {

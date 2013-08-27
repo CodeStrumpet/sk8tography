@@ -8,16 +8,40 @@ div.span12
       div.span12              
         tabset
           tab(ng-repeat="tab in tabs", heading="{{tab.title}}", active="tab.active")          
-        fieldset(ng-show="tabs[0].active")
-          div.control.group
-            strong.control-label(for="searchTerms") Search Terms
-            div.controls                  
-              span
-                input#searchTerms(ng-change="searchQueryChanged()", ng-model="youtubeSearchQuery", type="text", placeholder="", ng-enter="searchYoutube()").input-xxlarge
-                span &nbsp;&nbsp;                      
-                button(ng-click="searchYoutube()").btn Search                      
+        div(ng-show="tabs[0].active")          
+          fieldset
+            div
+              strong.control-label(for="searchTerms") Search Terms
+              div.controls                  
+                span
+                  input#searchTerms(ng-change="searchQueryChanged()", ng-model="youtubeSearchQuery", type="text", placeholder="", ng-enter="searchYoutube()").input-xxlarge
+                  span &nbsp;&nbsp;                      
+                  button(ng-click="searchYoutube()").btn Search                      
+            div(ng-show='!newVideoSegment.valid', data-ng-animate="'fade'").control-group
+              div.controls                
+                table.table.youtubeResults                 
+                  tr(ng-repeat='result in youtubeSearchResults', style="vertical-align:middle") 
+                    td.addColumn
+                      span(ng-click="youtubeResultSelected(result)").icon-plus-sign.icon-4x.addVideoControl
+                    td.thumbColumn
+                      img(ng-src="{{result.thumbnail.sqDefault}}")
+                    td.titleColumn
+                      h4 {{result.title}}                        
+                    td.videoInfoColumn
+                      //- p
+                      //-   span 
+                      //-     strong Uploader&nbsp;&nbsp;
+                      //-     span {{result.uploader}}
+                      p
+                        span 
+                          strong View Count&nbsp;&nbsp;
+                          span {{result.viewCount}}
+                      p
+                        span 
+                          strong Duration&nbsp;&nbsp;
+                          span {{result.duration | minutes}}
         fieldset(ng-show="tabs[1].active")
-          div.control.group
+          div.control-group
             strong.control-label(for="segmentUrl") URL                       
             div.controls
               input.input-xxlarge#segmentUrl(ng-model="newVideoSegment.url", type="url", name="segmentUrl", placeholder="http://www.youtube.com/...", ng-change='segmentUrlUpdated()')

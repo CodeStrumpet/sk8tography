@@ -151,6 +151,34 @@ table th, table td {
   border-top: none;
 }
 
+/**************************************************
+  add video segment
+**************************************************/
+.youtubeResults {
+   
+}
+
+.youtubeResults td {
+  height: 100px; 
+  overflow: hidden;
+}
+
+.addColumn {
+  width: 10%;
+}
+
+.titleColumn {
+  width: 60%;
+}
+
+.videoInfoColumn {
+  width: 20%;
+}
+
+.addVideoControl:hover {
+  color: green;
+}
+
 
 /**************************************************
   VideoSegmentScroller
