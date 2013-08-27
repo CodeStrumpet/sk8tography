@@ -304,6 +304,14 @@ li.clip-element:hover {
   color:red;
 }
 
+.icon-button {
+  padding-left: 10px;
+}
+
+.icon-enabled {
+  color: blue;
+}
+
 .slider {
   width:35%;
   border-width: 1px;  

@@ -4,6 +4,9 @@ function YoutubeCtrl($scope, $http, YoutubeService) {
 
   // setup vars
   $scope.playPauseButtonName = "icon-youtube-play";
+  $scope.volumeStateClass = "icon-volume-off";
+  $scope.slowMotionAvailable = false;
+  $scope.slowMotionClasses = [];
 
 
   var autoplay = false;
@@ -59,6 +62,28 @@ function YoutubeCtrl($scope, $http, YoutubeService) {
     }            
   };
 
+  $scope.toggleVolume = function() {
+    console.log("toggle volume");
+    if ($scope.player.isMuted()) {
+      $scope.player.unMute();
+      $scope.volumeStateClass = "icon-volume-off";      
+    } else {
+      $scope.player.mute();
+      $scope.volumeStateClass = "icon-volume-up";
+    }
+  };
+
+  $scope.toggleSlowMo = function() {
+    console.log("available playback rates:  " + JSON.stringify($scope.player.getAvailablePlaybackRates()));
+    if ($scope.player.getPlaybackRate() >= 1) {
+      $scope.player.setPlaybackRate(0.5);
+      $scope.slowMotionClasses = ["icon-enabled"];
+    } else {
+      $scope.player.setPlaybackRate(1.0);
+      $scope.slowMotionClasses = [];
+    }    
+  }
+
   $scope.pauseVideo = function() {
     $scope.player.pauseVideo();
   }
@@ -96,6 +121,8 @@ function YoutubeCtrl($scope, $http, YoutubeService) {
     console.log("player is ready");
     YoutubeService.playerIsReady = true;
 
+    $scope.slowMotionAvailable = $scope.player.getAvailablePlaybackRates().length > 1;
+
   	//event.target.playVideo();
   };
 
@@ -109,12 +136,12 @@ function YoutubeCtrl($scope, $http, YoutubeService) {
           case YT.PlayerState.ENDED:
                 stateName = "ENDED";
                 autoplay = false;
-                $scope.player.mute();
+                //$scope.player.mute();
                 $scope.cueClip($scope.currClip, false);
                 break;
           case YT.PlayerState.PLAYING:                
-                stateName = "PLAYING";
-                $scope.player.unMute();
+                stateName = "PLAYING";                
+                //$scope.player.unMute();
                 // start monitoring the clip duration                        
                 $scope.checkCurrentTime();
                 $scope.playPauseButtonName = "icon-pause";
