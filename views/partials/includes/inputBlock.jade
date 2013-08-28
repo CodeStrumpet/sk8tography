@@ -12,7 +12,7 @@ form.form-horizontal
               on-blur="typeaheadBlur($index)").input-xlarge
         span &nbsp;&nbsp;
         i(ng-show="inputs[$index].selectedObj != null").icon-check-sign
-        span(ng-show='showAddEntity($index)', data-ng-animate="'fade'", style="display:none")          
+        span(ng-show='showAddEntity($index)', data-ng-animate="'fade'", style="display:none").important-text          
           &nbsp;&nbsp;&nbsp;&nbsp; "{{input.value}}" not found. &nbsp;&nbsp;&nbsp;&nbsp;                
-          button.btn.btn-success.btn-small(ng-click='addNewEntity($index)') Add new {{input.entityName}} to the Sk8abase
+          button.btn.btn-warning.btn-small(ng-click='addNewEntity($index)') Add new {{input.entityName}} to the Sk8abase
         span.help-block {{input.helpText}}

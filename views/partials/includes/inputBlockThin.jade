@@ -1,7 +1,7 @@
 form.form-inline
-  fieldset(ng-repeat="input in inputs").control-group
-    div(ng-show="!inputs[$index].multipleField")
-      label.control-label {{input.name}}
+  fieldset(ng-repeat="input in inputs")    
+    div(ng-show="!inputs[$index].multipleField").control-group
+      label.control-label.strong {{input.name}}
       div.controls
         span
           input(ng-model="input.value", 
@@ -13,18 +13,17 @@ form.form-inline
                 on-blur="typeaheadBlur($index)").input-xlarge
           span &nbsp;&nbsp;
           i(ng-show="inputs[$index].selectedObj != null").icon-check-sign
-          span(ng-show='showAddEntity($index)', data-ng-animate="'fade'", style="display:none")          
-            &nbsp;&nbsp;&nbsp;&nbsp; "{{input.value}}" not found. &nbsp;&nbsp;&nbsp;&nbsp;                
-            button.btn.btn-success.btn-small(ng-click='addNewEntity($index)') Add new {{input.entityName}} to the Sk8abase
-          span.help-block {{input.helpText}}
+          span(ng-show='showAddEntity($index)', data-ng-animate="'fade'", style="display:none").important-text.help-block          
+            &nbsp;&nbsp;&nbsp;&nbsp; No matching {{input.entityName}}s &nbsp;&nbsp;&nbsp;&nbsp;                
+            button.btn.btn-danger.btn-small(ng-click='addNewEntity($index)') Add {{input.value}} to the Sk8abase
 
     // multiple field option
     div(ng-show="inputs[$index].multipleField",
         ng-mouseenter="mouseEnteredInput($index)",
-        ng-mouseleave="mouseLeftInput($index)")
-      label.control-label {{ input.getName() }} &nbsp;&nbsp;&nbsp;&nbsp;
-      i(ng-show="inputs[$index].isFirstTrick", ng-click="addAnotherTrick($index)").icon-plus-sign.icon-large.add-action
-      div().controls        
+        ng-mouseleave="mouseLeftInput($index)").control-group
+      label.control-label.strong {{ input.getName() }} &nbsp;&nbsp;&nbsp;&nbsp;
+      i(ng-show="inputs[$index].isFirstTrick", ng-click="addAnotherTrick($index)").icon-plus-sign.icon-2x.add-action
+      div().controls
         input(ng-model="input.value", 
               type="{{input.type}}", 
               index="{{$index}}", 
@@ -35,14 +34,10 @@ form.form-inline
               on-blur="typeaheadBlur($index)").input-medium
         span &nbsp;&nbsp;
         i(ng-show="inputs[$index].selectedObj != null").icon-check-sign
-        span(ng-show='showAddEntity($index)', style="display:none")          
-          &nbsp;&nbsp;&nbsp;&nbsp; "{{input.value}}" not found. &nbsp;&nbsp;&nbsp;&nbsp;                
-          button.btn.btn-success.btn-small(ng-click='addNewEntity($index)') Add new {{input.entityName}} to the Sk8abase
-        span(ng-show='!showAddEntity($index) && (inputs[$index].active || input.isSwitchTrick)') 
-          span &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          label.checkbox          
-            input(type="checkbox", ng-model="input.isSwitchTrick")
-            label.checkbox Switch
+        i(ng-click="removeTrick($index)", ng-show="!inputs[$index].isFirstTrick").icon-minus-sign.icon-2x.remove-action.remove-trick      
+        span(ng-show='showAddEntity($index)', style="display:none").important-text.help-block
+          &nbsp;&nbsp;&nbsp;&nbsp; No matching {{input.entityName}}s &nbsp;&nbsp;&nbsp;&nbsp;                
+          button.btn.btn-danger.btn-small(ng-click='addNewEntity($index)') Add {{input.value}} to the Sk8abase        
           //- span &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           //- span.input-small.dropdown Terrain:&nbsp;&nbsp;&nbsp;
           //-   a.dropdown-toggle Terrain Type
@@ -53,8 +48,4 @@ form.form-inline
           //-       a Choice 2
           //-     li
           //-       a Choice 3
-          i(ng-click="removeTrick($index)", ng-show="!inputs[$index].isFirstTrick").icon-minus-sign.icon-large.remove-action.remove-trick
-
-      div(ng-show="!inputs[$index].isLastTrick", ng-class="{'combo-true' : inputs[$index].isComboTrick}").trick-linkage
-        i(ng-click="inputs[$index].isComboTrick = !inputs[$index].isComboTrick").icon-link.icon-2x
-      
+        

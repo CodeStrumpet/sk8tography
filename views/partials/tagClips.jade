@@ -35,4 +35,4 @@ div.container-fluid
 			div(ng-show="currClipIndex >= 0").tagging-console
 				include includes/inputBlockThin
 				alert(ng-repeat="error in errors", type="error.type", close="closeAlert($index)") {{error.msg}}
-				button.btn.btn-primary(ng-click='updateClip()') Update Clip
+				button.btn.btn-inverse(ng-click='updateClip()') Update Clip
