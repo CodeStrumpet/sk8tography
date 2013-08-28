@@ -2,11 +2,12 @@ div.container-fluid
 	div.sidebar.left
 		div.well
 			div.clip-filter
-				h5 Sidebar
+				h5 Filter
 				span.input-append.btn-group.dropdown
 					input(id="appendedInputButton", 
 						ng-model="filter.videoSegment.sourceTitle",
 						type="text",
+						placeholder="Choose Video",
 						typeahead="value.sourceTitle for value in videoSegmentTypeahead($viewValue)", 
             typeahead-on-select='videoSegmentSelect($item)',
             on-blur="videoSegmentsBlur($index)").span3
