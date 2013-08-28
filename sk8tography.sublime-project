@@ -1,0 +1,9 @@
+{
+	"folders":
+	[
+		{
+			"path": "/Users/rockfakie/Code/sk8tography",
+			"folder_exclude_patterns": ["node_modules", "lib"]
+		}
+	]
+}
