@@ -2,12 +2,16 @@
 
 function NavbarCtrl($scope, $http, $dialog, $location, $timeout, UserService, AuthService) {
 
+  $scope.feedbackLabel = "FEEDBACK";
+
   $scope.showNavbar = function() {
     var shouldShow = $location.path() != '/demoauth';
     return shouldShow;
   };
 
-  $scope.feedbackLabel = "FEEDBACK";
+  $scope.brandClick = function() {
+    $('.navbar li').removeClass('active');
+  };
 
   // Prevent the login dropdown from closing on us
   $('.dropdown-toggle').dropdown(); 
@@ -15,6 +19,15 @@ function NavbarCtrl($scope, $http, $dialog, $location, $timeout, UserService, Au
   $('.dropdown input, .dropdown button, .dropdown label, .dropdown textarea').click(function(e) {
     e.stopPropagation();
   });
+
+  $('.navbar li').click(function(e) {
+    $('.navbar li').removeClass('active');
+    var $this = $(this);
+    if (!$this.hasClass('active')) {
+      $this.addClass('active');
+    }
+  });
+  
 
   // !!! TODO: do this in a way that doesn't require the overhead 
   // of calling this function about 5 times with every page action

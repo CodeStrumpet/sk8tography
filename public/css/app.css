@@ -77,7 +77,7 @@ table th, table td {
 /**************************************************
   Navbar
 **************************************************/
-.activeLink {
+.active {
   text-decoration: underline;
 }
 

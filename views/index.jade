@@ -4,7 +4,7 @@ block body
   div(ng-controller="NavbarCtrl", ng-show="showNavbar()", ng-cloak).navbar.navbar-fixed-top
     div.navbar-inner
       div.container-fluid.navbar-contents
-        a(href="/").brand Sk8tography
+        a(href="/", ng-click="brandClick()").brand Sk8tography
         ul.nav
           li()
             a(href='/tagClips') Tag Clips
