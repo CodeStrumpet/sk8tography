@@ -13,14 +13,22 @@ nconf.argv()
  * General Module dependencies.
  */
 
+var db = require('./models/db.js');
+//initialize the db
+db.initialize();
+// development (run any db scripts that aren't commented out)
+db.runScripts();
+
+
 var http = require('http'),
-  express = require('express'),
-  db = require('./models/db.js').initialize(),
+  express = require('express'),  
   routes = require('./routes'),
   api = require('./routes/api'),
   socket = require('./routes/socket.js'),
   streamS3 = require('./connect-stream-s3'),
   amazon = require('awssum').load('amazon/amazon');
+
+
 
 
 

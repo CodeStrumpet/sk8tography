@@ -43,6 +43,12 @@ var mongoose = require('mongoose');
 mongoose.connect(dbURI);
 
 
+exports.runScripts = function() {
+
+  //var importTricks = require('./db_scripts/import_xml_tricks.js');
+  //importTricks.importTricks();
+
+};
 
 /*
 // startup script, save all skaters and trickTypes to generate name slugs

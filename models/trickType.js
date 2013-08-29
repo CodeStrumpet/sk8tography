@@ -8,7 +8,8 @@ module.exports = function() {
 		otherNames: [String],
 		categories: {type: Number, default: 0},     // bitwise (flip-trick, rotation, stall, …)
     thumbFileName: String,
-    nameSlug: String
+    nameSlug: String,
+    infoUrls: [String]
 	});
 
 
