@@ -10,6 +10,7 @@ var Skater = mongoose.model("Skater");
 var User = mongoose.model("User");
 var TrickType = mongoose.model("TrickType");
 var Feedback = mongoose.model("Feedback");
+var Trick = mongoose.model("Trick");
 
 var videoHelper = require('../helpers/video');
 
@@ -474,8 +475,7 @@ exports.skaterClips = function(req, res) {
       });
     }
   });
-
-
+}
   /*
 
   This could theoretically be done with a map-reduce function. here is the start of that...
@@ -513,7 +513,20 @@ exports.skaterClips = function(req, res) {
     }
   });
 */
-}
+
+
+exports.activeTrickTypes = function(req, res) {
+  Clip.find().distinct("tricks.trickTypeRef", function(error, trickTypeRefs) {
+    if (error) {
+      res.json({error : error});
+      return;
+    } else {      
+      res.json({
+        results : trickTypeRefs
+      });
+    }
+  });
+};
 
 
 // PUT
