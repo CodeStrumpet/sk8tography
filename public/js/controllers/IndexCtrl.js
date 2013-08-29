@@ -1,6 +1,24 @@
 'use strict';
 
-function IndexCtrl($scope, $timeout, $location, SocketConnection, APIService, SearchContext) {
+function IndexCtrl($scope, $timeout, $location, SocketConnection, APIService, SearchContext, CacheService, TrickTypesService) {
+
+/*
+  TrickTypesService.getActiveTrickTypes().then(function(response) {
+    console.log("activeTrickTypes resolved");
+    console.log(response);
+    $scope.trickTypes = response;
+  });
+*/
+
+/*
+  CacheService.performRequest('GET', '/api/activeTrickTypes', null, true).then(function(response) {
+    $scope.trickTypes = response.results;    
+  });
+
+*/
+
+
+
 
   // Housekeeping: open socket connection for the app
   SocketConnection.on('init', function (data) {
@@ -39,7 +57,7 @@ function IndexCtrl($scope, $timeout, $location, SocketConnection, APIService, Se
       displayName: "Tricks",
       pathName: "tricks",
       query: trickTypesQuery,
-      results: APIService.fetchItems(trickTypesQuery, true)
+      results: TrickTypesService.getActiveTrickTypes()//APIService.fetchItems(trickTypesQuery, true)
     });
   }
 

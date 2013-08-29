@@ -206,30 +206,6 @@ app.factory('DemoService', function ($rootScope, $location, $http, $cookies) {
       });
     }
   };
-});
-
-app.factory('APIService', function ($rootScope, $http, $q) {
-  var cache = {};
-
-  var fetchItems = function(query, useCache) {
-    
-    // TODO: if useCache, try to return items from the cache
-
-    var deferred = $q.defer();
-    var url = '/api/fetchResults';
-
-    var result = $http.put(url, {q : query}).then(function(response) {
-      deferred.resolve(response.data.results);
-      console.log("resolved " + response.data.results.length + "results");
-    });
-
-    return deferred.promise;
-  };
-
-  return {
-    fetchItems: fetchItems
-  };
-
 })
 
 .service( 'SearchContext', [ '$rootScope', function( $rootScope ) {
