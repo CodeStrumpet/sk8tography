@@ -30,6 +30,7 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
       typeahead : "value.name for value in getMatches($viewValue, $index)",
       typeaheadResults : [],
       selectedObj : null,
+      placeholder : "",
       entityName : "Trick",
       templateUrl: 'partials/addNewTrickType',
       controller: 'AddNewTrickTypeCtrl',

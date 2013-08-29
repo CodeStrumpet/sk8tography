@@ -27,7 +27,8 @@ form.form-inline
         input(ng-model="input.value", 
               type="{{input.type}}", 
               index="{{$index}}", 
-              structured-input, 
+              structured-input,
+              placeholder="{{input.placeholder}}" 
               typeahead="value for value in defaultTypeahed($viewValue)", 
               typeahead-on-select='onTypeaheadSelect($index)',
               on-focus="inputs[$index].focused=true",
