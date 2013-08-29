@@ -516,13 +516,14 @@ exports.skaterClips = function(req, res) {
 
 
 exports.activeTrickTypes = function(req, res) {
-  Clip.find().distinct("tricks.trickTypeRef", function(error, trickTypeRefs) {
-    if (error) {
-      res.json({error : error});
-      return;
+
+  var cache = require('./cache');
+  cache.activeTrickTypes(function(err, results) {
+    if (err) {
+      res.json({error : err});      
     } else {      
       res.json({
-        results : trickTypeRefs
+        results : results
       });
     }
   });

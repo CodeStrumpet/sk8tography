@@ -52,12 +52,16 @@ function IndexCtrl($scope, $timeout, $location, SocketConnection, APIService, Se
       results: APIService.fetchItems(skatersQuery, true)
     });
 
-    // add search for tricks
-    $scope.resultSets.push({
-      displayName: "Tricks",
-      pathName: "tricks",
-      query: trickTypesQuery,
-      results: TrickTypesService.getActiveTrickTypes()//APIService.fetchItems(trickTypesQuery, true)
+    CacheService.performRequest('GET', '/api/activeTrickTypes', null, false).then(function(response) {
+      // add search for tricks
+      $scope.resultSets.push({
+        displayName: "Tricks",
+        pathName: "tricks",
+        query: trickTypesQuery,
+        results: response.results
+        //TrickTypesService.getActiveTrickTypes()//APIService.fetchItems(trickTypesQuery, true)
+      });
+
     });
   }
 

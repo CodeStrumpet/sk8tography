@@ -82,14 +82,18 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
     }
   };
 
+  /**
+   *  Sets the filter videoSegment to the param passed in and calls updateClips (called from typeahead)
+   */
   $scope.updateClipsWithSegmentChoice = function(segment) {
     $scope.filter.videoSegment = segment;
     $scope.updateClips();    
   };
 
+  /**
+   *  Sets the filter videoSegment to the param passed in and calls updateClips (called from dropdown select)
+   */
   $scope.videoSegmentSelect = function(item) {
-    // call checkValidity function
-    //console.log("videoSegments select w/ item: " + JSON.stringify(item));
     
     $scope.filter.videoSegment = item;
     $scope.updateClips();
@@ -98,13 +102,9 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
   $scope.videoSegmentTypeahead = function(inputText) {
     
     return $scope.getVideoSegments(inputText, function(results) {
-      console.log("numResults: " +results.length);
       $scope.typeaheadSegments = results;
       return results;
-    });
-
-    //console.log("num segments in typeahead fn: " + segments.length);
-    
+    });    
   };
 
   $scope.getVideoSegments = function(queryText, successFn) {
