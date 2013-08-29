@@ -55,7 +55,6 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
         var valid = false;
         for (var i = 0; i < this.typeaheadResults.length; i++) {
           if (this.typeaheadResults[i].name.toLowerCase() === this.value.toLowerCase()) {
-            console.log("exact typeahead match!");
             this.selectedObj = this.typeaheadResults[i];
             valid = true;
             $scope.updateEnabled = true;

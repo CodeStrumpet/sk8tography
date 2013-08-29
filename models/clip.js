@@ -52,21 +52,20 @@ module.exports = function() {
       }
 
       this.tricks = replacementTricks;
-      
-      // lastly, we add this clip's thumbnail to the trickType obj if the clip only has one newTrick
-      if (newTricks.length == 1) {
-        console.log("about to update thumbnail");
-        TrickType.findOne({_id: newTricks[0].trickTypeRef}, function (err, trickType) {
-          console.log("find one tricktype " + trickType);
-          if (!err) {
-            console.log("adding thumbFileName: " + clip.thumbFileName);
-            trickType.thumbFileName = clip.thumbFileName;
 
-            trickType.save(function (err) {
-              if (err) {
-                console.log("error saving new thumb with trickType");
-              }
-            });
+      // lastly, we add this clip's thumbnail to any trickTypes that don't already have one...
+      for (var i = 0; i < this.tricks.length; i++) {
+        TrickType.findOne({_id: this.tricks[i].trickTypeRef}, function (err, trickType) {          
+          if (!err) {            
+            // if the trickType doesn't already have a thumbFileName, use the current clip's thumbFileName
+            if (!trickType.thumbFileName || trickType.thumbFileName == "") {
+              trickType.thumbFileName = clip.thumbFileName;
+              trickType.save(function (err) {
+                if (err) {
+                  console.log("error saving new thumb with trickType");
+                }
+              });
+            }
           }
         });
       }

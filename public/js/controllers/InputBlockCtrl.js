@@ -28,7 +28,7 @@ var InputBlockCtrl = function ($scope, $http, $dialog) {
 
   $scope.typeaheadBlur = function(index) {
     $scope.inputs[index].checkValidity();
-    $scope.inputs[index].typeaheadResults = [];
+    //$scope.inputs[index].typeaheadResults = [];
   };
 
   $scope.showAddEntity = function (index) {

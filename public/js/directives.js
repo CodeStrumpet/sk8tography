@@ -141,8 +141,13 @@ angular.module('myApp.directives', []).
   return {
     restrict: 'A',
     link: function(scope, elm, attrs) {        
-      elm.bind('focus', function() {
-        scope.$apply(attrs.onFocus);
+      elm.bind('focus', function() { 
+        if (!scope.$$phase) {
+          scope.$apply(attrs.onFocus);                            
+        } else {
+          scope.$eval(attrs.onFocus);
+        }
+
       });
     }
   };        
@@ -150,8 +155,12 @@ angular.module('myApp.directives', []).
   return {
     restrict: 'A',
     link: function(scope, elm, attrs) {
-      elm.bind('blur', function() {
-        scope.$apply(attrs.onBlur);
+      elm.bind('blur', function() {        
+        if (!scope.$$phase) {
+          scope.$apply(attrs.onBlur);
+        } else {
+          scope.$eval(attrs.onBlur);
+        }        
       });
     }
   };        
