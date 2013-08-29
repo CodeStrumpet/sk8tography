@@ -70,7 +70,12 @@ function DetailsCtrl($scope, $http, $timeout, $routeParams, $location, APIServic
   };
 
   $scope.selectClip = function(clip) {
-    //console.log(JSON.stringify(clip));
+    
+    if ($scope.currClip && $scope.currClip != clip) {
+      $scope.currClip.selected = false;
+    }
+    clip.selected = true;
+
     $scope.currClip = clip;
     YoutubeService.cueClip(clip);
   };

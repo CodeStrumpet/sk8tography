@@ -8,7 +8,7 @@ div.container-fluid
 
     div.sidebar-nav.right
       table.table
-        tr(ng-repeat="clip in clips", mouseover="activeclip", ng-click="selectClip(clip)")
+        tr(ng-repeat="clip in clips", mouseover="activeclip", ng-class="clip.selected ? 'selectedclip' : ''", ng-click="selectClip(clip)")
           td
             img(src="{{'./images/' + clip.thumbFileName}}")
           td

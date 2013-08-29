@@ -290,7 +290,19 @@ table th, table td {
 }
 
 .activeclip {
-  background-color: gray;
+  background-color: lightgrey;
+}
+
+.activeclip p, .activeclip strong, .activeclip span {
+  color: black;
+}
+
+.selectedclip {
+  background-color: grey;
+}
+
+.selectedclip p, .selectedclip strong, .selectedclip span {
+  color: white;
 }
 
 li.clip-element:hover {

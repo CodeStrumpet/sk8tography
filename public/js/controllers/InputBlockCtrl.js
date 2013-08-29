@@ -1,9 +1,10 @@
 var InputBlockCtrl = function ($scope, $http, $dialog) {
   $scope.inputs = [];
+  $scope.updateEnabled = false;
 
   $scope.onTypeaheadSelect = function(index) {
     // call checkValidity function
-    $scope.inputs[index].checkValidity();
+    $scope.inputs[index].checkValidity();    
   };
 
   $scope.defaultTypeahed = function(inputText) {
@@ -27,10 +28,11 @@ var InputBlockCtrl = function ($scope, $http, $dialog) {
 
   $scope.typeaheadBlur = function(index) {
     $scope.inputs[index].checkValidity();
+    $scope.inputs[index].typeaheadResults = [];
   };
 
   $scope.showAddEntity = function (index) {
-    return $scope.inputs[index].typeahead && $scope.inputs[index].value.length > 2 && $scope.inputs[index].typeaheadResults.length < 1;
+    return $scope.inputs[index].typeahead && !$scope.inputs[index].selectedObj && $scope.inputs[index].value.length > 2 && $scope.inputs[index].typeaheadResults.length < 1;
   };
 
   $scope.addNewEntity = function(index) {
@@ -54,6 +56,7 @@ var InputBlockCtrl = function ($scope, $http, $dialog) {
     var d = $dialog.dialog($scope.opts);
     d.open().then(function(result){
       if(result) {
+        $scope.updateEnabled = true;
         console.log('Entity added: '+ result.entity._id + "  value: " + result.value);          
           
         $scope.inputs[index].value = result.value;
@@ -69,6 +72,7 @@ var InputBlockCtrl = function ($scope, $http, $dialog) {
       $scope.inputs[i].value = "";
       $scope.inputs[i].selectedObj = null;
       $scope.inputs[i].typeaheadResults = [];
+      $scope.updateEnabled = false;
     }
   }
 };

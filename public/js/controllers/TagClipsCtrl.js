@@ -58,6 +58,7 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
             console.log("exact typeahead match!");
             this.selectedObj = this.typeaheadResults[i];
             valid = true;
+            $scope.updateEnabled = true;
             break;
           } 
         }
@@ -318,10 +319,23 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
 
     console.log(clip);
 
-    // don't do anything if the clip is already selected
-    if (newClipIndex == $scope.currClipIndex) {
+    // if the clip is already selected we just cue the video again and return
+    if (newClipIndex == $scope.currClipIndex) {      
+      if (YoutubeService.playerIsReady) {
+        YoutubeService.cueClip(clip);
+      }
       return;
     }
+
+    // mark the update button as disabled again
+    $scope.updateEnabled = false;
+
+    // update the clip's 'selected' property in order to hook into css
+    if ($scope.currClipIndex >= 0 && $scope.currClipIndex < $scope.clips.length) {
+      $scope.clips[$scope.currClipIndex].selected = false;      
+    }
+
+    clip.selected = true;
 
   	$scope.currClipIndex = newClipIndex;
 
@@ -378,7 +392,11 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
         if (data.error) {
           console.log("updating clip failed");
         } else {
-          $scope.clips[$scope.currClipIndex] = data.clip;
+          
+          data.clip.selected = true;
+          $scope.updateEnabled = false;
+          $scope.clips[$scope.currClipIndex] = data.clip;        
+
           console.log("updateClip returned success.");
         }
       });
