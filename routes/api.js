@@ -517,8 +517,7 @@ exports.skaterClips = function(req, res) {
 
 exports.activeTrickTypes = function(req, res) {
 
-  var cache = require('./cache');
-  cache.activeTrickTypes(function(err, results) {
+  TrickType.activeTrickTypes(function(err, results) {
     if (err) {
       res.json({error : err});      
     } else {      
