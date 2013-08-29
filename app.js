@@ -9,9 +9,9 @@ nconf.argv()
     .env()
     .file({ file: '.env' });
 
-/**
- * General Module dependencies.
- */
+
+// general prototype extensions
+require('./public/js/CommonHelpers');
 
 var db = require('./models/db.js');
 //initialize the db

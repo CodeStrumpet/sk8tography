@@ -20,6 +20,10 @@ module.exports = function() {
   trickTypeSchema.pre('save', function (next) {
 
     if (this.name) {
+      this.name = this.name.toTitleCase();
+    }
+
+    if (this.name) {
       this.nameSlug = this.name.replace(/\s+/g, '-').toLowerCase();
     }
     next();
