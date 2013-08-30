@@ -1,12 +1,16 @@
-var mongoose = require('mongoose');
+var mongoose = require('mongoose'),
+    extend = require('mongoose-schema-extend');
 var Schema = mongoose.Schema;
+
+var TaggableObject = mongoose.model("TaggableObject");
+
 var cache = require('../routes/cache');
 
 var activeTrickTypesKey = "activeTrickTypes";
 
 module.exports = function() {
 
-  var trickTypeSchema = new Schema({
+  var trickTypeSchema = TaggableObject.schema.extend({
 		name: String,
 		otherNames: [String],
 		categories: {type: Number, default: 0},     // bitwise (flip-trick, rotation, stall, …)

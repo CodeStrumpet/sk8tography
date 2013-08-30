@@ -1,11 +1,14 @@
-var mongoose = require('mongoose');
+var mongoose = require('mongoose'),
+    extend = require('mongoose-schema-extend');
 var Schema = mongoose.Schema;
+
+var TaggableObject = mongoose.model("TaggableObject");
 
 var consts = require('../public/js/SharedConstants').Constantsinople;
 
 module.exports = function() {
 
-  var videoSegmentSchema = new Schema({
+  var videoSegmentSchema = TaggableObject.schema.extend({
     _id: String,
     videoRef: Schema.Types.ObjectId,
     url: String,

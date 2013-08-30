@@ -1,6 +1,8 @@
-var mongoose = require('mongoose');
+var mongoose = require('mongoose'),
+    extend = require('mongoose-schema-extend');
 var Schema = mongoose.Schema;
 
+var TaggableObject = mongoose.model("TaggableObject");
 var Trick = mongoose.model("Trick");
 var Skater = mongoose.model("Skater");
 var TrickType = mongoose.model("TrickType");
@@ -9,7 +11,7 @@ var consts = require('../public/js/SharedConstants').Constantsinople;
 
 module.exports = function() {
     
-    var clipSchema = new Schema({
+    var clipSchema = TaggableObject.schema.extend({
         videoSegmentId: String,
         index: Number,
         updated: { type: Date, default: Date.now },

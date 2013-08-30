@@ -1,9 +1,12 @@
-var mongoose = require('mongoose');
+var mongoose = require('mongoose'),
+    extend = require('mongoose-schema-extend');
 var Schema = mongoose.Schema;
+
+var TaggableObject = mongoose.model("TaggableObject");
 
 module.exports = function() {
 
-  var skaterSchema = new Schema({
+  var skaterSchema = TaggableObject.schema.extend({
     name : String,
     isGoofy : Boolean,
     thumbFileName: String,

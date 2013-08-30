@@ -7,8 +7,8 @@ scope.Constantsinople.Stance = {
 	UNKNOWN : 0x0,
 	NATURAL : 0x1,
 	NOLLIE : 0x2,
-	SWITCH : 0x3,
-	FAKIE : 0x4
+	SWITCH : 0x4,
+	FAKIE : 0x8
 };
 
 scope.Constantsinople.TerrainType = {

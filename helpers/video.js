@@ -87,7 +87,7 @@ exports.importVideoSegment = function(videoSegment, socketSessionId) {
 
       // check if we have the file in the video cache... (for debugging)
       fs = require('fs');
-      var cachePath = "./videos/" + videoSegment.fileName();
+      var cachePath = "./videocache/" + videoSegment.fileName();
       if (fs.existsSync(cachePath)) {
         // copy the video from the cache
         exports.copyVideoSegmentFromCache(videoSegment, callback);
@@ -217,7 +217,9 @@ exports.copyVideoSegmentFromCache = function(videoSegment, callback) {
   rd.pipe(wr);
 
   function done(err) {
+    console.log("copy done!");
     if (!cbCalled) {
+      console.log("calling callback...");
       callback(err, null);
       cbCalled = true;
     }
