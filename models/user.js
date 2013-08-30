@@ -1,4 +1,5 @@
 var mongoose = require('mongoose'),
+    troop = require('mongoose-troop');
     Schema = mongoose.Schema,
     bcrypt = require('bcrypt'),
     SALT_WORK_FACTOR = 10,
@@ -14,6 +15,8 @@ var UserSchema = new Schema({
     loginAttempts: { type: Number, required: true, default: 0 },
     lockUntil: { type: Number }
 });
+
+UserSchema.plugin(troop.timestamp, {useVirtual : false, createdPath : "created", modifiedPath : "updated"});
 
 UserSchema.virtual('isLocked').get(function() {
     // check for a future lockUntil timestamp

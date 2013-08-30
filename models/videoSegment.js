@@ -1,5 +1,6 @@
 var mongoose = require('mongoose'),
-    extend = require('mongoose-schema-extend');
+    extend = require('mongoose-schema-extend'),
+    troop = require('mongoose-troop');
 var Schema = mongoose.Schema;
 
 var TaggableObject = mongoose.model("TaggableObject");
@@ -22,9 +23,10 @@ module.exports = function() {
     sourceDuration: Number,
     sourceViewCount: Number,
     sourceUploader: String,
-    updated: { type: Date, default: Date.now },
     extraInfo : {type: Schema.Types.Mixed, default : {}}
   });
+
+  videoSegmentSchema.plugin(troop.timestamp, {useVirtual : false, createdPath : "created", modifiedPath : "updated"});
 
 
   videoSegmentSchema.methods.fileName = function() {

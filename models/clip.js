@@ -1,5 +1,7 @@
 var mongoose = require('mongoose'),
-    extend = require('mongoose-schema-extend');
+    extend = require('mongoose-schema-extend'),
+    troop = require('mongoose-troop');
+
 var Schema = mongoose.Schema;
 
 var TaggableObject = mongoose.model("TaggableObject");
@@ -13,8 +15,7 @@ module.exports = function() {
     
     var clipSchema = TaggableObject.schema.extend({
         videoSegmentId: String,
-        index: Number,
-        updated: { type: Date, default: Date.now },
+        index: Number,        
         status: { type: Number, default: consts.ClipStatus.ADDED },
         fileFormat: Number,
         startTime: Number,
@@ -24,6 +25,8 @@ module.exports = function() {
         spotRef : {type: Schema.ObjectId, ref: 'Spot'},
         thumbFileName : String
     });
+
+    clipSchema.plugin(troop.timestamp, {useVirtual : false, createdPath : "created", modifiedPath : "updated"});
 
 
     clipSchema.methods.fileName = function() {

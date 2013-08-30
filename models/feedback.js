@@ -1,4 +1,5 @@
-var mongoose = require('mongoose');
+var mongoose = require('mongoose'),
+    troop = require('mongoose-troop');
 var Schema = mongoose.Schema;
 
 var User = mongoose.model("User");
@@ -9,9 +10,10 @@ module.exports = function() {
     text : String,
     type : String,
     username : String,
-    userRef : {type: Schema.ObjectId, ref: 'User' },
-    updated: { type: Date, default: Date.now }
+    userRef : {type: Schema.ObjectId, ref: 'User' }
   });
+
+  feedbackSchema.plugin(troop.timestamp, {useVirtual : false, createdPath : "created", modifiedPath : "updated"});
 
   mongoose.model("Feedback", feedbackSchema);
 };

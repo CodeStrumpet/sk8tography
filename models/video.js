@@ -1,5 +1,6 @@
 var mongoose = require('mongoose'),
-    extend = require('mongoose-schema-extend');
+    extend = require('mongoose-schema-extend'),
+    troop = require('mongoose-troop');
 var Schema = mongoose.Schema;
 
 var TaggableObject = mongoose.model("TaggableObject");
@@ -13,9 +14,10 @@ module.exports = function() {
       brandRef: Schema.Types.ObjectId,
       year: Number,
       infoUrl: String,
-      purchaseUrl: String,
-      updated: { type: Date, default: Date.now }
+      purchaseUrl: String
     });
+
+    videoSchema.plugin(troop.timestamp, {useVirtual : false, createdPath : "created", modifiedPath : "updated"});
 
     mongoose.model("Video", videoSchema);
 };
