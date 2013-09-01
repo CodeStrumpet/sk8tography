@@ -138,7 +138,7 @@ app.configure('development', function(){
 });
 
 app.configure('production', function(){
-  app.use(express.errorHandler());
+  app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); // for now we are showing everything on production...
 });
 
 // Routes

@@ -46,8 +46,8 @@ mongoose.connect(dbURI);
 
 exports.runScripts = function() {
 
-  //var importTricks = require('./db_scripts/import_xml_tricks.js');
-  //importTricks.importTricks();
+//  var importTricks = require('./db_scripts/import_xml_tricks.js');
+//  importTricks.importTricks();
 
 };
 
