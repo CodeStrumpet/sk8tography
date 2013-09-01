@@ -72,7 +72,7 @@ point towards a local mongodb instance (in this case the db is named sk8abase):
 
 point towards production db:
 
-	NODE_ENV=PRODUCTION ./start
+	NODE_ENV=production ./start
 
 
 **Stop the server**
