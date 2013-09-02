@@ -53,9 +53,15 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
       },
       checkValidity : function() {
         var valid = false;
-        for (var i = 0; i < this.typeaheadResults.length; i++) {
-          if (this.typeaheadResults[i].name.toLowerCase() === this.value.toLowerCase()) {
-            this.selectedObj = this.typeaheadResults[i];
+        var results = this.typeaheadResults;
+
+        // we do some awkward thing with cached results to deal w/ a typahead timing issue
+        if (this.typeaheadResults.length == 0 && this.cachedTypeaheadResults && this.cachedTypeaheadResults.length > 0) {
+          results = this.cachedTypeaheadResults;
+        }
+        for (var i = 0; i < results.length; i++) {
+          if (results[i].name.toLowerCase() === this.value.toLowerCase()) {
+            this.selectedObj = results[i];
             valid = true;
             $scope.updateEnabled = true;
             break;
@@ -65,6 +71,8 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
         if (!valid) {
           this.selectedObj = null;
         }
+
+        this.cachedTypeaheadResults = null;
       }
     };
   };
