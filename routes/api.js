@@ -410,7 +410,6 @@ exports.skaters = function (req, res) {
 exports.trickTypes = function (req, res) {
   
   var trickTypesCallback = function (err, trickTypes) {
-    console.log("num trickTypes: " + trickTypes);
     res.json({
       trickTypes : trickTypes
     });
