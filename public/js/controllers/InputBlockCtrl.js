@@ -22,17 +22,19 @@ var InputBlockCtrl = function ($scope, $http, $dialog) {
       }
       inputObj.typeaheadResults = results;
       inputObj.checkValidity();
+      inputObj.typeaheadActive = true;
       return inputObj.typeaheadResults;
     });
   };
 
   $scope.typeaheadBlur = function(index) {
     $scope.inputs[index].checkValidity();
+    $scope.inputs[index].typeaheadActive = false;
     //$scope.inputs[index].typeaheadResults = [];
   };
 
   $scope.showAddEntity = function (index) {
-    return $scope.inputs[index].typeahead && !$scope.inputs[index].selectedObj && $scope.inputs[index].value.length > 2 && $scope.inputs[index].typeaheadResults.length < 1;
+    return $scope.inputs[index].typeahead && !$scope.inputs[index].selectedObj && $scope.inputs[index].value.length > 2 && !$scope.inputs[index].typeaheadActive;
   };
 
   $scope.addNewEntity = function(index) {
