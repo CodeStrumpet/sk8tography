@@ -86,21 +86,6 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
         var videos = response.data.videos;
         return successFunction(videos);
       });
-    },
-    checkValidity : function() {
-      var valid = false;
-      for (var i = 0; i < this.typeaheadResults.length; i++) {
-        if (this.typeaheadResults[i].name.toLowerCase() === this.value.toLowerCase()) {
-          console.log("exact typeahead match!");
-          this.selectedObj = this.typeaheadResults[i];
-          valid = true;
-          break;
-        } 
-      }
-      // reset selectedObj to null if we don't have a match
-      if (!valid) {
-        this.selectedObj = null;
-      }
     }
   };
 
@@ -126,21 +111,6 @@ function AddVideoSegmentCtrl($scope, $http, $location, $routeParams, $injector, 
         var skaters = response.data.skaters;
         return successFunction(skaters);
       });
-    },
-    checkValidity : function() {
-      var valid = false;
-      for (var i = 0; i < this.typeaheadResults.length; i++) {
-        if (this.typeaheadResults[i].name.toLowerCase() === this.value.toLowerCase()) {
-          console.log("exact typeahead match!");
-          this.selectedObj = this.typeaheadResults[i];
-          valid = true;
-          break;
-        } 
-      }
-      // reset selectedObj to null if we don't have a match
-      if (!valid) {
-        this.selectedObj = null;
-      }
     }
   };
 

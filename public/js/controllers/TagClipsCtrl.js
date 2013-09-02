@@ -50,29 +50,6 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
           var trickTypes = response.data.trickTypes;
           return successFunction(trickTypes);
         });
-      },
-      checkValidity : function() {
-        var valid = false;
-        var results = this.typeaheadResults;
-
-        // we do some awkward thing with cached results to deal w/ a typahead timing issue
-        if (this.typeaheadResults.length == 0 && this.cachedTypeaheadResults && this.cachedTypeaheadResults.length > 0) {
-          results = this.cachedTypeaheadResults;
-        }
-        for (var i = 0; i < results.length; i++) {
-          if (results[i].name.toLowerCase() === this.value.toLowerCase()) {
-            this.selectedObj = results[i];
-            valid = true;
-            $scope.updateEnabled = true;
-            break;
-          } 
-        }
-        // reset selectedObj to null if we don't have a match
-        if (!valid) {
-          this.selectedObj = null;
-        }
-
-        this.cachedTypeaheadResults = null;
       }
     };
   };
@@ -161,21 +138,6 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
           var skaters = response.data.skaters;
           return successFunction(skaters);
         });
-      },
-      checkValidity : function() {
-        var valid = false;
-        for (var i = 0; i < this.typeaheadResults.length; i++) {
-          if (this.typeaheadResults[i].name.toLowerCase() === this.value.toLowerCase()) {
-            console.log("exact typeahead match!");
-            this.selectedObj = this.typeaheadResults[i];
-            valid = true;
-            break;
-          } 
-        }
-        // reset selectedObj to null if we don't have a match
-        if (!valid) {
-          this.selectedObj = null;
-        }
       }
     };
 

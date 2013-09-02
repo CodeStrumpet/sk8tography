@@ -4,7 +4,7 @@ var InputBlockCtrl = function ($scope, $http, $dialog) {
 
   $scope.onTypeaheadSelect = function(index) {
     // call checkValidity function
-    $scope.inputs[index].checkValidity();    
+    $scope.checkValidity(index);
   };
 
   $scope.defaultTypeahed = function(inputText) {
@@ -21,19 +21,41 @@ var InputBlockCtrl = function ($scope, $http, $dialog) {
         results = [];
       }
       inputObj.typeaheadResults = results;
-      inputObj.checkValidity();
+      $scope.checkValidity(index);
       return inputObj.typeaheadResults;
     });
   };
 
   $scope.typeaheadBlur = function(index) {
-    $scope.inputs[index].checkValidity();
+    $scope.checkValidity(index);
     $scope.inputs[index].cachedTypeaheadResults = $scope.inputs[index].typeaheadResults;
     $scope.inputs[index].typeaheadResults = [];
   };
 
   $scope.showAddEntity = function (index) {
     return $scope.inputs[index].typeahead && !$scope.inputs[index].selectedObj && $scope.inputs[index].value.length > 2 && $scope.inputs[index].typeaheadResults.length < 1;
+  };
+
+  $scope.checkValidity = function(index) {
+    var valid = false;
+    var results = $scope.inputs[index].typeaheadResults;
+
+    // we do some awkward thing with cached results to deal w/ a typahead timing issue
+    if ($scope.inputs[index].typeaheadResults.length == 0 && $scope.inputs[index].cachedTypeaheadResults && $scope.inputs[index].cachedTypeaheadResults.length > 0) {
+      results = $scope.inputs[index].cachedTypeaheadResults;
+    }
+    for (var i = 0; i < results.length; i++) {
+      if (results[i].name.toLowerCase() === $scope.inputs[index].value.toLowerCase()) {
+        $scope.inputs[index].selectedObj = results[i];
+        valid = true;
+        $scope.updateEnabled = true;
+        break;
+      } 
+    }
+    // reset selectedObj to null if we don't have a match
+    if (!valid) {
+      $scope.inputs[index].selectedObj = null;
+    }
   };
 
   $scope.addNewEntity = function(index) {
