@@ -1,1 +1,8 @@
 div#player
+div.player-controls
+  span(ng-click="toggleSlowMo()", ng-class="[]", ng-show="slowMotionAvailable", ng-cloak).icon-2x.icon-time.right.icon-button.play-control
+  //- span(ng-click="togglePlay()", ng-class="[playPauseButtonName]").icon-2x.play-control    
+  //- span()#scrubbar.nav.slider(load-scrub-bar)
+  //- //- div
+  //- //-   
+  //- //-   span(ng-click="toggleVolume()", ng-class="[volumeStateClass]").icon-2x.right.icon-button.play-control

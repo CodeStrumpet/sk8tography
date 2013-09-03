@@ -5,6 +5,7 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
   console.log("YoutubeVideoCtrl");
 
   $scope.playerIsReady = false;
+  $scope.slowMotionAvailable = false;
 
   $scope.$watch('playlist.items', function(newVal, oldVal) {
     if (newVal) {
@@ -94,6 +95,18 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
     return nextClip;
   };
 
+  $scope.toggleSlowMo = function() {
+    console.log("available playback rates:  " + JSON.stringify($scope.player.getAvailablePlaybackRates()));
+    if ($scope.player.getPlaybackRate() >= 1) {
+      $scope.player.setPlaybackRate(0.5);
+      $scope.slowMotionClasses = ["icon-enabled"];
+    } else {
+      $scope.player.setPlaybackRate(1.0);
+      $scope.slowMotionClasses = [];
+    }    
+  }
+
+
 
   $scope.checkCurrentTime = function () {
 
@@ -152,6 +165,10 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
   // this function is passed to the video player and will be called when the player is ready
   $scope.onPlayerReady = function (event) {
     $scope.playerIsReady = true;
+    $scope.slowMotionAvailable = $scope.player.getAvailablePlaybackRates().length > 1;
+    if ($scope.slowMotionAvailable) {
+      console.log("slowMotion is available");
+    }
   };
 
   // this function is passed to the video player and will be called when the player's state changes
