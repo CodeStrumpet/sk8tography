@@ -37,7 +37,7 @@ directive('youtubeVideoPlayer', function() {
     controller: YoutubeVideoCtrl,
     scope: {
       playlist : '=',   // array of clips
-      playState : '='  // {isPlaying : true, loopEnabled : true, playerState : "Buffering", currentTime : 103}
+      playstate : '='  // {isPlaying : true, loopEnabled : true, playerState : "Buffering", currentTime : 103}
     }
   };
 });
