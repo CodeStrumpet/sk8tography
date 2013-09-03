@@ -40,6 +40,13 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
     }
   }, true);
 
+  function getParameterByName(name, theUrl) {
+    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(theUrl);
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
   $scope.updateForPlaylistPositionChange = function(newVal) {    
    if (newVal >= 0 && $scope.playerIsReady) {
       console.log("playlistPosition changed: " + newVal);
@@ -47,22 +54,35 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
       if ($scope.playlist.items.length > newVal) {
         var clip = $scope.playlist.items[newVal];
 
-        
-        var videoInfo = {
-          videoId: clip.videoSegmentId,
-          startSeconds: clip.startTime,
-          //endSeconds : clip.startTime + clip.duration,            
-          suggestedQuality: 'default'
-        };
+        // check if we can just keep rolling or seek to a new spot in the same video
+        var canSeek = false;
+        var currVideoUrl = $scope.player.getVideoUrl();
+        if (currVideoUrl) {
+          var id = getParameterByName('v', currVideoUrl);
 
+          if (id === clip.videoSegmentId) {
+            canSeek = true;            
+          }
+        }
 
+        if (canSeek) {
 
-        // TODO: check if we can just keep rolling or seek to a new spot in the same video
+          $scope.player.seekTo(clip.startTime, true);
+          // have to set a timeout here because we won't receive a 'PLAYING' event
+          setTimeout($scope.checkCurrentTime, 100); // todo use settings val for timeout period
 
-        //cue clip here if necessary...       
-        $scope.player.cueVideoById(videoInfo);
+        } else {
 
-        //$scope.player.seekTo(clip.startTime, true);
+          var videoInfo = {
+            videoId: clip.videoSegmentId,
+            startSeconds: clip.startTime,
+            //endSeconds : clip.startTime + clip.duration,            
+            suggestedQuality: 'default'
+          };
+
+          //cue clip
+          $scope.player.cueVideoById(videoInfo);
+        }
       }
     }
   };
@@ -115,16 +135,17 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
             }
 
             if (!keepRolling) {
-              console.log("startTimeGap not close enough, pausing video");
-              $scope.player.pauseVideo();
                $scope.$apply(function(){
-                $scope.playlist.position = $scope.playlist.position + 1;
+                $scope.playlist.position = $scope.playlist.position + 1;                
               });
-              //$scope.updateForPlaylistPositionChange($scope.playlist.position);
             } else {
+              // we will keep rolling and thus must set the timeout manually because we won't get a 'PLAYING' event
               setTimeout($scope.checkCurrentTime, 100); // todo use settings val for timeout period
             }
           }
+        } else {
+          // TODO recue the current video
+          $scope.player.pauseVideo();
         }
 
         //$scope.cueClip($scope.currClip, false);
