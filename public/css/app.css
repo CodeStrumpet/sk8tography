@@ -203,6 +203,8 @@ table th, table td {
   top: 0;
   left:auto;
   width: 220px;
+  height: 500px;
+  overflow: scroll;
 }
 
 .container-fluid.details > .content {

@@ -2,6 +2,9 @@
 
 function DetailsCtrl($scope, $http, $timeout, $routeParams, $location, APIService, SearchContext, YoutubeService) {
 
+  // model objects (shared with youtube player directive)
+  $scope.playlist = {items: [], position: -1};
+  $scope.playstate = {isPlaying : false, keepPlaying : true, playUponCued : true};
 
   $scope.currSearch = SearchContext.currSearchContext;
 
@@ -36,8 +39,8 @@ function DetailsCtrl($scope, $http, $timeout, $routeParams, $location, APIServic
     clipsQuery.populate = "skaterRef tricks.trickTypeRef";
 
     // fetch the clips
-    $scope.clips = APIService.fetchItems(clipsQuery, true).then(function(clips) {
-      $scope.clips = clips;
+    APIService.fetchItems(clipsQuery, true).then(function(clips) {
+      $scope.playlist.items = clips;
 
       // if (clips.length > 0) {
       //   $timeout(function() {
@@ -69,8 +72,11 @@ function DetailsCtrl($scope, $http, $timeout, $routeParams, $location, APIServic
     return "<--->";
   };
 
-  $scope.selectClip = function(clip) {
-    
+  $scope.selectClip = function(clipIndex) {
+
+    $scope.playlist.position = clipIndex;
+
+    /*
     if ($scope.currClip && $scope.currClip != clip) {
       $scope.currClip.selected = false;
     }
@@ -78,5 +84,6 @@ function DetailsCtrl($scope, $http, $timeout, $routeParams, $location, APIServic
 
     $scope.currClip = clip;
     YoutubeService.cueClip(clip);
+    */
   };
 }

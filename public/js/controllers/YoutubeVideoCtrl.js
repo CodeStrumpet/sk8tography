@@ -133,14 +133,17 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
               // we will keep rolling and thus must set the timeout manually because we won't get a 'PLAYING' event
               setTimeout($scope.checkCurrentTime, 100); // todo use settings val for timeout period
             }
-          }
-        } else {
-          // TODO recue the current video
-          $scope.player.pauseVideo();
-        }
 
-        //$scope.cueClip($scope.currClip, false);
+            // we have queued our next clip one way or another, so we can return
+            return;
+          } 
+        } 
+        // there is no next video or 'keepPlaying' is not enabled
+        $scope.player.pauseVideo();
+        $scope.player.seekTo(currClip.startTime, true);
+        
       } else {
+        // set another timeout because we are not at the end of our clip
         setTimeout($scope.checkCurrentTime, 100); // todo use settings val for timeout period
       }              
     }

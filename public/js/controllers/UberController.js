@@ -4,7 +4,6 @@ function UberController($scope, APIService) {
 
   // model objects (shared with youtube player directive)
   $scope.playlist = {items: [], position: -1};
-
   $scope.playstate = {isPlaying : false, keepPlaying : true, playUponCued : true};
 
 
@@ -33,8 +32,7 @@ function UberController($scope, APIService) {
     });
   };
 
-  $scope.selectClip = function(clipIndex) {
-    console.log("clip index chosen: " + clipIndex);
+  $scope.selectClip = function(clipIndex) {    
     $scope.playlist.position = clipIndex;
   };
 
