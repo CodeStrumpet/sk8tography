@@ -1,0 +1,20 @@
+div.container-fluid
+  div.row-fluid
+    div.sidebar-nav.left
+      div.thumbnail
+        h2 Left sidebar        
+
+    div.sidebar-nav.right
+      table.table
+        tr(ng-repeat="clip in playlist.items", mouseover="activeclip", ng-class="clip.selected ? 'selectedclip' : ''", ng-click="selectClip($index)")
+          td
+            img(src="{{'./images/' + clip.thumbFileName}}")
+          td
+            p(ng-repeat="trick in clip.tricks")
+              {{trick.trickTypeRef.name}}
+    div.content.fixed-fixed
+      div
+        youtube-video-player(playlist="playlist", playState="playState")
+      div.well
+        h3 sub-player
+

@@ -16,6 +16,10 @@ var app = angular.module('myApp', ['ui.bootstrap', 'ngCookies', 'myApp.filters',
         templateUrl: 'partials/details',
         controller: DetailsCtrl
       }).
+      when('/new', {
+        templateUrl: 'partials/uber',
+        controller: UberController
+      }).
       when('/tricks/:entityId', {
         templateUrl: 'partials/details',
         controller: DetailsCtrl
