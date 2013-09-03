@@ -12,21 +12,7 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
     }
   });
 
-  $scope.$watch('playstate.isPlaying', function(newVal, oldVal) {
-    if (typeof(newVal) != 'undefined' ) {
-      console.log("playstate.isPlaying changed: " + JSON.stringify(newVal));      
-      if ($scope.playerIsReady) {
-        if (newVal) { // isPlaying = true
-          $scope.player.playVideo();
-        } else { // isPlaying = false
-          $scope.player.pauseVideo();
-        }
-      }
-    }
-  });
-
   $scope.$watch('playlist.position', function(newVal, oldVal) {
-    console.log("playlist position");
 
     if (typeof(newVal) != 'undefined') {
 
@@ -82,6 +68,11 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
 
           //cue clip
           $scope.player.cueVideoById(videoInfo);
+          if ($scope.playstate.playUponCued) {
+            console.log("playing video...");            
+            $scope.player.playVideo();
+          }
+
         }
       }
     }
@@ -121,7 +112,7 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
             var keepRolling = false;
             if (nextClip.videoSegmentId === currClip.videoSegmentId) {
               var startTimeGap = nextClip.startTime - (currClip.startTime + currClip.duration);
-              console.log("nextClip.startTime: " + nextClip.startTime + "  currClip.startTime: " + currClip.startTime + "  currClip.duration: " + currClip.duration);
+              //console.log("nextClip.startTime: " + nextClip.startTime + "  currClip.startTime: " + currClip.startTime + "  currClip.duration: " + currClip.duration);
 
               if (startTimeGap >= 0 && startTimeGap < 4) {
                 // just keep rolling, increment playlist position
