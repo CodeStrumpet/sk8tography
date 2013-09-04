@@ -98,13 +98,17 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
   $scope.toggleSlowMo = function() {
     console.log("available playback rates:  " + JSON.stringify($scope.player.getAvailablePlaybackRates()));
     if ($scope.player.getPlaybackRate() >= 1) {
-      $scope.player.setPlaybackRate(0.5);
+      $scope.player.setPlaybackRate(0.25);
       $scope.slowMotionClasses = ["icon-enabled"];
     } else {
       $scope.player.setPlaybackRate(1.0);
       $scope.slowMotionClasses = [];
     }    
-  }
+  };
+
+  $scope.toggleKeepPlaying = function() {
+    $scope.playstate.keepPlaying = !$scope.playstate.keepPlaying;
+  };
 
 
 
