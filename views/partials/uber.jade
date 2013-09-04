@@ -30,7 +30,15 @@ div.container-fluid
     div.content.fixed-fixed
       div
         youtube-video-player(playlist="playlist", playstate="playstate")
-      div.well
+      div.well.scroller-table
+        div.outer
+          div.inner
+            table.table
+              tr
+                td(ng-repeat="clip in playlist.items")
+                  img(src="{{'./images/' + clip.thumbFileName}}")
+
+
         h2 {{playlist.items[playlist.position].skaterRef.name}}
         div(ng-repeat="trick in playlist.items[playlist.position].tricks")
             h3 {{trick.trickTypeRef.name}}

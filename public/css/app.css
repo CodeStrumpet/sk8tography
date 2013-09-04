@@ -230,6 +230,38 @@ table th, table td {
   margin: 0 320px;
 }
 
+/**************************************************
+  Uber Page
+**************************************************/
+
+.scroller-table table {
+  table-layout: fixed; 
+  width: 100%;
+  *margin-left: -100px;/*ie7*/
+}
+.scroller-table td, .scroller-table th {
+  vertical-align: top;
+  border-top: 1px solid #ccc;
+  padding:10px;
+  width:100px;
+}
+.scroller-table th {
+  position:absolute;
+  *position: relative; /*ie7*/
+  left:0; 
+  width:100px;
+}
+.outer {
+  position:relative
+}
+
+.inner {
+  overflow-x:scroll;
+  overflow-y:visible;
+  width:750px; 
+  margin-left:100px;
+}
+
 
 /**************************************************
   Videoconsole & tag clips page styles
