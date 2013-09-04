@@ -668,6 +668,53 @@ exports.processVideoSegment = function(req, res) {
   });
 };
 
+function modelForObjType(objType) {
+
+  if (objType === consts.ObjType.CLIP) {
+    return Clip;
+  } 
+  return null;
+}
+
+exports.likeItem = function(req, res) {
+  var objId = req.body.objId;
+  var objType = req.body.objType;
+  var userId = req.body.userId;
+
+  var model = modelForObjType(objType);
+
+  model.findOne({_id: objId}, function(err,obj) {
+    if (err) {
+      res.json({
+        error : err
+      });
+    } else {
+      if (obj.votes.indexOf(userId) >= 0) {
+        console.log("user id was found, not allowing the vote...");
+        res.json({
+          error : "user already voted"
+        });
+      } else {
+
+        obj.score++;
+        obj.votes.push(mongoose.Types.ObjectId(userId));
+        obj.save(function (err) {
+          if (err) {
+            res.json({
+              error : err
+            });
+          } else {
+            res.json({
+              score : obj.score
+            });
+          }
+        });        
+      }
+    }
+  });
+};
+
+
 
 exports.updateClip = function(req, res) {
   var clip = req.body.clip;

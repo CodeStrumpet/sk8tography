@@ -1,6 +1,12 @@
 
 div.container-fluid.page
+  //div#main.row-fluid
+    
   div#main.row-fluid
+    //- span.span4
+    //-   h2 {{playlist.items[playlist.position].skaterRef.name}}
+    //-   div(ng-repeat="trick in playlist.items[playlist.position].tricks")
+    //-     h3 {{trick.trickTypeRef.name}}
     div
       youtube-video-player(playlist="playlist", playstate="playstate")
     div.well.scroller-table
@@ -10,12 +16,8 @@ div.container-fluid.page
             tr
               td(ng-repeat="clip in playlist.items", mouseover="activeclip", ng-class="playlist.position == $index ? 'selectedclip' : ''", ng-click="selectClip($index)")
                 img(src="{{'./images/' + clip.thumbFileName}}")
-
-
-        h2 {{playlist.items[playlist.position].skaterRef.name}}
-        div(ng-repeat="trick in playlist.items[playlist.position].tricks")
-            h3 {{trick.trickTypeRef.name}}
-  div#side
+              
+  div#side.row-fluid
     span.input-append.btn-group.dropdown
       input(id="appendedInputButton", 
         ng-model="currSearch.searchText",
@@ -23,20 +25,26 @@ div.container-fluid.page
         placeholder="Choose Skater",
         typeahead="value.name for value in skaterTypeahead($viewValue)", 
         typeahead-on-select='skaterSelected($item)',
-        on-blur="skatersTypeaheadBlur($index)").span3
+        on-blur="skatersTypeaheadBlur($index)").span12
       a(href="#", data-toggle="dropdown").btn.btn-primary.dropdown-toggle
         span.caret
       ul.dropdown-menu
         li(ng-repeat="skater in skaters")
           a(ng-click="updateClipsWithSkaterChoice(skater)") {{skater.name}}
-    table.table
-      tr(ng-repeat="clip in searchClips", mouseover="activeclip", ng-class="playlist.position == $index ? 'selectedclip' : ''", ng-click="playSearchResult($index)")
-        td.add-button-column 
-          span(ng-click="addClipToPlaylist(clip); $event.stopPropagation();").icon-plus-sign.icon-3x.addVideoControl
-        td            
-          img(src="{{'./images/' + clip.thumbFileName}}")
+    div.sidebar-contents
+      table.table
+        tr(ng-repeat="clip in searchClips", mouseover="activeclip", ng-click="playSearchResult($index)")
+          td.add-button-column 
+            span(ng-click="addClipToPlaylist(clip); $event.stopPropagation();").icon-plus-sign.icon-3x.addVideoControl
+            div(style="text-align: center;")
+              span(ng-click="likeClip(clip); $event.stopPropagation();", ng-class="clip.votes.indexOf(currentUserId) >= 0 ? 'already-voted' : ''").icon-chevron-up.icon-2x.addVideoControl
+              h3(ng-show="clip.score > 0", ng-click="likeClip(clip); $event.stopPropagation();").addVideoControl {{clip.score}}
+              h5(ng-show="!clip.score || clip.score == 0", ng-click="likeClip(clip); $event.stopPropagation();").addVideoControl LIKE
+          td
+            div       
+              img(src="{{'./images/' + clip.thumbFileName}}")
 
-        td
-          p(ng-repeat="trick in clip.tricks")
-            {{trick.trickTypeRef.name}}
-      
+          td
+            p(ng-repeat="trick in clip.tricks")
+              {{trick.trickTypeRef.name}}
+        

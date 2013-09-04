@@ -9,7 +9,7 @@ module.exports = function() {
 
   var taggableObjectSchema = new Schema({
     score: {type: Number, default: 0},
-    votes: [User.schema],
+    votes: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     tags: [Tag.schema],
     edits: [{ type: Schema.Types.ObjectId, ref: 'UserEdit' }]
 	});

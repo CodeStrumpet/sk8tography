@@ -256,6 +256,7 @@ table th, table td {
   left:0; 
   width:100px;
 }
+
 .outer {
   position:relative
 }
@@ -288,11 +289,25 @@ table th, table td {
 #main {
 
 }
+
 #side {
 
     -webkit-flex: 0 0 375px;
     -moz-flex: 0 0 375px;
-    flex: 0 0 375px;
+    flex: 0 0 375px;    
+}
+
+.sidebar-contents {
+  height:500px;    
+  overflow: scroll;
+}
+
+.player-div {
+  width: 700px;
+}
+
+.already-voted {
+  color: orange;
 }
 
 /**************************************************

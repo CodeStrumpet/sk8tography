@@ -151,6 +151,7 @@ app.get('/partials/:name', routes.partials);
 app.put('/api/processVideoSegment', api.processVideoSegment);
 app.put('/api/updateClip', api.updateClip);
 app.put('/api/fetchResults', api.fetchResults);
+app.put('/api/likeItem', api.likeItem);
 app.get('/api/videoSegments', api.videoSegments);
 app.get('/api/clips', api.clips);
 app.get('/api/videos', api.videos);

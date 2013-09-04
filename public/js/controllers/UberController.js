@@ -1,7 +1,9 @@
 'use strict';
 
-function UberController($scope, $http, $timeout, $routeParams, $location, $parse, APIService, SearchContext, YoutubeService) {
+function UberController($scope, $http, $timeout, $routeParams, $location, $parse, APIService, SearchContext, YoutubeService, UserService) {
+  var consts = window.Constantsinople;
 
+  $scope.currentUserId = UserService.userId(); // this may not be so current if the user logs out...
 
   // model objects (shared with youtube player directive)
   $scope.playlist = {items: [], position: -1};
@@ -66,6 +68,39 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
     }
   };
 
+  $scope.likeClip = function(clip) {
+
+    // TODO pull most of this out into a service....
+
+    if (clip.votes && clip.votes.indexOf($scope.currentUserId == -1)) {
+      // return. user already has liked the object
+      return;
+    }
+
+    if (!clip.score) {
+      clip.score = 1;
+    } else {
+      clip.score++;
+    } 
+    var queryObj = {
+      objId : clip._id,
+      objType : consts.ObjType.CLIP,
+      userId : $scope.currentUserId
+    };
+    console.log("about to make like request");
+    $http.put('/api/likeItem', queryObj).then(function(response) {
+      if (response.data.error) {
+        console.log("error: " + JSON.stringify(response.data.error));
+      } else {
+        console.log("response: " + response.data)
+        if (!clip.votes) {
+          clip.votes = [];
+        } 
+        clip.votes.push($scope.currentUserId);
+      }
+    });
+  };
+
 
   $scope.sliderItemLabel = function(item) {
     if (item.name) {
@@ -115,6 +150,7 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
 
   $scope.playSearchResult = function(searchResultIndex) {
     console.log("play search result");
+    
   };
 
   $scope.selectClip = function(clipIndex) {

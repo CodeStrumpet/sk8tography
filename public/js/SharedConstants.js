@@ -3,6 +3,21 @@ var scope = typeof exports != 'undefined' ? exports : window;
 
 scope.Constantsinople = {};
 
+scope.Constantsinople.ObjType = {
+	BRAND : "BRAND",
+	CLIP : "CLIP",
+	FEEDBACK : "FEEDBACK",
+	SKATER : "SKATER",
+	SPOT : "SPOT",
+	TAG : "TAG",
+	TRICK : "TRICK",
+	TRICK_TYPE : "TRICK_TYPE",
+	USER : "USER",
+	USER_EDIT : "USER_EDIT",
+	VIDEO : "VIDEO",
+	VIDEO_SEGMENT : "VIDEO_SEGMENT"
+};
+
 scope.Constantsinople.Stance = {
 	UNKNOWN : 0x0,
 	NATURAL : 0x1,
