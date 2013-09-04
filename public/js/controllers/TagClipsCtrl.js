@@ -374,7 +374,6 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService, UserSer
           $scope.clips[$scope.currClipIndex] = data.clip;        
 
           console.log("updateClip returned success.");
-          console.log(data.clip);
         }
       });
     }

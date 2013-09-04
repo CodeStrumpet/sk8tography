@@ -1,10 +1,25 @@
+
 div.container-fluid
   div.row-fluid
     div.sidebar-nav.left
       div.thumbnail
-        h2 Left sidebar        
+        h2 {{currSearch.item.name}}
+        img(src="./images/{{currSearch.item.thumbFileName}}")
 
     div.sidebar-nav.right
+      span.input-append.btn-group.dropdown
+        input(id="appendedInputButton", 
+          ng-model="currSearch.searchText",
+          type="text",
+          placeholder="Choose Skater",
+          typeahead="value.name for value in skaterTypeahead($viewValue)", 
+          typeahead-on-select='skaterSelected($item)',
+          on-blur="skatersTypeaheadBlur($index)").span12
+        a(href="#", data-toggle="dropdown").btn.btn-primary.dropdown-toggle
+          span.caret
+        ul.dropdown-menu
+          li(ng-repeat="skater in skaters")
+            a(ng-click="updateClipsWithSkaterChoice(skater)") {{skater.name}}
       table.table
         tr(ng-repeat="clip in playlist.items", mouseover="activeclip", ng-class="playlist.position == $index ? 'selectedclip' : ''", ng-click="selectClip($index)")
           td
@@ -16,5 +31,6 @@ div.container-fluid
       div
         youtube-video-player(playlist="playlist", playstate="playstate")
       div.well
-        h3 sub-player
-
+        h2 {{playlist.items[playlist.position].skaterRef.name}}
+        div(ng-repeat="trick in playlist.items[playlist.position].tricks")
+            h3 {{trick.trickTypeRef.name}}
