@@ -46,7 +46,7 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
 
     // fetch the clips
     APIService.fetchItems(clipsQuery, true).then(function(clips) {
-      $scope.playlist.items = clips;
+      $scope.searchClips = clips;
 
       // if (clips.length > 0) {
       //   $timeout(function() {
@@ -58,6 +58,13 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
 
   // call refresh results with current context
   $scope.refreshResults($scope.currSearch);
+
+  $scope.addClipToPlaylist = function(clip) {
+    if ($scope.playlist.items.indexOf(clip) == -1) {
+      console.log("added item to playlist...");
+      $scope.playlist.items.push(clip);
+    }
+  };
 
 
   $scope.sliderItemLabel = function(item) {
@@ -105,6 +112,10 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
 
     $scope.refreshResults($scope.currSearch);    
   }
+
+  $scope.playSearchResult = function(searchResultIndex) {
+    console.log("play search result");
+  };
 
   $scope.selectClip = function(clipIndex) {
 
