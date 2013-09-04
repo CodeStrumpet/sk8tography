@@ -43,7 +43,7 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
     }
 
     clipsQuery.conditions = conditions;
-    clipsQuery.select = "duration thumbFileName skaterRef tricks videoSegmentId startTime";
+    clipsQuery.select = "duration thumbFileName skaterRef tricks videoSegmentId startTime score votes";
     clipsQuery.populate = "skaterRef tricks.trickTypeRef";
 
     // fetch the clips
@@ -72,7 +72,7 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
 
     // TODO pull most of this out into a service....
 
-    if (clip.votes && clip.votes.indexOf($scope.currentUserId == -1)) {
+    if (clip.votes && clip.votes.indexOf($scope.currentUserId) >= 0) {
       // return. user already has liked the object
       return;
     }
@@ -87,7 +87,6 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
       objType : consts.ObjType.CLIP,
       userId : $scope.currentUserId
     };
-    console.log("about to make like request");
     $http.put('/api/likeItem', queryObj).then(function(response) {
       if (response.data.error) {
         console.log("error: " + JSON.stringify(response.data.error));
