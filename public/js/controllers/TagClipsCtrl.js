@@ -1,6 +1,6 @@
 'use strict'
 
-function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
+function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService, UserService) {
 
   var consts = window.Constantsinople;
 
@@ -332,6 +332,7 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
       $scope.errors.push({type: 'error', msg: "invalid skater: " + $scope.skaterInput.value});
     } else if (clip.skaterRef != $scope.skaterInput.selectedObj._id) {
       console.log("skater ref mismatch");
+
       if ($scope.skaterInput.selectedObj) {
         clip.skaterRef = $scope.skaterInput.selectedObj._id;
         console.log("new skater!");
@@ -352,9 +353,15 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
       }
     }
 
+    if (!UserService.userId()) {
+      $scope.errors.push({type: 'error', msg: "Login necessary."});
+    }
+
     if ($scope.errors.length == 0) {
 
       clip.tricks = clipTricks;
+      console.log("UserService.userId: " + UserService.userId());
+      clip.editUserRef = UserService.userId();
 
       $http.put('/api/updateClip', {clip: clip}).
       success(function(data) {
@@ -367,6 +374,7 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService) {
           $scope.clips[$scope.currClipIndex] = data.clip;        
 
           console.log("updateClip returned success.");
+          console.log(data.clip);
         }
       });
     }

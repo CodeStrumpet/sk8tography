@@ -39,6 +39,10 @@ var InputBlockCtrl = function ($scope, $http, $dialog) {
   $scope.checkValidity = function(index) {
     var valid = false;
     var results = $scope.inputs[index].typeaheadResults;
+    if (!results) {
+      console.log("checkValidity called on an input without typeahead");
+      return;
+    }
 
     // we do some awkward thing with cached results to deal w/ a typahead timing issue
     if ($scope.inputs[index].typeaheadResults.length == 0 && $scope.inputs[index].cachedTypeaheadResults && $scope.inputs[index].cachedTypeaheadResults.length > 0) {

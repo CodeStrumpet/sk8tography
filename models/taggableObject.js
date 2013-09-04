@@ -16,3 +16,14 @@ module.exports = function() {
 
   mongoose.model("TaggableObject", taggableObjectSchema);
 };
+
+
+/* 
+
+taggableObjectUpdate = {
+  newVotes: [userRefs...],
+  
+
+}
+
+*/

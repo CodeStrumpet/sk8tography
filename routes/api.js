@@ -11,6 +11,8 @@ var User = mongoose.model("User");
 var TrickType = mongoose.model("TrickType");
 var Feedback = mongoose.model("Feedback");
 var Trick = mongoose.model("Trick");
+var Tag = mongoose.model("Tag");
+var UserEdit = mongoose.model("UserEdit");
 
 var videoHelper = require('../helpers/video');
 
@@ -697,6 +699,22 @@ exports.updateClip = function(req, res) {
             }
           }
         });
+      }
+
+      console.log("editUserRef: " + JSON.stringify(clip.editUserRef));
+
+      if (clip.editUserRef) {
+
+        // should we check if the userRef is valid or something? Maybe in the objectId creation part??                
+
+        //var feedbackObj = req.body.feedback;
+        var userObjId = mongoose.Types.ObjectId(clip.editUserRef);
+        var userEditObj = {editUser : userObjId};
+
+        var newUserEdit = new UserEdit(userEditObj);
+        dbClip.edits.push(newUserEdit);
+
+        console.log("added a userEdit to dbClip.edits");
       }
 
 
