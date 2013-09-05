@@ -8,10 +8,14 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
   $scope.slowMotionAvailable = false;
 
   $scope.$watch('playlist.items', function(newVal, oldVal) {
-    if (newVal) {
-      console.log("playlist value changed: " + newVal.length);      
+    if (newVal && oldVal) {
+      if (oldVal.length == 0 && newVal.length == 1) {
+        console.log("added the first item");
+        $scope.playstate.playUponCued = false;
+        $scope.playlist.position = 0;
+      }
     }
-  });
+  }, true);
 
   $scope.$watch('playlist.position', function(newVal, oldVal) {
 
@@ -63,11 +67,17 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
         }
 
         if (canSeek) {
-
           $scope.player.seekTo(clip.startTime, true);
-          // have to set a timeout here because we won't receive a 'PLAYING' event
-          setTimeout($scope.checkCurrentTime, 100); // todo use settings val for timeout period
 
+          if ($scope.player.getPlayerState() == YT.PlayerState.PLAYING) {
+            // have to set a timeout here because we won't receive a 'PLAYING' event
+            setTimeout($scope.checkCurrentTime, 100); // todo use settings val for timeout period
+          } else {
+            if ($scope.playstate.playUponCued) {
+              $scope.player.playVideo();
+            }
+          }          
+          
         } else {
 
           var videoInfo = {
@@ -128,6 +138,13 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
     $scope.playstate.keepPlaying = !$scope.playstate.keepPlaying;
   };
 
+  $scope.togglePlay = function() {
+    if ($scope.player.getPlayerState() == YT.PlayerState.PLAYING) {
+      $scope.player.pauseVideo();
+    } else {
+      $scope.player.playVideo();
+    }
+  };
 
 
   $scope.checkCurrentTime = function () {

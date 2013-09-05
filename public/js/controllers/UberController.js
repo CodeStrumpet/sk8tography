@@ -167,8 +167,14 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
   };
 
   $scope.selectClip = function(clipIndex) {
+    if (clipIndex = $scope.playlist.postion) {
+      // toggle playstate of that clip...
+      console.log("somehow activate toggle play pause of the current clip...");
+    } else {
+      $scope.playstate.playUponCued = true;
+      $scope.playlist.position = clipIndex;
+    };
 
-    $scope.playlist.position = clipIndex;
 
     /*
     if ($scope.currClip && $scope.currClip != clip) {

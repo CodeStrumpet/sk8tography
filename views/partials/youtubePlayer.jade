@@ -1,5 +1,6 @@
-div#player
-div.player-controls  
+div()#player
+div.player-controls
+  //span(ng-click="togglePlay()").icon-4x.left.icon-youtube-play  
   span(ng-click="toggleKeepPlaying()", ng-class="[]").icon-2x.icon-retweet.right.icon-button.play-control
   span(ng-click="toggleSlowMo()", ng-class="[]", ng-show="slowMotionAvailable", ng-cloak).icon-2x.icon-time.right.icon-button.play-control
   //- span(ng-click="togglePlay()", ng-class="[playPauseButtonName]").icon-2x.play-control    
