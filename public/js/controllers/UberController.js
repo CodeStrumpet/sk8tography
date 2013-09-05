@@ -161,6 +161,8 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
 
   $scope.playSearchResult = function(searchResultIndex) {
     console.log("play search result");
+
+    $scope.playlist.temp = $scope.searchClips[searchResultIndex];
     
   };
 

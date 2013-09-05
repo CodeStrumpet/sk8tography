@@ -22,10 +22,19 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
         $scope.playlist.ignorePositionChange = false;
         return;
       }
+      // clear out temp item...
+      $scope.playlist.temp = null; 
 
-      $scope.updateForPlaylistPositionChange(newVal);
+      $scope.updateForPlaylistPositionChange();
     }
   }, true);
+
+  $scope.$watch('playlist.temp', function(newVal, oldVal) {
+
+    if (typeof(newVal) != 'undefined') {
+      $scope.updateForPlaylistPositionChange();    
+    }       
+  });
 
   function getParameterByName(name, theUrl) {
     name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -34,12 +43,13 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
     return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-  $scope.updateForPlaylistPositionChange = function(newVal) {    
-   if (newVal >= 0 && $scope.playerIsReady) {
-      console.log("playlistPosition changed: " + newVal);
+  $scope.updateForPlaylistPositionChange = function() {    
+   if ($scope.playerIsReady) {
+      //console.log("playlistPosition changed: " + newVal);
 
-      if ($scope.playlist.items.length > newVal) {
-        var clip = $scope.playlist.items[newVal];
+      var clip = $scope.currentClip();
+
+      if (clip) {
 
         // check if we can just keep rolling or seek to a new spot in the same video
         var canSeek = false;
@@ -81,6 +91,10 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
 
   $scope.currentClip = function() {
     var currClip = null;
+    if ($scope.playlist.temp) {
+      return $scope.playlist.temp;
+    }
+
     if ($scope.playlist.items && $scope.playlist.position >= 0 && $scope.playlist.items.length > $scope.playlist.position) {
       currClip = $scope.playlist.items[$scope.playlist.position];
     }
@@ -88,6 +102,10 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
   };
 
   $scope.nextClip = function() {
+    if ($scope.playlist.temp) {
+      return null;
+    }
+
     var nextClip = null;
     if ($scope.playlist.items && $scope.playlist.position >= 0 && $scope.playlist.items.length > $scope.playlist.position + 1) {
       nextClip = $scope.playlist.items[$scope.playlist.position + 1];
