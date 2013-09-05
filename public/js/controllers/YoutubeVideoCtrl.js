@@ -19,11 +19,15 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
 
   $scope.$watch('playlist.position', function(newVal, oldVal) {
 
+
     if (typeof(newVal) != 'undefined') {
+
+      $scope.playlist.temp = null;
 
       // use this to programmatically set playlist position values
       if ($scope.playlist.ignorePositionChange) {
         $scope.playlist.ignorePositionChange = false;
+        console.log("ignoring playlist position change");
         return;
       }
       // clear out temp item...
@@ -36,6 +40,8 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
   $scope.$watch('playlist.temp', function(newVal, oldVal) {
 
     if (typeof(newVal) != 'undefined') {
+      console.log("observed a temp video change");
+      $scope.playstate.playUponCued = true;
       $scope.updateForPlaylistPositionChange();    
     }       
   });
