@@ -5,8 +5,10 @@ var app = angular.module('myApp', ['ui.bootstrap', 'ngCookies', 'myApp.filters',
   config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
     $routeProvider.
       when('/', {
-        templateUrl: 'partials/index',
-        controller: IndexCtrl
+        templateUrl: 'partials/uber',
+        controller: UberController
+        //templateUrl: 'partials/index',
+        //controller: IndexCtrl
       }).
       when('/demoauth', {
         templateUrl: 'partials/demoAuth',

@@ -68,6 +68,13 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
     }
   };
 
+  $scope.removeClipFromPlaylist = function(clip) {
+    var clipIndex = $scope.playlist.items.indexOf(clip);
+    if (clipIndex >= 0) {
+      $scope.playlist.items.remove(clipIndex);
+    }
+  };
+
   $scope.likeClip = function(clip) {
 
     // TODO pull most of this out into a service....
@@ -129,10 +136,13 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
 
   $scope.skaterSelected = function(skater) {
 
+
     $scope.currSearch.type = "Skater";
     $scope.currSearch.item = skater;
 
     $scope.refreshResults($scope.currSearch);
+
+    $scope.searchText = skater.name;
   };
 
   $scope.skatersTypeaheadBlur = function(index) {
@@ -144,7 +154,9 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
     $scope.currSearch.type = "Skater";
     $scope.currSearch.item = skater;
 
-    $scope.refreshResults($scope.currSearch);    
+    $scope.refreshResults($scope.currSearch); 
+
+    $scope.searchText = skater.name;   
   }
 
   $scope.playSearchResult = function(searchResultIndex) {

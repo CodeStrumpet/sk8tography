@@ -250,6 +250,10 @@ table th, table td {
   width: 50px;
 }
 
+.like-button-column {
+  width: 50px;
+}
+
 .scroller-table th {
   position:absolute;
   *position: relative; /*ie7*/
@@ -314,6 +318,15 @@ table th, table td {
 .already-voted {
   color: orange;
 }
+
+.delete-playlist-item { 
+  color: red;
+  display: none;
+  position: absolute; 
+
+}
+
+
 
 /**************************************************
   Videoconsole & tag clips page styles
