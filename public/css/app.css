@@ -323,6 +323,10 @@ table th, table td {
 }
 
 
+.buffered-player {
+  display: none;
+}
+
 
 /**************************************************
   Videoconsole & tag clips page styles

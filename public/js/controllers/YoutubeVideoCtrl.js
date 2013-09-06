@@ -4,10 +4,13 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
 
   console.log("YoutubeVideoCtrl");
 
+
   $scope.playerIsReady = false;
   $scope.slowMotionAvailable = false;
+  $scope.players = [];
 
   $scope.$watch('playlist.items', function(newVal, oldVal) {
+
     if (newVal && oldVal) {
       if (oldVal.length == 0 && newVal.length == 1) {
         console.log("added the first item");
@@ -216,36 +219,48 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
     }
   };
 
-  // this function is passed to the video player and will be called when the player's state changes
-  $scope.onPlayerStateChange = function(event) {
-    var stateName = "";
-    switch(event.data) {
-      case -1:
-        stateName = "UNSTARTED";
-        break;
-      case YT.PlayerState.ENDED:
-        stateName = "ENDED";
-        break;
-      case YT.PlayerState.PLAYING:
-        stateName = "PLAYING";
-        // start monitoring the clip duration
-        $scope.checkCurrentTime();
-        break;
-      case YT.PlayerState.PAUSED:
-        stateName = "PAUSED";
-        break;
-      case YT.PlayerState.BUFFERING:
-        stateName = "BUFFERING";
-        break;
-      case YT.PlayerState.CUED:
-        stateName = "CUED";
-        if ($scope.playstate.playUponCued) {
-          $scope.player.playVideo();
+  $scope.initPlayers = function() {
+    var numPlayers = 8;
+    for (var i = 0; i < numPlayers; i++) {
+
+      var stateChangeFn = function(event) {
+        var stateName = "";
+        switch(event.data) {
+          case -1:
+            stateName = "UNSTARTED";
+            break;
+          case YT.PlayerState.ENDED:
+            stateName = "ENDED";
+            break;
+          case YT.PlayerState.PLAYING:
+            stateName = "PLAYING";
+            // start monitoring the clip duration
+            $scope.checkCurrentTime();
+            break;
+          case YT.PlayerState.PAUSED:
+            stateName = "PAUSED";
+            break;
+          case YT.PlayerState.BUFFERING:
+            stateName = "BUFFERING";
+            break;
+          case YT.PlayerState.CUED:
+            stateName = "CUED";
+            if ($scope.playstate.playUponCued) {
+              $scope.player.playVideo();
+            }
+            break;
+          default:
+            stateName = "UNKNOWN";
         }
-        break;
-      default:
-        stateName = "UNKNOWN";
+        console.log("YT.PlayerState:  " + stateName);
+      };
+
+      $scope.players.push({stateChange : stateChangeFn});
     }
-    console.log("YT.PlayerState:  " + stateName);
-  }
+
+  };
+
+
+  $scope.initPlayers();
+
 }
