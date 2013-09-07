@@ -1,0 +1,618 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        <title>jshashtable, a JavaScript hash table</title>
+        <meta name="author" content="Tim Down - tim@timdown.co.uk">
+        <meta name="keywords" content="hashtable, hash, JavaScript, ECMAScript, JScript, hashmap, hashset, hashcode">
+        <meta name="description" content="jshashtable, a JavaScript hash table implementation">
+        <meta name="robots" content="all">
+        <link rel="stylesheet" type="text/css" href="main.css" title="Default">
+    </head>
+    <body>
+        <div id="container" class="nonav">
+            <div id="header">
+                <h1>jshashtable 3.0</h1>
+                <div id="nav">
+                    <span class="navitem">home</span>
+                    | <a class="navitem" href="http://code.google.com/p/jshashtable/downloads/list"
+                         title="Download">download</a>
+                    | <a class="navitem" href="http://www.timdown.co.uk/jshashtable">website</a>
+                    | <a class="navitem" href="http://www.timdown.co.uk">timdown.co.uk</a>
+                </div>
+            </div>
+            <div id="content">
+                <h1>jshashtable 3.0</h1>
+                <div id="toc">
+                    <h2>Contents</h2>
+                    <ul>
+                        <li><a href="#intro">Introduction</a></li>
+                        <li><a href="#setup">Set-up</a></li>
+                        <li><a href="#usage">Usage</a></li>
+                        <li><a href="#api">Public API</a></li>
+                    </ul>
+                </div>
+                <div id="intro">
+                    <h2>Introduction</h2>
+                    <p>
+                        <span class="jsh">jshashtable</span> is a JavaScript implementation of a hash table. It
+                        associates objects ("keys") with other objects ("values"). Each key is associated with precisely
+                        one value. "Objects" here is used loosely to mean any JavaScript object or value.
+                    </p>
+                    <p>
+                        Version 3.0 of <span class="jsh">jshashtable</span> includes new <code>equals()</code> and
+                        <code>toQueryString()</code> methods, switches to using an options object in the constructor,
+                        adds an option to control what happens when <code>put()</code> is called with a duplicate key
+                        and fixes some obscure bugs. Version 3 also drops support for IE 5.0 on Windows in order to
+                        minimize file size. IE 5.5 and later are still supported.
+                    </p>
+                    <p>
+                        Version 3.0 also includes <a href="jshashset.html">jshashset</a>, a JavaScript HashSet
+                        implementation, similar in concept to those found in Java or C#'s standard libraries, using the
+                        keys of a jshashtable hash table as the underlying set. It was previously available as a
+                        separate download for version 2.1.
+                    </p>
+                    <p class="linktotop">
+                        <a href="#container">Top</a>
+                    </p>
+                </div>
+                <div id="setup">
+                    <h2>Set-up</h2>
+                    <ol>
+                        <li>
+                            <h3>Download the code</h3>
+                            <p>
+                                <strong><a href="http://code.google.com/p/jshashtable/downloads/list"
+                                           title="Download">Download jshashtable</a></strong>.
+                                You can download a compressed or uncompressed version of <code>jshashtable.js</code>
+                                which are functionally identical or a zip containing all JavaScript files plus all
+                                documentation.
+                            </p>
+                        </li>
+                        <li>
+                            <h3>Include jshashtable in your page</h3>
+                            <p>
+                                Include <code>jshashtable.js</code> in a script tag in your page. This file creates one
+                                object in the global scope, which is <code>Hashtable</code>.
+                            </p>
+                        </li>
+                        <li>
+                            <h3>Create your hash table</h3>
+                            <p>
+                                Create your hash table, as in the example below. Any non-null, non-undefined JavaScript
+                                value can be used as a key or a value.
+                            </p>
+                    <pre class="code">
+&lt;script type="text/javascript" src="jshashtable.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript"&gt;
+    var typesHash = new Hashtable();
+
+    typesHash.put("A string", "string");
+    typesHash.put(1, "number");
+
+    var o = {};
+    typesHash.put(o, "object");
+
+    alert( typesHash.get(o) ); // "object"
+&lt;/script&gt;
+</pre>
+                        </li>
+                    </ol>
+                    <p class="linktotop">
+                        <a href="#container">Top</a>
+                    </p>
+                </div>
+                <div id="usage">
+                    <h2>Usage</h2>
+                    <p>
+                        The code is contained in one JavaScript file, which creates a single constructor function called
+                        <code>Hashtable</code> in the global scope.
+                    </p>
+                    <h3>Doesn't JavaScript already do this?</h3>
+                    <p>
+                        No. Although a JavaScript object can be used as a hash, there are several limitations that make
+                        using a JavaScript object unsuitable for a generic hash. One limitation is that only strings
+                        and numbers tend to make useful keys.
+                    </p>
+                    <p>
+                        For example, the following is simple and works:
+                    </p>
+                    <pre class="code">
+var key = "A key";
+var o = {};
+o[key] = 1;
+alert( o[key] ); // Alerts 1
+</pre>
+                    <p>
+                        However, it is often desirable to use other kinds of objects as keys. JavaScript doesn't
+                        complain if you try to use values other than strings and numbers inside square brackets;
+                        indeed, it superficially looks like this kind of association works for any object:
+                    </p>
+                    <pre class="code">
+var key = {};
+var o = {};
+o[key] = "First";
+alert( o[key] ); // Alerts "First"
+</pre>
+                    <p>
+                        It doesn't take much effort to discover the flaw in this approach:
+                    </p>
+                    <pre class="code">
+var key1 = {};
+var key2 = {};
+var o = {};
+o[key1] = "First";
+o[key2] = "Second";
+alert( o[key1] ); // Alerts "Second", not "First"
+</pre>
+                    <p>
+                        The reason for this is that in JavaScript, <strong>all object property names are
+                        strings</strong>, and any non-string value placed inside a square bracket property accessor is
+                        converted into a string. In the example above, <code>key1</code> and <code>key2</code> are both
+                        converted to "[object Object]", hence the second assignment simply replaces the original value
+                        of the "[object Object]" property.
+                    </p>
+                    <p>
+                        With <span class="jsh">jshashtable</span>, any JavaScript value apart from <code>null</code>
+                        and <code>undefined</code> can be used as a key :
+                    </p>
+                    <pre class="code">
+var key1 = {};
+var key2 = {};
+var h = new Hashtable();
+h.put(key1, "First");
+h.put(key2, "Second");
+alert( h.get(key1) ); // Alerts "First"
+alert( h.get(key2) ); // Alerts "Second"
+</pre>
+                    <p>
+                        The above example shows use of <code><a href="#put">put()</a></code> to add a key/value pair to
+                        the hash table and <code><a href="#get">get()</a></code> to retrieve a value. If a value already
+                        exists in the hash table for the key used, it is replaced with the new value.
+                    </p>
+                    <p>
+                        Another limitation of using a JavaScript object as a hash is the awkwardness of enumerating its
+                        members. Some libraries add properties to <code>Object.prototype</code> and these properties
+                        are then enumerated for every object (unless the environment is ECMAScript 5-compliant and the
+                        property has been set to be non-enumerable). This means property enumeration looks like this:
+                    </p>
+                    <pre class="code">
+var key = "A key";
+var o = {};
+o[key] = 1;
+
+for (var i in o) {
+    if (o.hasOwnProperty(i)) {
+        alert(i + "=>" + o[i]);
+    }
+}
+</pre>
+                    <h3>Equality</h3>
+                    <p>
+                        Once you start dealing with arbitrary objects as keys, other issues arise. For example, imagine
+                        you have a hash table of colour values at various different positions on the screen. Each
+                        position on the screen is represented by a <code>Point</code> object, which has properties
+                        <code>x</code> and <code>y</code>, representing the x and y coordinates of the point on the
+                        screen.
+                    </p>
+                    <pre class="code">
+function Point(x, y) {
+    this.x = x;
+    this.y = y;
+}
+
+var coloursForPoints = new Hashtable();
+
+function getColourAt(x, y) {
+    var point = new Point(x, y);
+    return coloursForPoints.get(point);
+}
+
+coloursForPoints.put( new Point(1, 2), "green" );
+
+alert( getColourAt(1, 2) ); // Alerts null
+</pre>
+                    <p>
+                        Why do we get <code>null</code>? Because the <code>Point</code> object that gets created in
+                        <code>getColourAt</code> is not the self same object as the original <code>Point</code> that got
+                        used as key in the <code>coloursForPoints</code> hash table. This is clearly not the ideal
+                        behaviour - any two <code>Point</code> objects with the same x and y values are to all intents
+                        and purposes the same thing. What we need is a way of defining when two objects are equal. By
+                        default, <span class="jsh">jshashtable</span> uses the strict equality (<code>===</code>)
+                        operator in JavaScript. However, if one of the objects being compared has an
+                        <code>equals()</code> method, it will use that instead. We can implement an
+                        <code>equals()</code> method in the above example to get the behaviour we want:
+                    </p>
+                    <pre class="code">
+function Point(x, y) {
+    this.x = x;
+    this.y = y;
+}
+
+<span class="new">Point.prototype.equals = function(obj) {
+    return (obj instanceof Point) &amp;&amp;
+        (obj.x === this.x) &amp;&amp;
+        (obj.y === this.y);
+};</span>
+
+var coloursForPoints = new Hashtable();
+
+function getColourAt(x, y) {
+    var point = new Point(x, y);
+    return coloursForPoints.get(point);
+}
+
+coloursForPoints.put( new Point(1, 2), "green" );
+
+alert( getColourAt(1, 2) ); // <span class="new">Alerts "green"</span>
+</pre>
+                    <h3>Hash codes</h3>
+                    <p>
+                        This works but is still not quite ideal. Internally, <span class="jsh">jshashtable</span> stores
+                        key/values pairs in arrays, called <em>buckets</em>. When <code><a href="#put">put()</a></code>
+                        is called, <span class="jsh">jshashtable</span> converts the key into a <em>hash code</em>, and
+                        stores the key/value pair in the bucket for that particular hash code. A hash code in
+                        <span class="jsh">jshashtable</span> is a string so that the buckets themselves can be
+                        associated with hash codes using an object and JavaScript's built-in string property names. When
+                        <code><a href="#get">get()</a></code> is called, <span class="jsh">jshashtable</span> finds
+                        the correct bucket for the key it's looking for and then searches the contents of that bucket
+                        for that key. Since the process of locating the correct bucket is massively faster than
+                        searching through a bucket's contents, it is most efficient to have as many buckets as possible
+                        containing the least possible number of items (ideally one). My tests have shown that for a hash
+                        table with 1000 elements, it is around <strong>70 times faster</strong> to replace or retrieve a
+                        value if each key has a unique hash code than if each key had the same hash code (tested using
+                        objects with a very simple <code>hashCode()</code> method). For 10000 elements, it's closer to
+                        300 times faster. So, generating meaningful hash codes for keys makes the hash table much more
+                        efficient.
+                    </p>
+                    <p>
+                        <span class="jsh">jshashtable</span> generates a hash code for an object by checking to see if
+                        it has a <code>hashCode()</code> method and using that if it exists. Otherwise it calls
+                        <code>toString()</code> on the object, like JavaScript's built-in square bracket property
+                        accessor does. In the above example, <code>Point</code> has no <code>hashCode()</code> method,
+                        so every point placed in <code>coloursForPoints</code> goes into the "[object Object]" bucket,
+                        which is very inefficient, particularly with a large number of points. What would be better
+                        would be to implement a <code>hashCode()</code> method on <code>Point</code> that returns a
+                        different value for every distinct point but the same value for equal points (this is very
+                        important: two objects that are considered equal according to their <code>equals()</code> method
+                        <strong>must</strong> return the same hash code). Something like the following would be good:
+                    </p>
+                    <pre class="code">
+Point.prototype.hashCode = function(obj) {
+    return "Point:" + this.x + "," + this.y;
+};
+</pre>
+                    <p>
+                        So for our example point, this returns "Point:1,2", for any <code>Point</code> object with x
+                        and y coordinates of 1 and 2 respectively. Every point will therefore go in its own bucket and
+                        the hash table is efficient.
+                    </p>
+                    <p>
+                        The "Point" at the start of the hash code is there to distinguish points from any other similar
+                        object that may have x and y coordinates and potentially have the same hash code. Note that even
+                        if a non-Point object did return a hash code of "Point:1,2", the hash table would still work
+                        fine, since the non-Point object would fail the equality test when searching through the
+                        "Point:1,2" bucket.
+                    </p>
+                    <p>
+                        If you don't want to violate the keys of your hash table by giving them extra methods like
+                        <code>equals()</code> and <code>hashCode()</code>, you can instead pass in functions into the
+                        <code>Hashtable</code> constructor to generate hash codes and test key equality. The hash code
+                        generator function is passed an object and should return a hash code for that object, while the
+                        equality function is passed two objects and should return a boolean value representing whether
+                        the two objects are equal. This also has the advantage of improving performance, since the hash
+                        table does not have to check for the existence of <code>equals()</code> and
+                        <code>hashCode()</code> methods on every key object.
+                    </p>
+                    <p>
+                        For a hash table where you knew in advance that all the keys would be <code>Point</code>
+                        objects, the previous example could be rewritten to be more efficient as follows:
+                    </p>
+                    <pre class="code">
+function Point(x, y) {
+    this.x = x;
+    this.y = y;
+}
+
+<span class="new">function hashPoint(p) {
+    return "Point:" + p.x + "," + p.y;
+}
+
+function pointsEqual(p1, p2) {
+    return p1.x === p2.x &amp;&amp; p1.y === p2.y;
+}
+
+var coloursForPoints = new Hashtable( { hashCode: hashPoint, equals: pointsEqual } );</span>
+
+function getColourAt(x, y) {
+    var point = new Point(x, y);
+    return coloursForPoints.get(point);
+}
+
+coloursForPoints.put( new Point(1, 2), "green" );
+
+alert( getColourAt(1, 2) ); <span class="new">// Alerts green</span>
+</pre>
+                    <p class="linktotop">
+                        <a href="#container">Top</a>
+                    </p>
+                </div>
+                <div id="api">
+                    <h2>Public API</h2>
+                    <h4>Constructors</h4>
+                    <ul class="propertieslist">
+                        <li class="method">
+                            <div class="methodsignature">
+                                <code><strong>Hashtable</strong>()</code>
+                            </div>
+                            <p>
+                                Creates a new, empty hash table.
+                            </p>
+                        </li>
+                        <li class="method">
+                            <div class="methodsignature">
+                                <code><strong>Hashtable</strong>(Object <em>options</em>)</code>
+                            </div>
+                            <div class="summary">
+                                <p class="new">New in version 3.0</p>
+                                <p>
+                                    Creates a new, empty hash table with the supplied options.
+                                </p>
+                            </div>
+                            <div class="paramsheading">Option properties:</div>
+                            <ul class="params">
+                                <li class="param">
+                                    <code class="paramname">hashCode</code>
+                                    <div>
+                                        A function that provides hash codes for keys placed in the hash table.
+                                        It is passed the object to be hashed as its only parameter. If not provided,
+                                        the hash table checks whether the object has a <code>hashCode()</code> method,
+                                        and if not, calls <code>toString()</code> on the object.
+                                    </div>
+                                </li>
+                                <li class="param">
+                                    <code class="paramname">equals</code>
+                                    <div>
+                                        A function that checks for equality between two keys with the same hash code.
+                                        Two keys that are considered equal will map to the same value in the hash table.
+                                        This function is passed the two objects to be compared as its parameters.
+                                        If not provided, the hash table checks whether either object being compared has
+                                        an <code>equals()</code> method, and if not, compares the objects using the
+                                        <code>===</code> operator.
+                                    </div>
+                                </li>
+                                <li class="param">
+                                    <code class="paramname">replaceDuplicateKey</code>
+                                    <p class="new">New in version 3.0</p>
+                                    <p>
+                                        Controls what happens when <code>put()</code> is called with a key that is equal
+                                        to an existing key in the hash table. If <code>replaceDuplicateKey</code> is
+                                        <code>true</code>, the existing key is always replaced by the new key.
+                                        Otherwise, the existing key is left in place (which is what always happened
+                                        prior to version 3.0). The default is <code>true</code>; prior to version 3.0.
+                                    </p>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="method">
+                            <div class="methodsignature">
+                                <code><strong>Hashtable</strong>(Function <em>hashingFunction</em>, Function
+                                    <em>equalityFunction</em>)</code>
+                            </div>
+                            <p class="summary">
+                                Creates a new, empty hash table with the supplied hashing function and equality
+                                function. This form maintains backwards compatibility with versions prior to 3.0.
+                                The following line
+                            </p>
+                            <pre class="code">
+var hash = new Hashtable(hashingFunction, equalityFunction);
+</pre>
+                            <p>... is equivalent to</p>
+                            <pre class="code">
+var hash = new Hashtable( { hashCode: hashingFunction, equals: equalityFunction } );
+</pre>
+                            <div class="paramsheading">Parameters:</div>
+                            <ul class="params">
+                                <li class="param">
+                                    <code class="paramname">hashingFunction</code>
+                                    <p>See above.</p>
+                                </li>
+                                <li class="param">
+                                    <code class="paramname">equalityFunction</code>
+                                    <p>See above.</p>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <h4>Methods</h4>
+                    <ul class="propertieslist">
+                        <li class="method" id="put">
+                            <div class="methodsignature"><code>mixed <strong>put</strong>(mixed <em>key</em>, mixed
+                                <em>value</em>)</code></div>
+                            <div class="summary">
+                                <p class="new">Updated in version 2.0: now returns previous value associated with the
+                                    key</p>
+                                <p>
+                                    Sets the value associated with the key supplied. If the hash table already contains
+                                    the key then the old value is overwritten and the old
+                                    value is returned, otherwise <code>null</code> is returned.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="method">
+                            <div class="methodsignature"><code>void <strong>putAll</strong>(Hashtable
+                                <em>hashtable</em>[, Function <em>conflictCallback</em>])</code></div>
+                            <div class="summary">
+                                <p class="new">New in version 2.0</p>
+                                <p>
+                                    Adds all entries from the supplied hash table to this hash table. For any key in the
+                                    supplied hash table for which an entry already exists in this hash table, the
+                                    optional callback function <code>conflictCallback</code> is called to resolve the
+                                    conflict. This function should accept three parameters:
+                                </p>
+                                <ul>
+                                    <li><code>key</code>: the key for the conflicting entry;</li>
+                                    <li><code>thisValue</code>: the current value for this key in the current hash
+                                        table;</li>
+                                    <li><code>value</code>: the value for this key in the hash table supplied.</li>
+                                </ul>
+                                <p>
+                                    The value returned by the callback function will be used as the value for the new
+                                    entry in the current hash table. If no callback function is supplied, the existing
+                                    value in the current hash table will be overwritten by the value in the hash table
+                                    supplied.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="method" id="get">
+                            <div class="methodsignature"><code>mixed <strong>get</strong>(mixed
+                                <em>key</em>)</code></div>
+                            <div class="summary">
+                                <p>
+                                    Returns the value associated with the key supplied, or <code>null</code> if no value
+                                    is found for that key.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="method">
+                            <div class="methodsignature"><code>Boolean <strong>containsKey</strong>(mixed
+                                <em>key</em>)</code></div>
+                            <div class="summary">
+                                <p>
+                                    Returns whether the hash table contains the specified key.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="method">
+                            <div class="methodsignature"><code>Boolean <strong>containsValue</strong>(mixed
+                                <em>value</em>)</code></div>
+                            <div class="summary">
+                                <p>
+                                    Returns whether the hash table contains the specified value.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="method">
+                            <div class="methodsignature"><code>void <strong>clear</strong>()</code></div>
+                            <div class="summary">
+                                <p>
+                                    Removes all entries from the hash table.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="method">
+                            <div class="methodsignature"><code>Boolean <strong>isEmpty</strong>()</code></div>
+                            <div class="summary">
+                                <p>
+                                    Returns true if the hash table contains no key/value pairs.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="method">
+                            <div class="methodsignature"><code>Array <strong>keys</strong>()</code></div>
+                            <div class="summary">
+                                <p>
+                                    Returns an array containing all the keys contained in the hash table.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="method">
+                            <div class="methodsignature"><code>Array <strong>values</strong>()</code></div>
+                            <div class="summary">
+                                <p>
+                                    Returns an array containing all the values contained in the hash table.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="method">
+                            <div class="methodsignature"><code>Array <strong>entries</strong>()</code></div>
+                            <p class="new">New in version 2.0</p>
+                            <div class="summary">
+                                <p>
+                                    Returns an array containing all the entries contained in the hash table. Each entry
+                                    is a two element array containing the key and value respectively for that entry.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="method">
+                            <div class="methodsignature"><code>mixed <strong>remove</strong>(mixed
+                                <em>key</em>)</code></div>
+                            <div class="summary">
+                                <p class="new">Updated in version 2.0: now returns the value associated with the removed
+                                    key</p>
+                                <p>
+                                    Removes the key and its corresponding value from the hash table.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="method">
+                            <div class="methodsignature"><code>Number <strong>size</strong>()</code></div>
+                            <div class="summary">
+                                <p>
+                                    Returns the number of key/value pairs contained in the hash table.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="method">
+                            <div class="methodsignature"><code>Hashtable <strong>clone</strong>()</code></div>
+                            <p class="new">New in version 2.0</p>
+                            <div class="summary">
+                                <p>
+                                    Creates and returns a shallow copy of the hash table. If hashing and equality
+                                    functions were provided to the hash table when it was constructed, they are passed
+                                    into the new hash table.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="method">
+                            <div class="methodsignature"><code>void <strong>each</strong>(Function
+                                <em>callback</em>)</code></div>
+                            <p class="new">New in version 2.0</p>
+                            <div class="summary">
+                                <p>
+                                    Iterates over all the entries in the hash table, calling the <code>callback</code>
+                                    function for each entry. This function is passed two parameters:
+                                </p>
+                                <ul>
+                                    <li><code>key</code>: the key for the current entry;</li>
+                                    <li><code>value</code>: the value for the current entry.</li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="method">
+                            <div class="methodsignature"><code>Boolean <strong>equals</strong>(Hashtable
+                                <em>hashtable</em>)</code></div>
+                            <p class="new">New in version 3.0</p>
+                            <div class="summary">
+                                <p>
+                                    Returns <code>true</code> if all key/value pairs in the hash table provided are
+                                    identical to those in this hash table and <code>false</code> otherwise. Values are
+                                    compared using the strict equality (<code>===</code>) operator.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="method">
+                            <div class="methodsignature"><code>String <strong>toQueryString</strong>()</code></div>
+                            <p class="new">New in version 3.0</p>
+                            <div class="summary">
+                                <p>
+                                    Returns a URL-encoded string representing the hash table as query parameters
+                                    suitable for HTTP requests.
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
+                    <p class="linktotop">
+                        <a href="#container">Top</a>
+                    </p>
+                </div>
+            </div>
+            <div id="footer">
+                Written by Tim Down. <a href="mailto:tim@timdown.co.uk">tim@timdown.co.uk</a>
+                <br>
+                <span class="jsh">jshashtable</span> is distributed under the
+                <a href="http://www.apache.org/licenses/LICENSE-2.0.html" title="Apache License, Version 2.0">Apache
+                    License, Version 2.0</a>
+            </div>
+        </div>
+    </body>
+</html>

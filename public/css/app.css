@@ -327,6 +327,15 @@ table th, table td {
   display: none;
 }
 
+.current-player {
+  background-color: blue;
+  display: inline;
+}
+
+.non-current-player {
+  /*display: none;*/
+}
+
 
 /**************************************************
   Videoconsole & tag clips page styles
