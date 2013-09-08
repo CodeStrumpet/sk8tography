@@ -255,15 +255,19 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
   };
 
   $scope.newPlayerHandlers = function(index) {
+
+    var parent = this;
+
+    function callTimeout(index) {
+      timeout(checkTimeFunction(index), 100);
+    }
     
     var checkTimeFunction = function(index) {
       var playerId = $scope.playerIdForPlaylistItem(index);
+
       var clip = $scope.playlist.items[index];
 
-      if (!$scope.players[playerId].buffered) {
-
-        console.log("checkTimeFunction");
-
+      if ($scope.players[playerId].getPlayerState() == YT.PlayerState.PLAYING && !$scope.players[playerId].buffered ) {
 
         var currTime = $scope.players[playerId].getCurrentTime();
 
@@ -275,11 +279,12 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
           $scope.players[playerId].pauseVideo();
           $scope.players[playerId].seekTo(clip.startTime, true);
         } else {
-          console.log("set timeout...");
-          setTimeout(checkTimeFunction, 100);
+          callTimeout(index);
         }
       }
     };
+
+
 
     return {
 

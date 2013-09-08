@@ -103,7 +103,7 @@ directive('videoPlayer', function() {
 */
 
     },
-    templateUrl: 'partials/youtubePlayer.jade',
+    templateUrl: 'partials/videoPlayer.jade',
     controller: VideoPlayerCtrl,
     scope: {
       playlist : '=',   // array of clips
