@@ -1,0 +1,3 @@
+include includes/inputBlockThin
+alert(ng-repeat="error in errors", type="error.type", close="closeAlert($index)") {{error.msg}}
+button.btn.btn-inverse(ng-click='updateClip()', ng-disabled="!updateEnabled") Update Clip

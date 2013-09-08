@@ -33,6 +33,4 @@ div.container-fluid
 			div(ng-controller='YoutubeCtrl').player-console
 				include includes/videoconsole
 			div(ng-show="currClipIndex >= 0").tagging-console
-				include includes/inputBlockThin
-				alert(ng-repeat="error in errors", type="error.type", close="closeAlert($index)") {{error.msg}}
-				button.btn.btn-inverse(ng-click='updateClip()', ng-disabled="!updateEnabled") Update Clip
+				update-clip(clip="currClip")
