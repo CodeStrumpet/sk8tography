@@ -79,7 +79,7 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService, UserSer
 
     // set the current clip to the first one in the list
     if ($scope.clips.length > 0 && $scope.clips != undefined) {
-    	$scope.currClipIndex = -1;  // TODO ??? Why set this to -1 ??
+    	$scope.currClipIndex = 0;  // TODO ??? Why set this to -1 ??
     }       
   };
 
@@ -102,13 +102,18 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService, UserSer
       return;
     }
 
+    if (YoutubeService.playerIsReady) {
+      YoutubeService.cueClip(clip);
+    }
+
+    $scope.currClip = $scope.clips[newClipIndex];
+
     // if the clip is already selected we just cue the video again and return
-    if (newClipIndex == $scope.currClipIndex) {      
-      if (YoutubeService.playerIsReady) {
-        YoutubeService.cueClip(clip);
-      }
+    if (newClipIndex == $scope.currClipIndex) {            
       return;
     }
+
+    $scope.currClipIndex = newClipIndex;
 
     // update the clip's 'selected' property in order to hook into css
     if ($scope.currClipIndex >= 0 && $scope.currClipIndex < $scope.clips.length) {
@@ -117,12 +122,7 @@ function TagClipsCtrl($scope, $http, $injector, $dialog, YoutubeService, UserSer
 
     clip.selected = true;
 
-  	$scope.currClipIndex = newClipIndex;
-    $scope.currClip = $scope.clips[newClipIndex];
-
-    // cue the video if our console is ready to play videos
-  	if (YoutubeService.playerIsReady) {
-  		YoutubeService.cueClip(clip);
-  	}
+  	
+    
   };
 }
