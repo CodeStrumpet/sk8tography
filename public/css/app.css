@@ -510,6 +510,30 @@ li.clip-element:hover {
   left: 40px;
 }
 
+.trick-thumbnail {
+  display: none;
+  width: 75px;
+  height: 75px;
+  border-style: dashed;
+  float:right;
+  margin-right: 50px;
+}
+
+.outerContainer {
+    display: table;
+    width: 100px; /* width of parent */
+    height: 100px; /* height of parent */
+    overflow: hidden;
+}
+.outerContainer .innerContainer {
+    display: table-cell;
+    vertical-align: middle;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+
 /**************************************************
   Videos page
 ***************************************************/

@@ -38,7 +38,12 @@ form.form-inline
         i(ng-click="removeTrick($index)", ng-show="!inputs[$index].isFirstTrick").icon-minus-sign.icon-2x.remove-action.remove-trick      
         span(ng-show='showAddEntity($index)', style="display:none").important-text.help-block
           &nbsp;&nbsp;&nbsp;&nbsp; No matching {{input.entityName}}s &nbsp;&nbsp;&nbsp;&nbsp;                
-          button.btn.btn-danger.btn-small(ng-click='addNewEntity($index)') Add {{input.value}} to the Sk8abase        
+          button.btn.btn-danger.btn-small(ng-click='addNewEntity($index)') Add {{input.value}} to the Sk8abase
+        span
+          div.trick-thumbnail
+            div.outerContainer
+              div.innerContainer                
+                p Update
           //- span &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           //- span.input-small.dropdown Terrain:&nbsp;&nbsp;&nbsp;
           //-   a.dropdown-toggle Terrain Type
