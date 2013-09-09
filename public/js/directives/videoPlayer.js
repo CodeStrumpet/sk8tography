@@ -14,15 +14,36 @@ directive('videoPlayer', function() {
         return;
       }
 
+      scope.initPlayerForPlaylistItem = function(index) {
+        console.log("initPlayerForPlaylistItem...");
+        var playerId = scope.playerIdForPlaylistItem(index);
 
-      var onReadyFunction = function(event) {
-        var playerId = event.target.i.id;
+        var playerContainer = $("#player-container");
+        playerContainer.append("<div id='" + playerId + "' ng-show='playerIsWithCurrentPlaylistItem(" + playerId + ")' " + "></div>");
 
-        console.log("onReady with playerId: " + playerId);
-        
+        var newPlayer = new YT.Player(playerId, {
+                width: '100%',
+                videoId: '',
+                playerVars: {
+                  controls: '0',                             // don't show video controls in the player
+                  showinfo: '0',                             // don't show the title of the video upon hover etc.
+                  modestbranding: '1',                       // minimal branding
+                  rel: '0',                                  // don't show related videos when the video ends
+                  theme: 'light',                            // light or dark theme
+                  origin: 'http://localhost:8080',           // should be your domain
+                  iv_load_policy: '3',                       // don't show video annotations by default
+                  enablejsapi: '1',
+                  html5: '1'
+                },
+                events: {
+                  'onReady': scope.onPlayerReady,
+                  'onStateChange': scope.dispatchPlayerEvent
+                }
+              });     
+        scope.players[playerId] = newPlayer;
+        //scope.playlist.items[index].player = newPlayer;
       };
-
-
+      /*
       var playerContainer = $("#player-container");
       for (var i = 0; i < playerContainer.children().length; i++) {
         var child = playerContainer.children()[i];
@@ -51,57 +72,10 @@ directive('videoPlayer', function() {
         newPlayer.playerId = child.id;
 
         scope.players[child.id] = newPlayer;
-        scope.idlePlayers.add(newPlayer);
+        scope.idlePlayers.push(newPlayer);
+
       }
-
-      
-
-
-//      playerContainer.append("<div id='" + "tempId" + "'" + ngClassString + "><p>testText</p></div>");
-/*
-      scope.$watch('playlist.items', function(newVal, oldVal) {
-
-        console.log("newVal.length: " + newVal.length + "  oldVal.length: " + oldVal.length);
-
-        if (newVal && oldVal && newVal.length != oldVal.length) {
-          for (var i = 0; i < newVal.length; i++) {
-            console.log("new item added to playlist");
-
-            var playerId = scope.playerIdForPlaylistItem(i);
-
-            if (!scope.players[playerId]) {
-
-              var handlers = scope.newPlayerHandlers(i);
-
-              playerContainer.append("<div id='" + playerId + "' class=''></div>");                                          
-
-              scope.players[playerId] = new YT.Player(playerId, {
-                width: '100%',
-                videoId: '',
-                playerVars: {
-                  controls: '0',                             // don't show video controls in the player
-                  showinfo: '0',                             // don't show the title of the video upon hover etc.
-                  modestbranding: '1',                       // minimal branding
-                  rel: '0',                                  // don't show related videos when the video ends
-                  theme: 'light',                            // light or dark theme
-                  origin: 'http://localhost:8080',           // should be your domain
-                  iv_load_policy: '3',                       // don't show video annotations by default
-                  enablejsapi: '1',
-                  html5: '1'
-                },
-                events: {
-                  'onReady': handlers.onPlayerReady,
-                  'onStateChange': handlers.stateChangeFn
-                }
-              });
-            }            
-          }
-
-        }
-
-      }, true);
-*/
-
+      */
     },
     templateUrl: 'partials/videoPlayer.jade',
     controller: VideoPlayerCtrl,

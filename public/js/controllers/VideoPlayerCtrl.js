@@ -7,7 +7,7 @@ function VideoPlayerCtrl($scope, $window) {
 
   $scope.players = {};
 
-  $scope.idlePlayers = new HashSet();
+  $scope.idlePlayers = [];
 
 
   $scope.newPlaylistItem = function() {
@@ -18,6 +18,37 @@ function VideoPlayerCtrl($scope, $window) {
     };
 
   };
+
+  $scope.onPlayerReady = function(event) {
+    var playerId = event.target.i.id;
+
+    $scope.players[playerId].isReady = true;
+
+    // Figure out what index the player is at.
+    // If the index is within our range of numBufferedPlayers, we buffer this player
+
+    var index = -1;
+    for (var i = 0; i < $scope.playlist.items.length; i++) {
+      if ($scope.playlist.items[i]._id == playerId) {
+        index = i;
+        break;
+      }
+    }
+
+    if (index >= 0) {
+      var position = $scope.playlist.position;
+      if (position < 0) {
+        position = 0;
+      }
+      if (index >= position && index < position + $scope.numBufferedPlayers) {
+        console.log("onReadyBuffer");
+        bufferPlayerForPlaylistItem(index);
+      }
+    }
+
+    //console.log($scope.players[playerId]);
+  };
+
 
   $scope.dispatchPlayerEvent = function(playerEvent) {
 
@@ -36,6 +67,22 @@ function VideoPlayerCtrl($scope, $window) {
 
   $scope.$watch('playlist.position', function(newVal, oldVal) {
     if (typeof(newVal) != 'undefined') {
+      
+      var position = newVal;
+      if (position < 0) {
+        position = 0;
+      }
+      for (var i = position; position < position + $scope.numBufferedPlayers; i++) {
+        if (i >= $scope.playlist.items.length) {
+          // we have more buffered players than we have playlist items
+          break;
+        }
+
+        //console.log("new value added to playlist items. about to buffer player for item: " + i);                
+        bufferPlayerForPlaylistItem(i);
+      }
+
+
 
     }
   }, true);
@@ -43,7 +90,17 @@ function VideoPlayerCtrl($scope, $window) {
 
   $scope.$watch('playlist.items', function(newVal, oldVal) {
     if (newVal && newVal.length > 0) {
-      console.log("new value added to playlist items");
+
+      var position = $scope.playlist.position;
+      if (position < 0) {
+        position = 0;
+      }
+
+      for (var i = 0; i < $scope.playlist.items.length; i++) {
+        addPlayerForPlaylistItem(i);
+      }
+
+      /*
       var clip = $scope.playlist.items[0];
 
       if ($scope.idlePlayers.size() > 0) {
@@ -59,12 +116,63 @@ function VideoPlayerCtrl($scope, $window) {
         player.cueVideoById(videoInfo);
         player.playVideo();
       }
+      */
 
     }
   }, true);
 
-//  function updatePlaylistPlayers
+  function addPlayerForPlaylistItem(index) {
+    if (!$scope.players[$scope.playlist.items[index]._id]) {
+      $scope.initPlayerForPlaylistItem(index);
+    }
+  }
 
+
+  function bufferPlayerForPlaylistItem(index) {
+    if ($scope.playlist.items.length <= index) {
+      console.log("error: index out of range");
+      return;
+    }
+
+    console.log("buffer player for index: " + index);
+
+    /*
+    if (!$scope.playlist.items[index].player) {
+      $scope.initPlayerForPlaylistItem(index);
+      return;
+
+      if ($scope.idlePlayers.length <= 0) {
+        console.log("no available players to buffer with!!!");
+        return;
+      }
+
+      console.log("numIdlePlayers: " + $scope.idlePlayers.length);
+      var idlePlayer = $scope.idlePlayers[0];
+      $scope.idlePlayers.remove(0);
+      console.log("numIdlePlayers: " + $scope.idlePlayers.length);
+      $scope.playlist.items[index].player = idlePlayer;
+    }
+    */
+  }
+
+
+
+  $scope.playerIdForPlaylistItem = function(index) {
+    if ($scope.playlist && $scope.playlist.items && $scope.playlist.items.length > index) {
+      console.log($scope.playlist.items[index]);
+      return $scope.playlist.items[index]._id;
+    } else {
+      return null;
+    }
+  };
+
+
+
+
+
+
+
+//  function updatePlaylistPlayers
   function releaseUnusedPlayers() {
     // don't do anything if the playlist position has not been set
     if ($scope.playlist.position < 0) {
@@ -98,6 +206,7 @@ function VideoPlayerCtrl($scope, $window) {
   }
 
   $scope.playerIsWithCurrentPlaylistItem = function(playerId) {
+    console.log("playlistIsWithCurrentPlaylistItem");
 
     var currPlaylistItem = $scope.currentPlaylistItem();
     if (currPlaylistItem && currPlaylistItem.player && currentPlaylistItem.player.id == playerId) {
