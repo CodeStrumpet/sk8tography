@@ -4,10 +4,13 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
 
   console.log("YoutubeVideoCtrl");
 
+
   $scope.playerIsReady = false;
   $scope.slowMotionAvailable = false;
+  $scope.players = {};
 
   $scope.$watch('playlist.items', function(newVal, oldVal) {
+
     if (newVal && oldVal) {
       if (oldVal.length == 0 && newVal.length == 1) {
         console.log("added the first item");
@@ -18,7 +21,6 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
   }, true);
 
   $scope.$watch('playlist.position', function(newVal, oldVal) {
-
 
     if (typeof(newVal) != 'undefined') {
 
@@ -33,7 +35,7 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
       // clear out temp item...
       $scope.playlist.temp = null; 
 
-      $scope.updateForPlaylistPositionChange();
+      //$scope.updateForPlaylistPositionChange();
     }
   }, true);
 
@@ -54,12 +56,47 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
 }
 
   $scope.updateForPlaylistPositionChange = function() {    
-   if ($scope.playerIsReady) {
+   if (true) {
       //console.log("playlistPosition changed: " + newVal);
 
       var clip = $scope.currentClip();
 
       if (clip) {
+
+        var index = $scope.playlist.items.indexOf(clip);
+        if (index == -1 ) {
+          console.log("couldn't find clip");
+          return;
+        }
+
+        var playerId = $scope.playerIdForPlaylistItem(index);        
+
+        var videoInfo = {
+          videoId: clip.videoSegmentId,
+          startSeconds: clip.startTime,
+          endSeconds : clip.startTime + clip.duration,            
+          suggestedQuality: 'default'
+        };
+
+        //cue clip
+        $scope.players[playerId].cueVideoById(videoInfo);
+        if ($scope.playstate.playUponCued) {
+          console.log("playing video...");            
+          $scope.players[playerId].playVideo();
+        }
+
+
+        return;
+
+
+
+
+
+
+
+
+
+
 
         // check if we can just keep rolling or seek to a new spot in the same video
         var canSeek = false;
@@ -155,6 +192,8 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
 
   $scope.checkCurrentTime = function () {
 
+    console.log("check current time");
+
     if ($scope.player.getPlayerState() == YT.PlayerState.PLAYING) {      
 
       var currTime = $scope.player.getCurrentTime();
@@ -207,6 +246,116 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
     }
   };
 
+  $scope.playerIdForPlaylistItem = function(index) {
+    if ($scope.playlist && $scope.playlist.items && $scope.playlist.items.length > index) {
+      return $scope.playlist.items[index].videoSegmentId + "__" + index;      
+    } else {
+      return null;
+    }
+  };
+
+  $scope.newPlayerHandlers = function(index) {
+
+    var parent = this;
+
+    function callTimeout(index) {
+      timeout(checkTimeFunction(index), 100);
+    }
+    
+    var checkTimeFunction = function(index) {
+      var playerId = $scope.playerIdForPlaylistItem(index);
+
+      var clip = $scope.playlist.items[index];
+
+      if ($scope.players[playerId].getPlayerState() == YT.PlayerState.PLAYING && !$scope.players[playerId].buffered ) {
+
+        var currTime = $scope.players[playerId].getCurrentTime();
+
+        if (currTime > clip.startTime + 1.5) { 
+          // we have accomplished buffering...
+          $scope.players[playerId].buffered = true;
+          console.log("achieved buffered status");
+
+          $scope.players[playerId].pauseVideo();
+          $scope.players[playerId].seekTo(clip.startTime, true);
+        } else {
+          callTimeout(index);
+        }
+      }
+    };
+
+
+
+    return {
+
+      onPlayerReady : function (event) {
+
+        var playerId = $scope.playerIdForPlaylistItem(index);        
+        var clip = $scope.playlist.items[index];
+
+        var videoInfo = {
+          videoId: clip.videoSegmentId,
+          startSeconds: clip.startTime,
+          endSeconds : clip.startTime + clip.duration,            
+          suggestedQuality: 'default'
+        };
+
+        //cue clip
+        $scope.players[playerId].cueVideoById(videoInfo);
+        $scope.players[playerId].playVideo();
+
+        if ($scope.playstate.playUponCued) {
+          //console.log("playing video...");            
+          //$scope.players[playerId].playVideo();
+        }
+
+        //$scope.updateForPlaylistPositionChange();
+        /*
+        $scope.playerIsReady = true;
+        $scope.slowMotionAvailable = $scope.player.getAvailablePlaybackRates().length > 1;
+        if ($scope.slowMotionAvailable) {
+          console.log("slowMotion is available");
+        }
+        */
+      },
+
+      stateChangeFn : function(event) {
+        var stateName = "";
+        switch(event.data) {
+          case -1:
+            stateName = "UNSTARTED";
+            break;
+          case YT.PlayerState.ENDED:
+            stateName = "ENDED";
+            break;
+          case YT.PlayerState.PLAYING:
+            stateName = "PLAYING";
+            // start monitoring the clip duration
+            checkTimeFunction(index);
+            //$scope.checkCurrentTime();
+            break;
+          case YT.PlayerState.PAUSED:
+            stateName = "PAUSED";
+            break;
+          case YT.PlayerState.BUFFERING:
+            stateName = "BUFFERING";
+            break;
+          case YT.PlayerState.CUED:
+            stateName = "CUED";
+            /*
+            if ($scope.playstate.playUponCued) {
+              $scope.player.playVideo();
+            }
+            */
+            break;
+          default:
+            stateName = "UNKNOWN";
+        }
+        console.log("YT.PlayerState:  " + stateName);
+      }
+    };
+  };
+
   // this function is passed to the video player and will be called when the player is ready
   $scope.onPlayerReady = function (event) {
     $scope.playerIsReady = true;
@@ -216,36 +365,4 @@ function YoutubeVideoCtrl($scope, YoutubeService) {
     }
   };
 
-  // this function is passed to the video player and will be called when the player's state changes
-  $scope.onPlayerStateChange = function(event) {
-    var stateName = "";
-    switch(event.data) {
-      case -1:
-        stateName = "UNSTARTED";
-        break;
-      case YT.PlayerState.ENDED:
-        stateName = "ENDED";
-        break;
-      case YT.PlayerState.PLAYING:
-        stateName = "PLAYING";
-        // start monitoring the clip duration
-        $scope.checkCurrentTime();
-        break;
-      case YT.PlayerState.PAUSED:
-        stateName = "PAUSED";
-        break;
-      case YT.PlayerState.BUFFERING:
-        stateName = "BUFFERING";
-        break;
-      case YT.PlayerState.CUED:
-        stateName = "CUED";
-        if ($scope.playstate.playUponCued) {
-          $scope.player.playVideo();
-        }
-        break;
-      default:
-        stateName = "UNKNOWN";
-    }
-    console.log("YT.PlayerState:  " + stateName);
-  }
 }

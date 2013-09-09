@@ -2,35 +2,37 @@
 
 angular.module('myApp.directives').
 
-directive('youtubeVideoPlayer', function() {
+directive('videoPlayer', function() {
   return {
-    restrict: 'E',
-    link: function(scope, elm, attrs, youtubeVideoCtrl) {
 
+    restrict: 'E',
+    link: function(scope, elm, attrs, videoPlayerCtrl) {
+
+      // Only using youtube right now...
       if (typeof YT == 'undefined') {
         console.log("YT is undefined, not loading player");
         return;
       }
 
-      var playerContainer = $("#player-container");
+      scope.removePlayerForClip = function(clip) {
+        var playerElement = $("#" + clip._id);        
+        if (playerElement) {
+          console.log('removing player with id: ' + clip._id);
+          // remove the dom element
+          playerElement.remove();          
+        }
+        // also nullify the reference to the player
+        scope.players[clip._id] = null;
+      };
 
-      scope.$watch('playlist.items', function(newVal, oldVal) {
+      scope.initPlayerForPlaylistItem = function(index) {
+        console.log("initPlayerForPlaylistItem...");
+        var playerId = scope.playerIdForPlaylistItem(index);
 
-        console.log("newVal.length: " + newVal.length + "  oldVal.length: " + oldVal.length);
+        var playerContainer = $("#player-container");
+        playerContainer.append("<div id='" + playerId + "' class='hide-me' ng-show='playerIsWithCurrentPlaylistItem(" + playerId + ")' " + "></div>");
 
-        if (newVal && oldVal && newVal.length != oldVal.length) {
-          for (var i = 0; i < newVal.length; i++) {
-            console.log("new item added to playlist");
-
-            var playerId = scope.playerIdForPlaylistItem(i);
-
-            if (!scope.players[playerId]) {
-
-              var handlers = scope.newPlayerHandlers(i);
-
-              playerContainer.append("<div id='" + playerId + "' class=''></div>");                                          
-
-              scope.players[playerId] = new YT.Player(playerId, {
+        var newPlayer = new YT.Player(playerId, {
                 width: '100%',
                 videoId: '',
                 playerVars: {
@@ -45,20 +47,16 @@ directive('youtubeVideoPlayer', function() {
                   html5: '1'
                 },
                 events: {
-                  'onReady': handlers.onPlayerReady,
-                  'onStateChange': handlers.stateChangeFn
+                  'onReady': scope.onPlayerReady,
+                  'onStateChange': scope.dispatchPlayerEvent
                 }
-              });
-            }            
-          }
-
-        }
-
-      }, true);
-
+              });     
+        scope.players[playerId] = newPlayer;
+        //scope.playlist.items[index].player = newPlayer;
+      };
     },
-    templateUrl: 'partials/youtubePlayer.jade',
-    controller: YoutubeVideoCtrl,
+    templateUrl: 'partials/videoPlayer.jade',
+    controller: VideoPlayerCtrl,
     scope: {
       playlist : '=',   // array of clips
       playstate : '='  // {isPlaying : true, loopEnabled : true, playerState : "Buffering", currentTime : 103}

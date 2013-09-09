@@ -323,6 +323,23 @@ table th, table td {
 }
 
 
+.buffered-player {
+  display: none;
+}
+
+.current-player {
+  background-color: blue;
+  display: inline;
+}
+
+.non-current-player {
+  /*display: none;*/
+}
+
+.hide-me { display: none !important;}
+
+.show-me { display: inline-block !important; }
+
 
 /**************************************************
   Videoconsole & tag clips page styles
