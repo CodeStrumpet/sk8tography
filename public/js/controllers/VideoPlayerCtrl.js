@@ -1,6 +1,6 @@
 'use strict';
 
-function VideoPlayerCtrl($scope, $window) {
+function VideoPlayerCtrl($scope, $window, $timeout) {
 
 
   $scope.numBufferedPlayers = 5;
@@ -41,7 +41,6 @@ function VideoPlayerCtrl($scope, $window) {
         position = 0;
       }
       if (index >= position && index < position + $scope.numBufferedPlayers) {
-        console.log("onReadyBuffer");
         bufferPlayerForPlaylistItem(index);
       }
     }
@@ -54,12 +53,62 @@ function VideoPlayerCtrl($scope, $window) {
 
     var playerId = playerEvent.target.i.id;
 
+    var playlistItem = null;
     for (var i = 0; i < $scope.playlist.items.length; i++) {
-      if ($scope.playlist.items[i].player && $scope.playlist.items[i].player.playerId == playerId) {
-        console.log("time to do something. we found a playlistItem that has playerId: " + playerId);
+      if ($scope.playlist.items[i]._id == playerId) {
+        var playlistItem = $scope.playlist.items[i];
+        break;
       }
     }
+    if (playlistItem) {      
+      var stateName = "";
+      switch(playerEvent.data) {
+        case -1:
+              stateName = "UNSTARTED";
+              break;
+        case YT.PlayerState.ENDED:
+              stateName = "ENDED";
+              console.log("clip ended, do something!!"); // make sure to check if buffering...
+              break;
+        case YT.PlayerState.PLAYING:                
+              stateName = "PLAYING";
+              if (playlistItem.buffering) {
+                // we are buffering, so check our timing function
+                checkCurrentClipTime(playlistItem);
+              }
+              break;
+        case YT.PlayerState.PAUSED:
+              stateName = "PAUSED"; 
+              break;
+        case YT.PlayerState.BUFFERING:
+              stateName = "BUFFERING";
+              break;
+        case YT.PlayerState.CUED:
+              break;
+        default:
+              stateName = "UNKNOWN";
+      }
+      console.log("player state: " + stateName);
+    }
   };
+
+  function checkCurrentClipTime(clip) {
+    if (!clip.buffering) {
+      return;
+    }
+    var player = $scope.players[clip._id];
+
+    if (player.getCurrentTime() > clip.startTime + 1.5) { // use 1.5 as our current buffering interval
+      console.log('finished buffering');
+      player.pauseVideo();
+      player.seekTo(clip.startTime, true);
+    } else {
+      $timeout(function() {
+        checkCurrentClipTime(clip);
+      }, 100);
+    }
+  }
+
 
   // =================================================================
   // Watch functions
@@ -135,6 +184,20 @@ function VideoPlayerCtrl($scope, $window) {
     }
 
     console.log("buffer player for index: " + index);
+
+    var clip = $scope.playlist.items[index];
+    clip.buffering = true;
+    var player = $scope.players[clip._id];
+    var videoInfo = {
+      videoId: clip.videoSegmentId,
+      startSeconds: clip.startTime,
+      endSeconds : clip.startTime + clip.duration,            
+      suggestedQuality: 'default'
+    };
+    player.cueVideoById(videoInfo);
+    player.mute();
+    player.playVideo();
+
 
     /*
     if (!$scope.playlist.items[index].player) {
