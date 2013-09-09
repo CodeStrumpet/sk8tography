@@ -68,11 +68,15 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
               break;
         case YT.PlayerState.ENDED:
               stateName = "ENDED";
-              if ($scope.playlist.items.length > $scope.playlist.position + 1) {
-                // apply the position change...
-                $scope.$apply(function () {
-                  $scope.playlist.position = $scope.playlist.position + 1; 
-                });
+
+              if (!playlistItem.buffering) { // make sure we didn't reach the end of the video during buffering...
+                if ($scope.playlist.items.length > $scope.playlist.position + 1) {
+                  
+                  // apply the position change...
+                  $scope.$apply(function () {
+                    $scope.playlist.position = $scope.playlist.position + 1; 
+                  });
+                }
               }
               break;
         case YT.PlayerState.PLAYING:                
@@ -123,6 +127,20 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
 
   $scope.$watch('playlist.position', function(newVal, oldVal) {
     if (typeof(newVal) != 'undefined') {
+
+      for (var j = 0; j < $scope.playlist.items.length; j++) {
+
+        var item = $scope.playlist.items[j];
+        if (j != newVal) {
+          $('#' + item._id).addClass('hide-me');
+          $('#' + item._id).removeClass('show-me');
+        } else {
+          $('#' + item._id).removeClass('hide-me');
+          $('#' + item._id).addClass('show-me'); 
+        }
+
+        //$('.icon-trash').removeClass('hide-me').addClass('show-me');
+      }
 
       if (newVal >= 0) {
         // play video at new position...

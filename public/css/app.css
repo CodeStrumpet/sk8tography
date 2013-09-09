@@ -336,6 +336,10 @@ table th, table td {
   /*display: none;*/
 }
 
+.hide-me { display: none !important;}
+
+.show-me { display: inline-block !important; }
+
 
 /**************************************************
   Videoconsole & tag clips page styles

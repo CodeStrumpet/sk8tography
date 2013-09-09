@@ -19,7 +19,7 @@ directive('videoPlayer', function() {
         var playerId = scope.playerIdForPlaylistItem(index);
 
         var playerContainer = $("#player-container");
-        playerContainer.append("<div id='" + playerId + "' ng-show='playerIsWithCurrentPlaylistItem(" + playerId + ")' " + "></div>");
+        playerContainer.append("<div id='" + playerId + "' class='hide-me' ng-show='playerIsWithCurrentPlaylistItem(" + playerId + ")' " + "></div>");
 
         var newPlayer = new YT.Player(playerId, {
                 width: '100%',
