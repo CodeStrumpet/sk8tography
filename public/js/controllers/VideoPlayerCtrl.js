@@ -67,7 +67,8 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
               stateName = "UNSTARTED";
               break;
         case YT.PlayerState.ENDED:
-              stateName = "ENDED";
+              stateName = "ENDED";              
+              $scope.players[playlistItem._id].cueVideoById(videoInfoForClip(playlistItem));
 
               if (!playlistItem.buffering) { // make sure we didn't reach the end of the video during buffering...
                 if ($scope.playlist.items.length > $scope.playlist.position + 1) {
@@ -97,7 +98,7 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
         default:
               stateName = "UNKNOWN";
       }
-      console.log("player state: " + stateName);
+      console.log("player: " + playerId + "  state: " + stateName );
     }
   };
 
@@ -164,6 +165,7 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
   }, true);
 
   function playVideoAtCurrentPosition() {
+    console.log("currentPosition: " + $scope.playlist.position);
     var clip = $scope.playlist.items[$scope.playlist.position];
 
     clip.buffering = false;
@@ -171,7 +173,7 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
 
     var player = $scope.players[clip._id];
 
-    player.seekTo(clip.startTime);
+    player.seekTo(clip.startTime, true);
     player.playVideo();
   }
 
@@ -218,12 +220,7 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
 
     clip.buffering = true;
     var player = $scope.players[clip._id];
-    var videoInfo = {
-      videoId: clip.videoSegmentId,
-      startSeconds: clip.startTime,
-      endSeconds : clip.startTime + clip.duration,            
-      suggestedQuality: 'default'
-    };
+    var videoInfo = videoInfoForClip(clip);
     player.cueVideoById(videoInfo);
     player.mute();
     player.playVideo();
@@ -246,6 +243,15 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
       $scope.playlist.items[index].player = idlePlayer;
     }
     */
+  }
+
+  function videoInfoForClip(clip) {
+    return {
+      videoId: clip.videoSegmentId,
+      startSeconds: clip.startTime,
+      endSeconds : clip.startTime + clip.duration,            
+      suggestedQuality: 'default'
+    };
   }
 
 
