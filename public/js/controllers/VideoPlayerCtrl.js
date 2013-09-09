@@ -67,25 +67,24 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
               stateName = "UNSTARTED";
               break;
         case YT.PlayerState.ENDED:
-              stateName = "ENDED";              
+              stateName = "ENDED";      
+              // recue the video if we ever get to the ended state        
+              // todo: also rebuffer!!
               $scope.players[playlistItem._id].cueVideoById(videoInfoForClip(playlistItem));
 
-              if (!playlistItem.buffering) { // make sure we didn't reach the end of the video during buffering...
-                if ($scope.playlist.items.length > $scope.playlist.position + 1) {
+              // if (!playlistItem.buffering) { // make sure we didn't reach the end of the video during buffering...
+              //   if ($scope.playlist.items.length > $scope.playlist.position + 1) {
                   
-                  // apply the position change...
-                  $scope.$apply(function () {
-                    $scope.playlist.position = $scope.playlist.position + 1; 
-                  });
-                }
-              }
+              //     // apply the position change...
+              //     $scope.$apply(function () {
+              //       $scope.playlist.position = $scope.playlist.position + 1; 
+              //     });
+              //   }
+              // }
               break;
         case YT.PlayerState.PLAYING:                
-              stateName = "PLAYING";
-              if (playlistItem.buffering) {
-                // we are buffering, so check our timing function
-                checkCurrentClipTime(playlistItem);
-              }
+              stateName = "PLAYING";              
+              checkCurrentClipTime(playlistItem);              
               break;
         case YT.PlayerState.PAUSED:
               stateName = "PAUSED"; 
@@ -103,21 +102,46 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
   };
 
   function checkCurrentClipTime(clip) {
-    if (!clip.buffering) {
-      return;
-    }
     var player = $scope.players[clip._id];
 
-    if (player.getCurrentTime() > clip.startTime + 1.5) { // use 1.5 as our current buffering interval
-      console.log('finished buffering');
-      clip.buffering = false;
-      clip.buffered = true;
-      player.pauseVideo();
-      player.seekTo(clip.startTime, true);
+    if (clip.buffering) {
+      // buffering playback      
+      if (player.getCurrentTime() > clip.startTime + 1.5) { // use 1.5 as our current buffering interval
+        console.log('finished buffering');
+        clip.buffering = false;
+        clip.buffered = true;
+        player.pauseVideo();
+        player.seekTo(clip.startTime, true);
+      } else {
+        $timeout(function() {
+          checkCurrentClipTime(clip);
+        }, 100);
+      }      
+
     } else {
-      $timeout(function() {
-        checkCurrentClipTime(clip);
-      }, 100);
+      // normal playback
+      if (player.getCurrentTime() > clip.startTime + clip.duration) { 
+        // make sure we are still the item at the current position (hopefully fixes bug where extra timeouts are called due to buffering during normal playback)
+        if ($scope.playlist.items[$scope.playlist.position] == clip) {
+          if ($scope.playlist.items.length > $scope.playlist.position + 1) {            
+                  
+            // apply the position change...
+            $scope.$apply(function () {
+              $scope.playlist.position = $scope.playlist.position + 1; 
+            });
+            player.pauseVideo();
+          } else {
+            // playlist is complete. pause that shut
+            player.pauseVideo();
+          }
+        } else {
+          console.log("ignoring extra timeout call!!!");
+        }
+      } else {
+        $timeout(function() {
+          checkCurrentClipTime(clip);
+        }, 100);
+      }
     }
   }
 
@@ -143,7 +167,7 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
         //$('.icon-trash').removeClass('hide-me').addClass('show-me');
       }
 
-      if (newVal >= 0) {
+      if (newVal >= 0 && !$scope.playlist.pause) {
         // play video at new position...
         playVideoAtCurrentPosition();
       }
@@ -175,6 +199,7 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
 
     player.seekTo(clip.startTime, true);
     player.playVideo();
+    $scope.playlist.pause = false;
   }
 
 
@@ -249,7 +274,7 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
     return {
       videoId: clip.videoSegmentId,
       startSeconds: clip.startTime,
-      endSeconds : clip.startTime + clip.duration,            
+      //endSeconds : clip.startTime + clip.duration,            
       suggestedQuality: 'default'
     };
   }
