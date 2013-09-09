@@ -7,17 +7,30 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
 
   $scope.players = {};
 
-  $scope.idlePlayers = [];
 
 
-  $scope.newPlaylistItem = function() {
-    var parent = this;
-
-    this.checkCurrentTime = function() {
-
-    };
-
+  $scope.playerIdForPlaylistItem = function(index) {
+    if ($scope.playlist && $scope.playlist.items && $scope.playlist.items.length > index) {
+      console.log($scope.playlist.items[index]);
+      return $scope.playlist.items[index]._id;
+    } else {
+      return null;
+    }
   };
+
+  $scope.currentPlaylistItem = function() {
+    console.log("currentPlaylistItem");
+    if ($scope.playlist.position >= 0 && $scope.playlist.items.length > $scope.playlist.position) {
+      return $scope.playlist.items[$scope.playlist.position];
+    }
+    return null;
+  };
+
+
+  // =================================================================
+  // Player Event Functions
+  // =================================================================
+
 
   $scope.onPlayerReady = function(event) {
     var playerId = event.target.i.id;
@@ -101,8 +114,160 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
     }
   };
 
+
+
+  // =================================================================
+  // Scope Watch functions
+  // =================================================================
+
+  $scope.$watch('playlist.position', function(newVal, oldVal) {
+    if (typeof(newVal) != 'undefined') {
+
+      for (var j = 0; j < $scope.playlist.items.length; j++) {
+
+        var item = $scope.playlist.items[j];
+        if (j != newVal) {
+          $('#' + item._id).addClass('hide-me');
+          $('#' + item._id).removeClass('show-me');
+        } else {
+          $('#' + item._id).removeClass('hide-me');
+          $('#' + item._id).addClass('show-me'); 
+        }
+
+        //$('.icon-trash').removeClass('hide-me').addClass('show-me');
+      }
+
+      if (newVal >= 0 && !$scope.playlist.pause) {
+        // play video at new position...
+        playVideoAtCurrentPosition();
+      }
+
+
+      var position = newVal;
+      if (position < 0) {
+        position = 0;
+      } 
+      for (var i = position; position < position + $scope.numBufferedPlayers; i++) {
+        if (i >= $scope.playlist.items.length) {
+          // we have more buffered players than we have playlist items
+          break;
+        }
+        //console.log("new value added to playlist items. about to buffer player for item: " + i);                
+        bufferPlayerForPlaylistItem(i);
+      }
+    }
+  }, true);
+
+
+  $scope.$watch('playlist.items', function(newVal, oldVal) {
+    if (newVal && newVal.length > 0) {
+
+      var position = $scope.playlist.position;
+      if (position < 0) {
+        position = 0;
+      }
+
+      for (var i = 0; i < $scope.playlist.items.length; i++) {        
+        addPlayerForPlaylistItem(i);  // a player will not be added if it already exists
+      }
+    }
+
+    if (newVal && oldVal && newVal.length < oldVal.length) {
+      for (var i = 0; i < oldVal.length; i++) {
+        var valuePresent = false;
+        for (var j = 0; j < newVal.length; j++) {
+          
+          if (newVal[j]._id == oldVal[i]._id) {
+            valuePresent = true;
+          }
+        }
+        // didn't find the value, so remove it...
+        if (!valuePresent) {
+          $scope.removePlayerForClip(oldVal[i]);
+        }
+      }
+    }
+
+  }, true);
+
+
+
+  // =================================================================
+  // Utility Functions
+  // =================================================================
+
+
+  function addPlayerForPlaylistItem(index) {
+    if (!$scope.players[$scope.playlist.items[index]._id]) {
+      $scope.initPlayerForPlaylistItem(index);
+    }
+  }
+
+  function playVideoAtCurrentPosition() {
+    console.log("currentPosition: " + $scope.playlist.position);
+    var clip = $scope.playlist.items[$scope.playlist.position];
+
+    clip.buffering = false;
+    clip.buffered = true;
+
+    var player = $scope.players[clip._id];
+
+    player.seekTo(clip.startTime, true);
+    player.playVideo();
+    $scope.playlist.pause = false;
+  }
+
+
+  function bufferPlayerForPlaylistItem(index) {
+    if ($scope.playlist.items.length <= index) {
+      console.log("error: index out of range");
+      return;
+    }
+
+    // don't buffer the current position...
+    if ($scope.playlist.position == index) {
+      return;
+    }
+
+    var clip = $scope.playlist.items[index];
+
+    // don't buffer if the player is not ready...
+    if (!$scope.players[clip._id].isReady) {
+      console.log("player not yet ready for buffering...");
+      return;
+    }
+    
+    // don't buffer if the player is currently buffering or if it has already buffered
+    if (clip.buffering || clip.buffered) {
+      return;
+    }
+
+    console.log("buffer player for index: " + index);
+
+    clip.buffering = true;
+    var player = $scope.players[clip._id];
+    var videoInfo = videoInfoForClip(clip);
+    player.cueVideoById(videoInfo);
+    player.mute();
+    player.playVideo();
+  }
+
+  function videoInfoForClip(clip) {
+    return {
+      videoId: clip.videoSegmentId,
+      startSeconds: clip.startTime,
+      //endSeconds : clip.startTime + clip.duration,            
+      suggestedQuality: 'default'
+    };
+  }
+
   function checkCurrentClipTime(clip) {
     var player = $scope.players[clip._id];
+
+    if (!player) {
+      console.log("player is null: " + clip._id);
+      return;
+    }
 
     if (clip.buffering) {
       // buffering playback      
@@ -144,210 +309,6 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
       }
     }
   }
-
-
-  // =================================================================
-  // Watch functions
-  // =================================================================
-
-  $scope.$watch('playlist.position', function(newVal, oldVal) {
-    if (typeof(newVal) != 'undefined') {
-
-      for (var j = 0; j < $scope.playlist.items.length; j++) {
-
-        var item = $scope.playlist.items[j];
-        if (j != newVal) {
-          $('#' + item._id).addClass('hide-me');
-          $('#' + item._id).removeClass('show-me');
-        } else {
-          $('#' + item._id).removeClass('hide-me');
-          $('#' + item._id).addClass('show-me'); 
-        }
-
-        //$('.icon-trash').removeClass('hide-me').addClass('show-me');
-      }
-
-      if (newVal >= 0 && !$scope.playlist.pause) {
-        // play video at new position...
-        playVideoAtCurrentPosition();
-      }
-
-
-      var position = newVal;
-      if (position < 0) {
-        position = 0;
-      } 
-      for (var i = position; position < position + $scope.numBufferedPlayers; i++) {
-        if (i >= $scope.playlist.items.length) {
-          // we have more buffered players than we have playlist items
-          break;
-        }
-        //console.log("new value added to playlist items. about to buffer player for item: " + i);                
-        bufferPlayerForPlaylistItem(i);
-      }
-    }
-  }, true);
-
-  function playVideoAtCurrentPosition() {
-    console.log("currentPosition: " + $scope.playlist.position);
-    var clip = $scope.playlist.items[$scope.playlist.position];
-
-    clip.buffering = false;
-    clip.buffered = true;
-
-    var player = $scope.players[clip._id];
-
-    player.seekTo(clip.startTime, true);
-    player.playVideo();
-    $scope.playlist.pause = false;
-  }
-
-
-  $scope.$watch('playlist.items', function(newVal, oldVal) {
-    if (newVal && newVal.length > 0) {
-
-      var position = $scope.playlist.position;
-      if (position < 0) {
-        position = 0;
-      }
-
-      for (var i = 0; i < $scope.playlist.items.length; i++) {        
-        addPlayerForPlaylistItem(i); 
-      }
-    }
-  }, true);
-
-  function addPlayerForPlaylistItem(index) {
-    if (!$scope.players[$scope.playlist.items[index]._id]) {
-      $scope.initPlayerForPlaylistItem(index);
-    }
-  }
-
-
-  function bufferPlayerForPlaylistItem(index) {
-    if ($scope.playlist.items.length <= index) {
-      console.log("error: index out of range");
-      return;
-    }
-
-    // don't buffer the current position...
-    if ($scope.playlist.position == index) {
-      return;
-    }
-
-    var clip = $scope.playlist.items[index];
-    
-    if (clip.buffering || clip.buffered) {
-      return;
-    }
-
-    console.log("buffer player for index: " + index);
-
-    clip.buffering = true;
-    var player = $scope.players[clip._id];
-    var videoInfo = videoInfoForClip(clip);
-    player.cueVideoById(videoInfo);
-    player.mute();
-    player.playVideo();
-
-
-    /*
-    if (!$scope.playlist.items[index].player) {
-      $scope.initPlayerForPlaylistItem(index);
-      return;
-
-      if ($scope.idlePlayers.length <= 0) {
-        console.log("no available players to buffer with!!!");
-        return;
-      }
-
-      console.log("numIdlePlayers: " + $scope.idlePlayers.length);
-      var idlePlayer = $scope.idlePlayers[0];
-      $scope.idlePlayers.remove(0);
-      console.log("numIdlePlayers: " + $scope.idlePlayers.length);
-      $scope.playlist.items[index].player = idlePlayer;
-    }
-    */
-  }
-
-  function videoInfoForClip(clip) {
-    return {
-      videoId: clip.videoSegmentId,
-      startSeconds: clip.startTime,
-      //endSeconds : clip.startTime + clip.duration,            
-      suggestedQuality: 'default'
-    };
-  }
-
-
-
-  $scope.playerIdForPlaylistItem = function(index) {
-    if ($scope.playlist && $scope.playlist.items && $scope.playlist.items.length > index) {
-      console.log($scope.playlist.items[index]);
-      return $scope.playlist.items[index]._id;
-    } else {
-      return null;
-    }
-  };
-
-
-
-
-
-
-
-//  function updatePlaylistPlayers
-  function releaseUnusedPlayers() {
-    // don't do anything if the playlist position has not been set
-    if ($scope.playlist.position < 0) {
-      return;
-    }
-
-    for (var i = 0; i < $scope.playlist.items.length; i++) {
-
-      // only release a player if the item has a player
-      if ($scope.playlist.items[i].player) {
-        var shouldHavePlayer = shouldPlaylistItemHavePlayer(i);
-
-        // if the playlist item should not have a player, we return it to the idle players pool and clear the reference
-        if (!shouldHavePlayer) {
-          $scope.idlePlayers.add($scope.playlist.items[i].player);
-          $scope.playlist.items[i].player = null;
-        }
-      }
-    }
-  };
-
-  function shouldPlaylistItemHavePlayer(playlistItemPosition) {
-    var shouldHavePlayer = true;
-
-    if ($scope.playlist.position > playlistItemPosition ) {
-      shouldHavePlayer = false;
-    } else if ($scope.playlist.position < playlistItemPosition - $scope.numBufferedPlayers) {
-      shouldHavePlayer = false;
-    }
-    return shouldHavePlayer;
-  }
-
-  $scope.playerIsWithCurrentPlaylistItem = function(playerId) {
-    console.log("playlistIsWithCurrentPlaylistItem");
-
-    var currPlaylistItem = $scope.currentPlaylistItem();
-    if (currPlaylistItem && currPlaylistItem.player && currentPlaylistItem.player.id == playerId) {
-      return true;
-    }
-    return false;
-  };
-
-  $scope.currentPlaylistItem = function() {
-    console.log("currentPlaylistItem");
-    if ($scope.playlist.position >= 0 && $scope.playlist.items.length > $scope.playlist.position) {
-      return $scope.playlist.items[$scope.playlist.position];
-    }
-    return null;
-  };
-
-
 
 
 }

@@ -14,6 +14,17 @@ directive('videoPlayer', function() {
         return;
       }
 
+      scope.removePlayerForClip = function(clip) {
+        var playerElement = $("#" + clip._id);        
+        if (playerElement) {
+          console.log('removing player with id: ' + clip._id);
+          // remove the dom element
+          playerElement.remove();          
+        }
+        // also nullify the reference to the player
+        scope.players[clip._id] = null;
+      };
+
       scope.initPlayerForPlaylistItem = function(index) {
         console.log("initPlayerForPlaylistItem...");
         var playerId = scope.playerIdForPlaylistItem(index);
