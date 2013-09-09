@@ -68,7 +68,12 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
               break;
         case YT.PlayerState.ENDED:
               stateName = "ENDED";
-              console.log("clip ended, do something!!"); // make sure to check if buffering...
+              if ($scope.playlist.items.length > $scope.playlist.position + 1) {
+                // apply the position change...
+                $scope.$apply(function () {
+                  $scope.playlist.position = $scope.playlist.position + 1; 
+                });
+              }
               break;
         case YT.PlayerState.PLAYING:                
               stateName = "PLAYING";
@@ -100,6 +105,8 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
 
     if (player.getCurrentTime() > clip.startTime + 1.5) { // use 1.5 as our current buffering interval
       console.log('finished buffering');
+      clip.buffering = false;
+      clip.buffered = true;
       player.pauseVideo();
       player.seekTo(clip.startTime, true);
     } else {
@@ -116,25 +123,39 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
 
   $scope.$watch('playlist.position', function(newVal, oldVal) {
     if (typeof(newVal) != 'undefined') {
-      
+
+      if (newVal >= 0) {
+        // play video at new position...
+        playVideoAtCurrentPosition();
+      }
+
+
       var position = newVal;
       if (position < 0) {
         position = 0;
-      }
+      } 
       for (var i = position; position < position + $scope.numBufferedPlayers; i++) {
         if (i >= $scope.playlist.items.length) {
           // we have more buffered players than we have playlist items
           break;
         }
-
         //console.log("new value added to playlist items. about to buffer player for item: " + i);                
         bufferPlayerForPlaylistItem(i);
       }
-
-
-
     }
   }, true);
+
+  function playVideoAtCurrentPosition() {
+    var clip = $scope.playlist.items[$scope.playlist.position];
+
+    clip.buffering = false;
+    clip.buffered = true;
+
+    var player = $scope.players[clip._id];
+
+    player.seekTo(clip.startTime);
+    player.playVideo();
+  }
 
 
   $scope.$watch('playlist.items', function(newVal, oldVal) {
@@ -145,28 +166,9 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
         position = 0;
       }
 
-      for (var i = 0; i < $scope.playlist.items.length; i++) {
-        addPlayerForPlaylistItem(i);
+      for (var i = 0; i < $scope.playlist.items.length; i++) {        
+        addPlayerForPlaylistItem(i); 
       }
-
-      /*
-      var clip = $scope.playlist.items[0];
-
-      if ($scope.idlePlayers.size() > 0) {
-        var player = $scope.idlePlayers.values()[0];
-
-        var videoInfo = {
-          videoId: clip.videoSegmentId,
-          startSeconds: clip.startTime,
-          endSeconds : clip.startTime + clip.duration,            
-          suggestedQuality: 'default'
-        };
-
-        player.cueVideoById(videoInfo);
-        player.playVideo();
-      }
-      */
-
     }
   }, true);
 
@@ -183,9 +185,19 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
       return;
     }
 
-    console.log("buffer player for index: " + index);
+    // don't buffer the current position...
+    if ($scope.playlist.position == index) {
+      return;
+    }
 
     var clip = $scope.playlist.items[index];
+    
+    if (clip.buffering || clip.buffered) {
+      return;
+    }
+
+    console.log("buffer player for index: " + index);
+
     clip.buffering = true;
     var player = $scope.players[clip._id];
     var videoInfo = {
