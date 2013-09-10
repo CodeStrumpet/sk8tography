@@ -273,9 +273,10 @@ table th, table td {
 }
 
 .playlist-scroller {
-  width: 80%;
+  width: 97%;
   overflow: scroll;
   min-height:250px;
+
 }
 
 .playlist-item {
@@ -301,14 +302,14 @@ table th, table td {
 }
 
 #main {
-
 }
 
 #side {
-
-    -webkit-flex: 0 0 375px;
-    -moz-flex: 0 0 375px;
-    flex: 0 0 375px;    
+  margin-left: 20px;
+  margin-top: 40px;
+  -webkit-flex: 0 0 375px;
+  -moz-flex: 0 0 375px;
+  flex: 0 0 375px;    
 }
 
 .sidebar-contents {
@@ -349,6 +350,12 @@ table th, table td {
 
 .show-me { display: inline-block !important; }
 
+.video-player {
+  height: 385px;
+  width: 640px;
+  background-color: black;
+  margin-bottom: 20px;
+}
 
 /**************************************************
   Videoconsole & tag clips page styles

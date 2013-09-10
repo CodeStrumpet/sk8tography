@@ -6,9 +6,14 @@ div.container-fluid.page
     //-   div(ng-repeat="trick in playlist.items[playlist.position].tricks")
     //-     h3 {{trick.trickTypeRef.name}}
     div
+      tabset
+        tab(ng-repeat="tab in tabs", heading="{{tab.title}}", active="tab.active")          
+      div(ng-show="tabs[0].active")
+      div(ng-show="tabs[0].active")
+    div.video-player.right
       video-player(playlist="playlist", playstate="playstate")
-    div.well
-      div.playlist-scroller
+    div
+      div.playlist-scroller.well
         h3 Playlist
         ul.thumbnails
           li(ng-repeat="clip in playlist.items").span2.playlist-item

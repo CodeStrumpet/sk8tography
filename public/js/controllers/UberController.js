@@ -9,6 +9,9 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
   $scope.playlist = {items: [], position: -1};
   $scope.playstate = {isPlaying : false, keepPlaying : true, playUponCued : true};
 
+
+  $scope.tabs = [{title:"Explore", active: false}, {title: "New Playlist", active: true}];
+
   $scope.currSearch = SearchContext.currSearchContext;
 
   var skatersQuery = {entity : "Skater", select : "name thumbFileName nameSlug"};

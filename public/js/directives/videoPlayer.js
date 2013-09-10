@@ -33,7 +33,8 @@ directive('videoPlayer', function() {
         playerContainer.append("<div id='" + playerId + "' class='hide-me' ng-show='playerIsWithCurrentPlaylistItem(" + playerId + ")' " + "></div>");
 
         var newPlayer = new YT.Player(playerId, {
-                width: '100%',
+                width: '640px',
+                height: '385px',
                 videoId: '',
                 playerVars: {
                   controls: '0',                             // don't show video controls in the player
