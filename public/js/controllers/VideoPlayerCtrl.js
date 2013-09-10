@@ -119,31 +119,32 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
   };
 
   $scope.tempPlayerEvent = function(playerEvent) {
-
-      switch(playerEvent.data) {
-        case -1:
-              stateName = "UNSTARTED";
-              break;
-        case YT.PlayerState.ENDED:
-              stateName = "ENDED";      
-              // recue the video if we ever get to the ended state        
-              // todo: also rebuffer!!
-              $scope.tempPlayer.cueVideoById(videoInfoForClip($scope.playlist.temp));
-              break;
-        case YT.PlayerState.PLAYING:                
-              stateName = "PLAYING";              
-              break;
-        case YT.PlayerState.PAUSED:
-              stateName = "PAUSED"; 
-              break;
-        case YT.PlayerState.BUFFERING:
-              stateName = "BUFFERING";
-              break;
-        case YT.PlayerState.CUED:
-              break;
-        default:
-              stateName = "UNKNOWN";
-      }
+    var stateName = "";
+    switch(playerEvent.data) {
+      case -1:
+            stateName = "UNSTARTED";
+            break;
+      case YT.PlayerState.ENDED:
+            stateName = "ENDED";      
+            // recue the video if we ever get to the ended state        
+            // todo: also rebuffer!!
+            $scope.tempPlayer.cueVideoById(videoInfoForClip($scope.playlist.temp));
+            break;
+      case YT.PlayerState.PLAYING:                
+            stateName = "PLAYING";              
+            break;
+      case YT.PlayerState.PAUSED:
+            stateName = "PAUSED"; 
+            break;
+      case YT.PlayerState.BUFFERING:
+            stateName = "BUFFERING";
+            break;
+      case YT.PlayerState.CUED:
+            break;
+      default:
+            stateName = "UNKNOWN";
+    }
+    console.log("temp player state change: " + stateName);
   };
 
 
@@ -153,6 +154,7 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
   // =================================================================
 
   $scope.$watch('playlist.position', function(newVal, oldVal) {
+    
     if (typeof(newVal) != 'undefined') {
 
       for (var j = 0; j < $scope.playlist.items.length; j++) {
@@ -167,7 +169,7 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
         }
 
         //$('.icon-trash').removeClass('hide-me').addClass('show-me');
-      }
+      }      
 
       if (newVal >= 0 && !$scope.playlist.pause) {
         // play video at new position...
@@ -178,7 +180,11 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
       var position = newVal;
       if (position < 0) {
         position = 0;
-      } 
+      } else {
+        // set temp to null
+        $scope.playlist.temp = null;
+      }
+
       for (var i = position; position < position + $scope.numBufferedPlayers; i++) {
         if (i >= $scope.playlist.items.length) {
           // we have more buffered players than we have playlist items
@@ -224,13 +230,20 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
 
   $scope.$watch('playlist.temp', function(newVal, oldVal) {
 
-    if (!$scope.ignoreTemp) {
+    if ($scope.ignoreTemp) {
       $scope.ignoreTemp = false;             
       return;
     }
 
-    if (typeof(newVal) != 'undefined') {
+    if (newVal && typeof(newVal) != 'undefined') {
       console.log("observed a temp video change");
+
+      $scope.playlist.position = -1;
+
+      $scope.tempPlayer.cueVideoById(videoInfoForClip($scope.playlist.temp, true));
+      $scope.tempPlayer.playVideo();
+
+
       $('#tempPlayer').removeClass('hide-me');
       $('#tempPlayer').addClass('show-me'); 
     } else {
@@ -302,13 +315,19 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
     player.playVideo();
   }
 
-  function videoInfoForClip(clip) {
-    return {
+  function videoInfoForClip(clip, includeEndSeconds) {
+
+    var vidInfo = {
       videoId: clip.videoSegmentId,
-      startSeconds: clip.startTime,
-      //endSeconds : clip.startTime + clip.duration,            
+      startSeconds: clip.startTime,      
       suggestedQuality: 'default'
     };
+
+    if (includeEndSeconds) {
+      vidInfo.endSeconds = clip.startTime + clip.duration;
+    }
+    
+    return vidInfo;
   }
 
   function checkCurrentClipTime(clip) {
