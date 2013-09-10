@@ -162,6 +162,34 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
     $scope.searchText = skater.name;   
   }
 
+  $scope.musicTypeahead = function(searchText) {
+    var musicQuery = {entity : "Song"};
+    var conditions = [];
+    var condition = {};
+
+    musicQuery.conditions = conditions;
+    musicQuery.select = "title artist fileName score votes";
+
+    APIService.fetchItems(musicQuery, true).then(function(songs) {
+      console.log(songs)  ;
+    });
+
+    return [{title : "Song1"}, {title : "Song2"}, {title :"Song3"}];
+
+  };
+
+  $scope.musicSelected = function(music) {
+
+  };
+
+  $scope.musicTypeaheadBlur = function(index) {
+
+  };
+
+  $scope.updateMusicWithSongChoice = function(song) {
+
+  };
+
   $scope.playSearchResult = function(searchResultIndex) {
     console.log("play search result");
 

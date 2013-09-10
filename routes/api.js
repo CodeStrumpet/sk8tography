@@ -13,6 +13,7 @@ var Feedback = mongoose.model("Feedback");
 var Trick = mongoose.model("Trick");
 var Tag = mongoose.model("Tag");
 var UserEdit = mongoose.model("UserEdit");
+var Song = mongoose.model("Song");
 
 var videoHelper = require('../helpers/video');
 
@@ -541,7 +542,8 @@ exports.fetchResults = function (req, res) {
     "Clip" : Clip,
     "TrickType" : TrickType,
     "Video" : Video,
-    "Feedback" : Feedback
+    "Feedback" : Feedback,
+    "Song" : Song
   };
 
   var queryObj = req.body.q;
