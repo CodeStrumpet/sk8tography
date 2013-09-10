@@ -3,7 +3,7 @@ var nconf = require('nconf');
 
 var models = ['./track.js', './user.js', './tag.js', './userEdit.js', './taggableObject.js', 
 './video.js', './videoSegment.js', './skater.js', './trickType.js', 
-'./trick.js', './spot.js', './clip.js', './feedback.js'];
+'./trick.js', './spot.js', './clip.js', './feedback.js', './song.js'];
 
 exports.initialize = function() {
     var l = models.length;
@@ -46,8 +46,11 @@ mongoose.connect(dbURI);
 
 exports.runScripts = function() {
 
-//  var importTricks = require('./db_scripts/import_xml_tricks.js');
-//  importTricks.importTricks();
+  //  var importTricks = require('./db_scripts/import_xml_tricks.js');
+  //  importTricks.importTricks();
+
+  // var importSongs = require('./db_scripts/import_songs.js');
+  // importSongs.importSongs();
 
 };
 

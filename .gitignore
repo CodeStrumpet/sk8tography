@@ -3,6 +3,7 @@ node_modules
 .DS_Store
 /videos/*
 /images/*
+/audio/*
 /videocache/*
 
 # asset files
