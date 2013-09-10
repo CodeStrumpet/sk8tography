@@ -14,6 +14,9 @@ directive('videoPlayer', function() {
         return;
       }
 
+      scope.tempPlayer = newPlayerWithId("tempPlayer", scope.tempPlayerReady, scope.tempPlayerEvent);
+
+
       scope.removePlayerForClip = function(clip) {
         var playerElement = $("#" + clip._id);        
         if (playerElement) {
@@ -32,29 +35,33 @@ directive('videoPlayer', function() {
         var playerContainer = $("#player-container");
         playerContainer.append("<div id='" + playerId + "' class='hide-me' ng-show='playerIsWithCurrentPlaylistItem(" + playerId + ")' " + "></div>");
 
-        var newPlayer = new YT.Player(playerId, {
-                width: '640px',
-                height: '385px',
-                videoId: '',
-                playerVars: {
-                  controls: '0',                             // don't show video controls in the player
-                  showinfo: '0',                             // don't show the title of the video upon hover etc.
-                  modestbranding: '1',                       // minimal branding
-                  rel: '0',                                  // don't show related videos when the video ends
-                  theme: 'light',                            // light or dark theme
-                  origin: 'http://localhost:8080',           // should be your domain
-                  iv_load_policy: '3',                       // don't show video annotations by default
-                  enablejsapi: '1',
-                  html5: '1'
-                },
-                events: {
-                  'onReady': scope.onPlayerReady,
-                  'onStateChange': scope.dispatchPlayerEvent
-                }
-              });     
+        var newPlayer = newPlayerWithId(playerId, scope.onPlayerReady, scope.dispatchPlayerEvent);
         scope.players[playerId] = newPlayer;
         //scope.playlist.items[index].player = newPlayer;
       };
+
+      function newPlayerWithId(playerId, readyHandler, stateChangeHandler) {
+        return new YT.Player(playerId, {
+          width: '640px',
+          height: '385px',
+          videoId: '',
+          playerVars: {
+            controls: '0',                             // don't show video controls in the player
+            showinfo: '0',                             // don't show the title of the video upon hover etc.
+            modestbranding: '1',                       // minimal branding
+            rel: '0',                                  // don't show related videos when the video ends
+            theme: 'light',                            // light or dark theme
+            origin: 'http://localhost:8080',           // should be your domain
+            iv_load_policy: '3',                       // don't show video annotations by default
+            enablejsapi: '1',
+            html5: '1'
+          },
+          events: {
+            'onReady': readyHandler,
+            'onStateChange': stateChangeHandler
+          }
+        });
+      }
     },
     templateUrl: 'partials/videoPlayer.jade',
     controller: VideoPlayerCtrl,

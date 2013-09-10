@@ -114,6 +114,38 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
     }
   };
 
+  $scope.tempPlayerReady = function(event) {
+
+  };
+
+  $scope.tempPlayerEvent = function(playerEvent) {
+
+      switch(playerEvent.data) {
+        case -1:
+              stateName = "UNSTARTED";
+              break;
+        case YT.PlayerState.ENDED:
+              stateName = "ENDED";      
+              // recue the video if we ever get to the ended state        
+              // todo: also rebuffer!!
+              $scope.tempPlayer.cueVideoById(videoInfoForClip($scope.playlist.temp));
+              break;
+        case YT.PlayerState.PLAYING:                
+              stateName = "PLAYING";              
+              break;
+        case YT.PlayerState.PAUSED:
+              stateName = "PAUSED"; 
+              break;
+        case YT.PlayerState.BUFFERING:
+              stateName = "BUFFERING";
+              break;
+        case YT.PlayerState.CUED:
+              break;
+        default:
+              stateName = "UNKNOWN";
+      }
+  };
+
 
 
   // =================================================================
@@ -190,6 +222,24 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
 
   }, true);
 
+  $scope.$watch('playlist.temp', function(newVal, oldVal) {
+
+    if (!$scope.ignoreTemp) {
+      $scope.ignoreTemp = false;             
+      return;
+    }
+
+    if (typeof(newVal) != 'undefined') {
+      console.log("observed a temp video change");
+      $('#tempPlayer').removeClass('hide-me');
+      $('#tempPlayer').addClass('show-me'); 
+    } else {
+      $('#tempPlayer').addClass('hide-me');
+      $('#tempPlayer').removeClass('show-me');
+    }
+
+
+  });
 
 
   // =================================================================
