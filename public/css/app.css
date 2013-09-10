@@ -275,7 +275,16 @@ table th, table td {
 .playlist-scroller {
   width: 80%;
   overflow: scroll;
-  min-height:150px;
+  min-height:250px;
+}
+
+.playlist-item {
+  height: 210px;
+  overflow: hidden;
+}
+
+.playlist-item div {
+  max-height: 200px;
 }
 
 
