@@ -23,15 +23,15 @@ div.container-fluid.page
                   ng-model="music.searchText",
                   type="text",
                   placeholder="",
-                  typeahead="value.title for value in musicTypeahead($viewValue)", 
+                  typeahead="value.name for value in musicTypeahead($viewValue)", 
                   typeahead-on-select='musicSelected($item)',
                   on-blur="musicTypeaheadBlur($index)").span12
                 a(href="#", data-toggle="dropdown").btn.btn-primary.dropdown-toggle
                   span.caret
                 ul.dropdown-menu
                   li(ng-repeat="song in music.songs")
-                    a(ng-click="updateMusicWithSongChoice(song)") {{song.title}}
-            div.control-group
+                    a(ng-click="musicSelected(song)") {{song.name}}                
+            div.control-group            
               button.btn.btn-inverse(ng-click='savePlaylist()', ng-disabled="!updateEnabled") Save Playlist
 
     div.video-player.right

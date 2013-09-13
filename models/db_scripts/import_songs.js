@@ -11,7 +11,8 @@ exports.importSongs = function() {
 
     var newSong = new Song({
       name: tracks[i].name,
-      fileName: tracks[i].fileName,
+      fileNameOGG: tracks[i].fileNameOGG,
+      fileNameMP3: tracks[i].fileNameMP3,
       artist: tracks[i].artist
     });
 

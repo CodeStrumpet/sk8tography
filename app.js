@@ -128,6 +128,7 @@ app.configure(function(){
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use('/images', express.static(__dirname + '/images'));
+  app.use('/audio', express.static(__dirname + '/audio'));
   app.use(express.static(__dirname + '/public'));
   app.use(app.router);
 });

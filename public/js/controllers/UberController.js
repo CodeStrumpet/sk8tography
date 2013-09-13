@@ -14,6 +14,8 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
 
   $scope.currSearch = SearchContext.currSearchContext;
 
+  $scope.music = {};
+
   var skatersQuery = {entity : "Skater", select : "name thumbFileName nameSlug"};
   APIService.fetchItems(skatersQuery, true).then(function(results) {
     $scope.skaters = results;
@@ -63,6 +65,12 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
 
   // call refresh results with current context
   $scope.refreshResults($scope.currSearch);
+
+  // fetch all songs so we can show them in the drop-down
+  APIService.fetchItems(genericSongsQuery(), true).then(function(songs) {
+    $scope.music.songs = songs;
+  });
+
 
   $scope.addClipToPlaylist = function(clip) {
     if ($scope.playlist.items.indexOf(clip) == -1) {
@@ -163,31 +171,38 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
   }
 
   $scope.musicTypeahead = function(searchText) {
-    var musicQuery = {entity : "Song"};
-    var conditions = [];
-    var condition = {};
+    var musicQuery = genericSongsQuery();
 
-    musicQuery.conditions = conditions;
-    musicQuery.select = "title artist fileName score votes";
+    // confine search to results matching searchText
+    musicQuery.searchTerms = searchText;
+    musicQuery.searchField = "name";
 
-    APIService.fetchItems(musicQuery, true).then(function(songs) {
-      console.log(songs)  ;
+
+    return APIService.fetchItems(musicQuery, true).then(function(songs) {
+      return songs;
     });
-
-    return [{title : "Song1"}, {title : "Song2"}, {title :"Song3"}];
-
   };
 
-  $scope.musicSelected = function(music) {
-
+  $scope.musicSelected = function(song) {
+    console.log("music selected");
+    $scope.music.currentSong = song;
+    $scope.music.searchText = song.name;
+    $scope.playlist.song = song;
   };
 
   $scope.musicTypeaheadBlur = function(index) {
+    var validSong = false;
+    for (var i = 0; i < $scope.music.songs.length; i++) {      
+      if ($scope.music.songs[i].name == $scope.music.searchText) {
+        validSong = true;
+      }
+    }
 
-  };
-
-  $scope.updateMusicWithSongChoice = function(song) {
-
+    // unset current song if we have to
+    if (!validSong) {
+      console.log("no valid song found");
+      $scope.music.currentSong = null;
+    }
   };
 
   $scope.playSearchResult = function(searchResultIndex) {
@@ -217,4 +232,10 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
     YoutubeService.cueClip(clip);
     */
   };
+
+  function genericSongsQuery() {
+    var musicQuery = {entity : "Song"};
+    musicQuery.select = "name artist fileNameOGG fileNameMP3 score votes";
+    return musicQuery;
+  }
 }

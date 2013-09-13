@@ -568,6 +568,7 @@ exports.fetchResults = function (req, res) {
   var searchTerms = queryObj.searchTerms;
   var objectId = queryObj._id;
   var searchConditions = queryObj.conditions;
+  var searchField = queryObj.searchField;
 
   console.log("searchTerms: " + searchTerms + " _id: " + objectId);
 
@@ -588,6 +589,7 @@ exports.fetchResults = function (req, res) {
 
     // set the fields to retrieve
     if (queryObj.select) {
+      console.log("select: " + JSON.stringify(queryObj.select));
       query.select(queryObj.select);
     } else {
       // will the default be to just select everything??

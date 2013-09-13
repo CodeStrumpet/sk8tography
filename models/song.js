@@ -9,8 +9,9 @@ module.exports = function() {
 
   var songSchema = TaggableObject.schema.extend({
     name: String,
-    artistName: String,
-    fileName: String
+    artist: String,
+    fileNameOGG: String,
+    fileNameMP3: String
 	});
 
   songSchema.plugin(troop.timestamp, {useVirtual : false, createdPath : "created", modifiedPath : "updated"});

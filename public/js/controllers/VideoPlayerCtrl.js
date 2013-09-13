@@ -67,9 +67,13 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
     var playerId = playerEvent.target.i.id;
 
     var playlistItem = null;
+    var isUserPlayer = false;
     for (var i = 0; i < $scope.playlist.items.length; i++) {
       if ($scope.playlist.items[i]._id == playerId) {
         var playlistItem = $scope.playlist.items[i];
+        if (i == $scope.playlist.position) {
+          isUserPlayer = true;
+        }
         break;
       }
     }
@@ -97,10 +101,16 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
               break;
         case YT.PlayerState.PLAYING:                
               stateName = "PLAYING";              
-              checkCurrentClipTime(playlistItem);              
+              checkCurrentClipTime(playlistItem);
+              if (isUserPlayer && $scope.audio.paused) {
+                $scope.audio.play();
+              }              
               break;
         case YT.PlayerState.PAUSED:
               stateName = "PAUSED"; 
+              if (isUserPlayer) {
+                $scope.audio.pause();
+              }
               break;
         case YT.PlayerState.BUFFERING:
               stateName = "BUFFERING";
@@ -254,6 +264,28 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
 
   });
 
+  $scope.$watch('playlist.song', function(newVal, oldVal) {
+
+    if (newVal && typeof(newVal) != 'undefined') {
+      var srcPath = "";
+      if ($scope.audio.canPlayType('audio/mp3')) {
+        srcPath = "./audio/" + newVal.fileNameMP3;
+      } else {
+        srcPath = "./audio/" + newVal.fileNameOGG;
+      }
+
+      $scope.audio.src = srcPath;
+      console.log("set audio src: " + $scope.audio.src);
+      $scope.audio.load();
+    };
+  });
+
+
+  $scope.$watch('audio.networkState', function(newVal, oldVal) {
+    console.log("audio network state change: " + newVal);
+  });
+
+
 
   // =================================================================
   // Utility Functions
@@ -268,6 +300,7 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
 
   function playVideoAtCurrentPosition() {
     console.log("currentPosition: " + $scope.playlist.position);
+
     var clip = $scope.playlist.items[$scope.playlist.position];
 
     clip.buffering = false;
@@ -278,6 +311,30 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
     player.seekTo(clip.startTime, true);
     player.playVideo();
     $scope.playlist.pause = false;
+
+    // handle audio
+    var totalPlayPosition = 0;
+    for (var i = 0; i < $scope.playlist.position; i++) {
+      totalPlayPosition += $scope.playlist.items[i].duration;
+    }
+
+    if ($scope.audio.duration > totalPlayPosition) {
+      var timeSyncDiff = totalPlayPosition - $scope.audio.currentTime;
+      console.log("currentTime: " + $scope.audio.currentTime + " totalPlayPosition: " + totalPlayPosition + " timeSyncDiff: " + timeSyncDiff);
+
+      if (!$scope.audio.paused && Math.abs(timeSyncDiff) < 1.0) {
+        // do nothing. audio is already playing, no need to seek...
+        console.log("keep audio rolling...");
+      } else {
+        $scope.audio.currentTime = totalPlayPosition;
+        $scope.audio.play();
+      }
+
+    } else {
+      console.log("audio track is shorter than playlist");
+    }
+
+
   }
 
 

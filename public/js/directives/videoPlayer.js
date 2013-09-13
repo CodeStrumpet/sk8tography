@@ -16,6 +16,9 @@ directive('videoPlayer', function() {
 
       scope.tempPlayer = newPlayerWithId("tempPlayer", scope.tempPlayerReady, scope.tempPlayerEvent);
 
+      scope.audio = $("#song").get(0);
+      console.log(scope.audio);
+
 
       scope.removePlayerForClip = function(clip) {
         var playerElement = $("#" + clip._id);        
