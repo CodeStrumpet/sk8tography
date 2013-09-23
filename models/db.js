@@ -3,7 +3,7 @@ var nconf = require('nconf');
 
 var models = ['./track.js', './user.js', './tag.js', './userEdit.js', './taggableObject.js', 
 './video.js', './videoSegment.js', './skater.js', './trickType.js', 
-'./trick.js', './spot.js', './clip.js', './feedback.js', './song.js'];
+'./trick.js', './spot.js', './clip.js', './feedback.js', './song.js', './playlist.js'];
 
 exports.initialize = function() {
     var l = models.length;

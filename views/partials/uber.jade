@@ -32,7 +32,7 @@ div.container-fluid.page
                   li(ng-repeat="song in music.songs")
                     a(ng-click="musicSelected(song)") {{song.name}}                
             div.control-group            
-              button.btn.btn-inverse(ng-click='savePlaylist()', ng-disabled="!updateEnabled") Save Playlist
+              button.btn.btn-inverse(ng-click='savePlaylist()', ng-disabled="!savePlaylistEnabled()") Save Playlist
             div.control-group
               button.btn.btn-inverse(ng-click='clearPlaylist()') Clear Playlist
 

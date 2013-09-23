@@ -164,6 +164,7 @@ app.get('/api/activeTrickTypes', api.activeTrickTypes);
 app.post('/api/addVideoSegment', api.addVideoSegment);
 app.post('/api/addVideo', api.addVideo);
 app.post('/api/addSkater', api.addSkater);
+app.post('/api/addPlaylist', api.addPlaylist);
 app.post('/api/addTrickType', api.addTrickType);
 app.post('/api/login', api.login);
 app.post('/api/signup', api.signup);

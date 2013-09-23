@@ -14,6 +14,7 @@ var Trick = mongoose.model("Trick");
 var Tag = mongoose.model("Tag");
 var UserEdit = mongoose.model("UserEdit");
 var Song = mongoose.model("Song");
+var Playlist = mongoose.model("Playlist");
 
 var videoHelper = require('../helpers/video');
 
@@ -67,6 +68,38 @@ exports.addSkater = function(req, res) {
     } else {
       res.json({
         skater : newSkater
+      });
+    }
+  });  
+};
+
+exports.addPlaylist = function(req, res) {
+  var playlistData = req.body;
+
+  var clips = [];
+
+  for (var i = 0; i < playlistData.clips.length; i++) {
+    clips.push(mongoose.Types.ObjectId(playlistData.clips[i]));
+  }
+
+  var song = mongoose.Types.ObjectId(playlistData.song);
+
+
+  var newPlaylist = new Playlist({
+    title: playlistData.title,
+    clips: clips,
+    song: song
+  });
+
+  newPlaylist.save(function (saveErr) {
+    if (saveErr) {
+      console.log("saveErr: " + saveErr);
+      res.json({
+        error : saveErr
+      });
+    } else {
+      res.json({
+        playlist : newPlaylist
       });
     }
   });  

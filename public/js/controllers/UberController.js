@@ -219,6 +219,27 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
 
   $scope.savePlaylist = function() {
     console.log("save playlist");
+
+    var clipIds = [];
+    for (var i = 0; i < $scope.playlist.items.length; i++) {
+      if ($scope.playlist.items[i]._id) {
+        clipIds.push($scope.playlist.items[i]._id);
+      }
+    }
+
+    $scope.newPlaylist.clips = clipIds;
+    $scope.newPlaylist.song = $scope.playlist.song._id;
+
+    $http.post('/api/addPlaylist', $scope.newPlaylist).
+      success(function(data) {
+        if (data.error) {
+          console.log("add Playlist failed: " + data.error);
+        } else {
+          console.log("add Playlist returned success.");
+          console.log(data.playlist);
+          $scope.playlist._id = data.playlist._id;
+        }
+    });
   };
 
   $scope.selectClip = function(clipIndex) {
@@ -229,17 +250,10 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
       $scope.playstate.playUponCued = true;
       $scope.playlist.position = clipIndex;
     };
+  };
 
-
-    /*
-    if ($scope.currClip && $scope.currClip != clip) {
-      $scope.currClip.selected = false;
-    }
-    clip.selected = true;
-
-    $scope.currClip = clip;
-    YoutubeService.cueClip(clip);
-    */
+  $scope.savePlaylistEnabled = function() {
+    return !$scope.playlist._id && $scope.playlist.items.length > 0 && $scope.newPlaylist.title.length > 0 && $scope.playlist.song;
   };
 
   function genericSongsQuery() {
