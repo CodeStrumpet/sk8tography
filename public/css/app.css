@@ -357,6 +357,10 @@ table th, table td {
   margin-bottom: 20px;
 }
 
+.playlists {
+  width: 500px;
+}
+
 /**************************************************
   Videoconsole & tag clips page styles
 ***************************************************/

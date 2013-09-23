@@ -8,7 +8,19 @@ div.container-fluid.page
     div
       tabset
         tab(ng-repeat="tab in tabs", heading="{{tab.title}}", active="tab.active")          
-      div(ng-show="tabs[0].active")
+      div(ng-show="tabs[0].active").left.playlists
+        table.table
+          tr(ng-repeat="list in playlists", mouseover="activeclip", ng-click="setNewPlaylist(list)")                     
+            td
+              div       
+                img(src="{{'./images/' + list.thumbFileName}}")
+            td
+              strong {{list.title}}
+            td.like-button-column 
+              div(style="text-align: center;")
+                span(ng-click="likePlaylist(list); $event.stopPropagation();", ng-class="list.votes.indexOf(currentUserId) >= 0 ? 'already-voted' : ''").icon-chevron-up.icon-2x.addVideoControl
+                h3(ng-show="list.score > 0", ng-click="likePlaylist(list); $event.stopPropagation();").addVideoControl {{list.score}}
+                h5(ng-show="!list.score || list.score == 0", ng-click="likePlaylist(list); $event.stopPropagation();").addVideoControl LIKE
       div(ng-show="tabs[1].active").left
         form
           fieldset

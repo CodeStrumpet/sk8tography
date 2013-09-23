@@ -576,7 +576,8 @@ exports.fetchResults = function (req, res) {
     "TrickType" : TrickType,
     "Video" : Video,
     "Feedback" : Feedback,
-    "Song" : Song
+    "Song" : Song,
+    "Playlist" : Playlist
   };
 
   var queryObj = req.body.q;

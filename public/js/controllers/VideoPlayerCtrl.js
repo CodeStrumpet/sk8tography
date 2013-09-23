@@ -6,8 +6,6 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
   $scope.numBufferedPlayers = 5;
 
   $scope.players = {};
-  $scope.newPlaylist = {};
-  $scope.music = {};
 
 
 
@@ -307,6 +305,15 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
     }
   }, true);
 
+  $scope.$watch('playlist.purgedItems', function(newVal, oldVal) {
+    if (newVal && $scope.playlist.purgedItems.length > 0) { 
+      for (var i = 0; i < $scope.playlist.purgedItems.length; i++) {
+        console.log("remove player: " + $scope.playlist.purgedItems[i]._id);
+      }
+      $scope.playlist.purgedItems = null;
+    }
+  }, true);
+
 
 
   // =================================================================
@@ -323,12 +330,11 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
       $scope.removePlayerForClip($scope.playlist.items[i]);
     }
     $scope.playlist.items = [];
-    
+
     $scope.playlist.song = null;
     $scope.playlist.position = -1;
 
     $scope.ignorePlaylistChange = false; // re-enable watch functions
-
   }
 
   function addPlayerForPlaylistItem(index) {

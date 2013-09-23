@@ -15,6 +15,8 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
   $scope.currSearch = SearchContext.currSearchContext;
 
   $scope.music = {};
+  $scope.newPlaylist = {};
+
 
   var skatersQuery = {entity : "Skater", select : "name thumbFileName nameSlug"};
   APIService.fetchItems(skatersQuery, true).then(function(results) {
@@ -71,6 +73,10 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
     $scope.music.songs = songs;
   });
 
+  // fetch top playlists so we can show something in the explore tab
+  APIService.fetchItems(topPlaylistsQuery(), true).then(function(playlists) {
+    $scope.playlists = playlists;
+  });
 
   $scope.addClipToPlaylist = function(clip) {
     if ($scope.playlist.items.indexOf(clip) == -1) {
@@ -210,11 +216,27 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
     
   };
 
-  $scope.clearPlaylist = function() {
-    $scope.playlist.clearAllItems = true;
-    $scope.newPlaylist.title = "";      
-    $scope.music.searchText = "";
+  $scope.setNewPlaylist = function(thePlaylist) {
 
+    // first clear whatever we currently have in terms of a playlist
+    //$scope.clearPlaylist();
+
+    $scope.playlist.purgedItems = $scope.playlist.items;
+
+    // now introduce the new playlist
+    $scope.playlist.position = -1;
+    $scope.playlist.items = thePlaylist.clips;
+    $scope.playlist.song = thePlaylist.song;
+  };
+
+  $scope.clearPlaylist = function() {
+
+    if ($scope.newPlaylist) {
+      $scope.newPlaylist.title = null;      
+    }
+    if ($scope.music) {
+      $scope.music.searchText = null;
+    }
   };
 
   $scope.savePlaylist = function() {
@@ -253,12 +275,19 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
   };
 
   $scope.savePlaylistEnabled = function() {
-    return !$scope.playlist._id && $scope.playlist.items.length > 0 && $scope.newPlaylist.title.length > 0 && $scope.playlist.song;
+    return !$scope.playlist._id && $scope.playlist.items.length > 0 && $scope.newPlaylist.title && $scope.newPlaylist.title.length > 0 && $scope.playlist.song;
   };
 
   function genericSongsQuery() {
     var musicQuery = {entity : "Song"};
     musicQuery.select = "name artist fileNameOGG fileNameMP3 score votes";
     return musicQuery;
+  }
+
+  function topPlaylistsQuery() {
+    var playlistQuery = {entity : "Playlist"};
+    playlistQuery.select = "title song clips";
+    playlistQuery.populate = "clips song";
+    return playlistQuery; 
   }
 }
