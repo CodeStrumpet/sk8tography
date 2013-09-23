@@ -6,6 +6,8 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
   $scope.numBufferedPlayers = 5;
 
   $scope.players = {};
+  $scope.newPlaylist = {};
+  $scope.music = {};
 
 
 
@@ -164,6 +166,10 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
   // =================================================================
 
   $scope.$watch('playlist.position', function(newVal, oldVal) {
+
+    if ($scope.ignorePlaylistChange) {
+      return;
+    }
     
     if (typeof(newVal) != 'undefined') {
 
@@ -208,6 +214,11 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
 
 
   $scope.$watch('playlist.items', function(newVal, oldVal) {
+
+    if ($scope.ignorePlaylistChange) {
+      return;
+    }
+
     if (newVal && newVal.length > 0) {
 
       var position = $scope.playlist.position;
@@ -266,6 +277,10 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
 
   $scope.$watch('playlist.song', function(newVal, oldVal) {
 
+    if ($scope.ignorePlaylistChange) {
+      return;
+    }
+
     if (newVal && typeof(newVal) != 'undefined') {
       var srcPath = "";
       if ($scope.audio.canPlayType('audio/mp3')) {
@@ -285,12 +300,36 @@ function VideoPlayerCtrl($scope, $window, $timeout) {
     console.log("audio network state change: " + newVal);
   });
 
+  $scope.$watch('playlist.clearAllItems', function(newVal, oldVal) {
+    if ($scope.playlist.clearAllItems == 1) { 
+      clearEntirePlaylist();
+      $scope.playlist.clearAllItems = 0;
+    }
+  }, true);
+
 
 
   // =================================================================
   // Utility Functions
   // =================================================================
 
+  function clearEntirePlaylist() {
+
+    $scope.ignorePlaylistChange = true; // make sure playlist watch functions ignore upcoming playlist changes
+
+    // remove all playlist items
+    console.log("removing " + $scope.playlist.items.length + " items from playlist");
+    for (var i = 0; i < $scope.playlist.items.length; i++) {
+      $scope.removePlayerForClip($scope.playlist.items[i]);
+    }
+    $scope.playlist.items = [];
+    
+    $scope.playlist.song = null;
+    $scope.playlist.position = -1;
+
+    $scope.ignorePlaylistChange = false; // re-enable watch functions
+
+  }
 
   function addPlayerForPlaylistItem(index) {
     if (!$scope.players[$scope.playlist.items[index]._id]) {

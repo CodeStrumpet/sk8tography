@@ -33,6 +33,8 @@ div.container-fluid.page
                     a(ng-click="musicSelected(song)") {{song.name}}                
             div.control-group            
               button.btn.btn-inverse(ng-click='savePlaylist()', ng-disabled="!updateEnabled") Save Playlist
+            div.control-group
+              button.btn.btn-inverse(ng-click='clearPlaylist()') Clear Playlist
 
     div.video-player.right
       video-player(playlist="playlist", playstate="playstate")

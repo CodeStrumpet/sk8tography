@@ -185,7 +185,6 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
 
   $scope.musicSelected = function(song) {
     console.log("music selected");
-    $scope.music.currentSong = song;
     $scope.music.searchText = song.name;
     $scope.playlist.song = song;
   };
@@ -201,7 +200,6 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
     // unset current song if we have to
     if (!validSong) {
       console.log("no valid song found");
-      $scope.music.currentSong = null;
     }
   };
 
@@ -210,6 +208,17 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
 
     $scope.playlist.temp = $scope.searchClips[searchResultIndex];
     
+  };
+
+  $scope.clearPlaylist = function() {
+    $scope.playlist.clearAllItems = true;
+    $scope.newPlaylist.title = "";      
+    $scope.music.searchText = "";
+
+  };
+
+  $scope.savePlaylist = function() {
+    console.log("save playlist");
   };
 
   $scope.selectClip = function(clipIndex) {
