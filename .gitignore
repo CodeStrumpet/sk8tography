@@ -5,6 +5,7 @@ node_modules
 /images/*
 /audio/*
 /videocache/*
+/uploads/*
 
 # asset files
 /video/*
