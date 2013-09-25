@@ -46,6 +46,25 @@ div.span12
             div.controls
               input.input-xxlarge#segmentUrl(ng-model="newVideoSegment.url", type="url", name="segmentUrl", placeholder="http://www.youtube.com/...", ng-change='segmentUrlUpdated()')
               span.help-block Paste in any Youtube URL ...                    
+        div(ng-show="tabs[2].active")
+          div.control-group
+            label(for="fileToUpload").control-label Select a File to Upload
+            br
+            div.controls
+              input(type="file", ng-model-instant, id="fileToUpload", multiple, onchange="angular.element(this).scope().setFiles(this)") 
+          drop-file-box(files="files")            
+          div(ng-show="files.length")
+            div(ng-repeat="file in files.slice(0)")
+              span {{file.webkitRelativePath || file.name}}
+            //- (<span ng-switch="file.size > 1024*1024">
+            //-     <span ng-switch-when="true">{{file.size / 1024 / 1024 | number:2}} MB</span>
+            //-     <span ng-switch-default>{{file.size / 1024 | number:2}} kB</span>
+            //- </span>)
+          input(type="button", ng-click="uploadFile()", value="Upload")
+          div(ng-show="progressVisible")
+            div.percent {{progress}}%
+            div.progress-bar
+              div(ng-style="{'width': progress+'%'}").uploaded
         fieldset          
             div#videoInfo.controls(ng-show='newVideoSegment.valid', data-ng-animate="'fade'", style="display:none")
               table

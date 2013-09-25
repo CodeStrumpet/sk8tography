@@ -125,7 +125,8 @@ app.configure(function(){
   app.set('view options', {
     layout: false
   });
-  app.use(express.bodyParser());
+  app.use(express.bodyParser({uploadDir:'./uploads'}));
+  //app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use('/images', express.static(__dirname + '/images'));
   app.use('/audio', express.static(__dirname + '/audio'));
@@ -169,6 +170,7 @@ app.post('/api/addTrickType', api.addTrickType);
 app.post('/api/login', api.login);
 app.post('/api/signup', api.signup);
 app.post('/api/feedback', api.feedback);
+app.post('/api/upload', api.upload);
 
 // ========================================
 app.get('/api/posts', api.posts);

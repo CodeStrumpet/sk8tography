@@ -310,6 +310,55 @@ exports.feedback = function (req, res) {
 };
 
 
+exports.upload = function(req, res) {
+  console.log("upload!!");
+  //console.log(req.body);
+  //console.log(req.files);
+
+  var files = [];
+  if (req.files.uploadedFile) {
+    console.log('uploaded File');
+    files.push(req.files.uploadedFile);
+  }
+
+  if (req.files.uploadedFiles) {
+
+    for (var i = 0; i < req.files.uploadedFiles.length; i++) {
+      files.push(req.files.uploadedFiles[i]);
+    }
+  }
+
+  var fs = require('fs');
+
+  var msgs = [];
+
+  for (var i = 0; i < files.length; i++) {
+    // get the temporary location of the file
+    var tmp_path = files[i].path;
+
+    // set where the file should actually exists - in this case it is in the "images" directory
+    var target_path = './uploads/' + files[i].name;
+    // move the file from the temporary location to the intended location
+    fs.rename(tmp_path, target_path, function(err) {
+        if (err) {
+          msgs.push(JSON.stringify(err));          
+        }
+
+
+        // delete the temporary file, so that the explicitly set temporary upload dir does not get filled with unwanted files
+        fs.unlink(tmp_path, function() {
+          if (err) {
+            msgs.push(JSON.stringify(err));          
+          } else {
+            msgs.push('File uploaded to: ' + target_path);
+          }          
+        });
+    });
+  }
+
+  res.json({msgs: "unclear at this point whether the upload was successful"});
+};
+
 
 // GET
 
