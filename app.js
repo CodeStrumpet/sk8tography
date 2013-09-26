@@ -171,6 +171,7 @@ app.post('/api/login', api.login);
 app.post('/api/signup', api.signup);
 app.post('/api/feedback', api.feedback);
 app.post('/api/upload', api.upload);
+app.post('/api/uploadSongs', api.uploadSongs);
 
 // ========================================
 app.get('/api/posts', api.posts);

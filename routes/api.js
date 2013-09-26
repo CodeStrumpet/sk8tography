@@ -359,6 +359,82 @@ exports.upload = function(req, res) {
   res.json({msgs: "unclear at this point whether the upload was successful"});
 };
 
+exports.uploadSongs = function(req, res) {
+  console.log("upload songs!!");
+  console.log(req.body);
+  console.log(req.files);
+
+  var files = [];
+  if (req.files.uploadedFile) {
+    files.push(req.files.uploadedFile);
+  }
+
+  if (req.files.uploadedFiles) {
+    for (var i = 0; i < req.files.uploadedFiles.length; i++) {
+      files.push(req.files.uploadedFiles[i]);
+    }
+  }
+
+  // kind of a hack to deal with string object sent w/ xhr request
+  var filesInfo = JSON.parse(req.body.filesInfo);
+
+  var fs = require('fs');
+
+  var msgs = [];
+
+  var processingFns = [];
+
+  for (var i = 0; i < files.length; i++) {
+    var x = function () {
+      var file = files[i];
+      var fileInfo = filesInfo[i];
+      processingFns.push(function(callback) {      
+
+        // get the temporary location of the file
+        var tmp_path = file.path;
+
+        // set where the file should actually exists - in this case it is in the "images" directory
+        var target_path = './audio/' + file.name;
+
+        // move the file from the temporary location to the intended location
+        fs.rename(tmp_path, target_path, function(err) {
+          if (err) {
+            callback(err, null);            
+          } else {
+
+            // add song to db
+            console.log(JSON.stringify(file));
+            console.log(JSON.stringify(fileInfo));
+
+            callback(null, null);
+          }
+
+          // delete the temporary file, so that the explicitly set temporary upload dir does not get filled with unwanted files
+          fs.unlink(tmp_path, function() {
+            if (err) {
+              msgs.push(JSON.stringify(err));          
+            } else {
+              msgs.push('File uploaded to: ' + target_path);
+            }          
+          });
+        });
+
+      });
+
+    }();
+
+  }
+
+  require('async').parallel(processingFns, function(err, results) {
+    console.log("Err: " + err);
+    console.log("results: " + results);
+  });
+
+
+
+  res.json({msgs: "unclear at this point whether the upload was successful"});
+};
+
 
 // GET
 

@@ -10,7 +10,8 @@ div.span12
           div.span11              
             tabset
               tab(ng-repeat="tab in tabs", heading="{{tab.title}}", active="tab.active")          
-            div(ng-show="tabs[0].active")          
+            div(ng-show="tabs[0].active")   
+              p Don't upload music that you don't own the rights to.       
               drop-file-box(files="files")
               br            
               div(ng-show="files.length")
@@ -24,10 +25,10 @@ div.span12
                         span {{file.webkitRelativePath || file.name}}                  
                       strong.control-label Artist
                       div.controls
-                        input(type="text", ng-model="file.artist").input-xlarge               
+                        input(type="text", ng-model="file.fileInfo.artist").input-xlarge               
                       strong.control-label Track Title
                       div.controls
-                        input(type="text", ng-model="file.title", ng-enter="addNewSong()").input-xlarge
+                        input(type="text", ng-model="file.fileInfo.title", ng-enter="addNewSong()").input-xlarge
                 //- (<span ng-switch="file.size > 1024*1024">
                 //-     <span ng-switch-when="true">{{file.size / 1024 / 1024 | number:2}} MB</span>
                 //-     <span ng-switch-default>{{file.size / 1024 | number:2}} kB</span>
