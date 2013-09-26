@@ -38,6 +38,10 @@ var app = angular.module('myApp', ['ui.bootstrap', 'ngCookies', 'myApp.filters',
         templateUrl: 'partials/addVideoSegment',
         controller: AddVideoSegmentCtrl
       }).
+      when('/addNewSong', {
+        templateUrl: 'partials/addNewSong',
+        controller: AddNewSongCtrl
+      }).
       when('/tagClips', {
         templateUrl: 'partials/tagClips',
         controller : TagClipsCtrl

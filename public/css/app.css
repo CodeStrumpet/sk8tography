@@ -215,7 +215,7 @@ table th, table td {
 .dropbox.not-available {
     background-color: #F88;
 }
-.dropbox.over {
+.dropboxover {
     background-color: #bfb;
 }
 
@@ -400,6 +400,13 @@ table th, table td {
 
 .playlists {
   width: 500px;
+}
+
+.over { 
+  font-size:5em; 
+  position:absolute; 
+  top:200px; 
+  left:800px; z-index:2;
 }
 
 /**************************************************

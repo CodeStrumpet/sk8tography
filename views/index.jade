@@ -10,6 +10,8 @@ block body
             a(href='/tagClips') Tag Clips
           li()
             a(href='/addVideoSegment') Add Videos
+          li()
+            a(href='/addNewSong') Add Music
           li.dropdown
             a(href="#", data-toggle="dropdown", ng-cloak).dropdown-toggle {{feedbackLabel}}
             div.dropdown-menu
@@ -102,6 +104,7 @@ block body
   script(src='js/controllers/UberController.js')
   script(src='js/controllers/UpdateClipCtrl.js')
   script(src='js/controllers/VideoPlayerCtrl.js')
+  script(src='js/controllers/AddNewSongCtrl.js')
 
 
   // legacy

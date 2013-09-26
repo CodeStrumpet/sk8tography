@@ -1,0 +1,74 @@
+// TODO get the inline display:none styles out!                  
+
+div.span12
+  div
+    form.form-horizontal.well
+      fieldset
+        h3 Add a new track
+        br
+        div.row
+          div.span11              
+            tabset
+              tab(ng-repeat="tab in tabs", heading="{{tab.title}}", active="tab.active")          
+            div(ng-show="tabs[0].active")          
+              drop-file-box(files="files")
+              br            
+              div(ng-show="files.length")
+                div(ng-repeat="file in files.slice(0)")
+                  fieldset
+                    div.control-group
+                      strong.control-label
+                      div.controls
+                      strong.control-label
+                      div.controls
+                        span {{file.webkitRelativePath || file.name}}                  
+                      strong.control-label Artist
+                      div.controls
+                        input(type="text", ng-model="file.artist").input-xlarge               
+                      strong.control-label Track Title
+                      div.controls
+                        input(type="text", ng-model="file.title", ng-enter="addNewSong()").input-xlarge
+                //- (<span ng-switch="file.size > 1024*1024">
+                //-     <span ng-switch-when="true">{{file.size / 1024 / 1024 | number:2}} MB</span>
+                //-     <span ng-switch-default>{{file.size / 1024 | number:2}} kB</span>
+                //- </span>)
+              br
+              
+              fieldset
+                div(ng-show="progressVisible")
+                  div.percent {{progress}}%
+                  div.progress-bar
+                    div(ng-style="{'width': progress+'%'}").uploaded                
+              div.row
+                div.span4
+                  div
+                    br
+                    br
+                    button(ng-click='addNewSong()', ng-disabled="!addSongButtonEnabled()").btn.btn-primary.btn-large.btn-block Add Song     
+            div(ng-show="tabs[1].active")
+              br
+              br
+              h2 Coming soon...        
+              br
+              br
+
+    h3 Recently added Tracks
+    div.span12
+      table.table.videosTable
+        thead
+          tr
+            th.thumbColumn image
+            th.infoColumn info
+            th.extraInfoColumn status
+            th.urlColumn url
+        tbody
+          tr(ng-repeat='song in songs', style="vertical-align:middle")
+            td
+              img(ng-src="{{}}")
+            td
+              p Artist: {{song.artist}}
+              p Title: {{song.title}}
+            td
+              h4 {{}}
+            td
+              p {{}}

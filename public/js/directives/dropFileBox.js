@@ -16,12 +16,13 @@ directive('dropFileBox', function() {
       // init event handlers
       function dragEnterLeave(evt) {
           evt.stopPropagation()
-          evt.preventDefault()
+          evt.preventDefault()          
           scope.$apply(function(){
               scope.dropText = 'Drop files here...'
               scope.dropClass = ''
-          })
+          })          
       }
+      
       dropbox.addEventListener("dragenter", dragEnterLeave, false)
       dropbox.addEventListener("dragleave", dragEnterLeave, false)
       dropbox.addEventListener("dragover", function(evt) {
@@ -31,7 +32,7 @@ directive('dropFileBox', function() {
           var ok = evt.dataTransfer && evt.dataTransfer.types && evt.dataTransfer.types.indexOf('Files') >= 0
           scope.$apply(function(){
               scope.dropText = ok ? 'Drop files here...' : 'Only files are allowed!'
-              scope.dropClass = ok ? 'over' : 'not-available'
+              scope.dropClass = ok ? 'dropboxover' : 'not-available'
           })
       }, false)
       dropbox.addEventListener("drop", function(evt) {
