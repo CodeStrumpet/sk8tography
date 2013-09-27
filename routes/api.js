@@ -388,7 +388,10 @@ exports.uploadSongs = function(req, res) {
     var x = function () {
       var file = files[i];
       var fileInfo = filesInfo[i];
-      processingFns.push(function(callback) {      
+      processingFns.push(function(callback) {   
+
+
+        // TODO!!! double check the file extension here for security reasons !!!   
 
         // get the temporary location of the file
         var tmp_path = file.path;
