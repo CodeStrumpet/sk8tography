@@ -26,12 +26,15 @@ function AddNewSongCtrl($scope, $http, $location, $routeParams, $injector, $wind
       return;
     }
 
+
+
     var fd = new FormData()
 
     var filesInfo = [];
     if ($scope.files.length > 1) {
 
       for (var i in $scope.files) {
+
           fd.append("uploadedFiles", $scope.files[i]);
           filesInfo.push($scope.files[i].fileInfo);
       }      
@@ -74,8 +77,8 @@ function AddNewSongCtrl($scope, $http, $location, $routeParams, $injector, $wind
       console.log('files:', element.files);
       // Turn the FileList object into an Array
       $scope.files = []
-      for (var i = 0; i < element.files.length; i++) {
-        $scope.files.push(element.files[i])
+      for (var i = 0; i < element.files.length; i++) {        
+        $scope.files.push(element.files[i]);
       }
       $scope.progressVisible = false
     });

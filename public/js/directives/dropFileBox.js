@@ -45,10 +45,14 @@ directive('dropFileBox', function() {
           })
           var files = evt.dataTransfer.files
           if (files.length > 0) {
-              scope.$apply(function(){
-                  scope.files = []
+              scope.$apply(function() {
+                  scope.files = [];
                   for (var i = 0; i < files.length; i++) {
-                      scope.files.push(files[i])
+                    if (files[i].name.split('.').pop() === 'mp3') {
+                      scope.files.push(files[i]);
+                    } else {
+                      alert("only mp3s allowed at this time");
+                    }                      
                   }
               })
           }
