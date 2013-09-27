@@ -45,15 +45,13 @@ div.container-fluid.page
                     a(ng-click="musicSelected(song)") {{song.name}}                
             div.control-group            
               button.btn.btn-inverse(ng-click='savePlaylist()', ng-disabled="!savePlaylistEnabled()") Save Playlist
-            div.control-group
-              button.btn.btn-inverse(ng-click='clearPlaylist()') Clear Playlist    
     div.video-player.right
       video-player(playlist="playlist", playstate="playstate")
     //div.over
       //h1(style="color: white") overlay
     div
-      div.playlist-scroller.well
-        h3 Playlist
+      div.playlist-scroller.well   
+        h3 {{playlist.title || "Playlist"}}
         ul.thumbnails
           li(ng-repeat="clip in playlist.items").span2.playlist-item
             div(mouseover="activeclip", ng-class="playlist.position == $index ? 'selectedclip' : ''", ng-click="selectClip($index)").thumbnail.parent-hover

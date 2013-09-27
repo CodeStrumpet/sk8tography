@@ -227,6 +227,7 @@ function UberController($scope, $http, $timeout, $routeParams, $location, $parse
     $scope.playlist.position = -1;
     $scope.playlist.items = thePlaylist.clips;
     $scope.playlist.song = thePlaylist.song;
+    $scope.playlist.title = thePlaylist.title;
   };
 
   $scope.clearPlaylist = function() {
