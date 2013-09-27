@@ -403,10 +403,22 @@ exports.uploadSongs = function(req, res) {
           } else {
 
             // add song to db
-            console.log(JSON.stringify(file));
-            console.log(JSON.stringify(fileInfo));
+            //console.log(JSON.stringify(file));
+            //console.log(JSON.stringify(fileInfo));
 
-            callback(null, null);
+            var newSong = new Song({
+              name: fileInfo.title,
+              fileNameMP3: file.name,
+              artist: fileInfo.artist
+            });
+
+            newSong.save(function (saveErr) {
+              if (saveErr) {
+                callback(saveErr, null);
+              } else {
+                callback(null, newSong);
+              }
+            });             
           }
 
           // delete the temporary file, so that the explicitly set temporary upload dir does not get filled with unwanted files
@@ -420,9 +432,7 @@ exports.uploadSongs = function(req, res) {
         });
 
       });
-
     }();
-
   }
 
   require('async').parallel(processingFns, function(err, results) {
